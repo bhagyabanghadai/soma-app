@@ -1,0 +1,155 @@
+Build a fully functional frontend web application called Soma Dashboard.
+Use React.js with Tailwind CSS for styling and React Router for navigation.
+The design should be advanced, professional, and visually impressive, themed around sustainability, green technology, and AI-powered insights.
+The UI must be responsive, easy to use, and recruiter-ready for showcasing in my resume.
+
+🎨 General Design & Styling
+Theme Colors: Green (#2E7D32), Yellow (#F9A825), White (#FFFFFF), and Grey (#F5F5F5).
+
+Typography: Clean modern sans-serif font (e.g., Inter or Roboto).
+
+Layout: Wide cards, rounded corners, drop shadows, gradient headers, subtle animations.
+
+Responsiveness: Mobile-first, tablet, and desktop compatible.
+
+Navigation: Fixed top navigation bar with logo “Soma” and links to all pages.
+
+Footer: Social media icons, About, Contact, “Powered by AI” badge.
+
+📄 Pages & Features
+1. Home Page
+Hero section with background image of a green farm and tagline:
+“Grow Smarter. Greener. Together.”
+
+Call-to-action button: “View Dashboard”
+
+Overview cards for 6 features: Soil Health, Water Usage, Regenerative Practices, Carbon Credits, AI Assistant, Reports.
+
+Animated infographic showing how Soma empowers farmers.
+
+2. Dashboard Page
+Four interactive metric cards:
+
+Weather Summary: Today’s temp, rainfall, humidity (mock data).
+
+Soil Health Status: Placeholder score (e.g., 72/100).
+
+Carbon Footprint: 2.5 tons CO₂ saved (mock value).
+
+Water Efficiency: 78% efficiency score (mock).
+
+Charts:
+
+Line Chart: Carbon footprint trend over last 6 months.
+
+Bar Chart: Water usage vs rainfall for last 6 months.
+
+Quick AI tip box (mock text).
+
+3. Soil Health Page
+Input form:
+
+Soil pH, Nitrogen, Phosphorus, Potassium values.
+
+Submit button → Displays:
+
+Soil Health Score (mock calculation).
+
+Color-coded status (Good, Moderate, Poor).
+
+Recommendations (e.g., “Add compost, reduce tillage”).
+
+4. Water Usage Page
+Input form:
+
+Crop type (dropdown: corn, wheat, rice, soy).
+
+Irrigation method (drip, sprinkler, flood).
+
+Last rainfall (mm).
+
+On submit:
+
+Show estimated water usage.
+
+Display efficiency score.
+
+Provide AI tips for saving water.
+
+5. Regenerative Practices Page
+Checklist UI with toggles:
+
+Cover cropping
+
+Crop rotation
+
+No-till farming
+
+Organic composting
+
+Precision irrigation
+
+AI recommendation panel showing benefits of selected practices.
+
+6. Carbon Credit Estimator Page
+Form inputs:
+
+Land size (acres).
+
+Practices adopted.
+
+Duration (years).
+
+Output:
+
+Estimated CO₂ saved.
+
+Carbon credit earnings (mock value like “$250 this season”).
+
+Chart comparing conventional vs regenerative CO₂ footprint.
+
+7. Sustainability Report Page
+Preview section showing:
+
+Soil score, water efficiency, carbon footprint.
+
+Graph summary.
+
+Button: Download PDF Report (use mock download for now).
+
+Report styled with Soma branding.
+
+8. AI Assistant Page
+Chat-style interface with floating chatbot icon.
+
+Mock conversation examples:
+
+User: “How do I save water this season?”
+
+Bot: “Consider drip irrigation. It can reduce usage by 40%.”
+
+Input box at bottom with send button.
+
+🔧 Technical Details
+React.js for component-based frontend.
+
+Tailwind CSS for styling & responsive design.
+
+React Router DOM for navigation between pages.
+
+Recharts for charts and data visualization.
+
+Mock JSON data for metrics and recommendations.
+
+All data and charts should be visually filled with mock values (no empty screens).
+
+Comment all code clearly where APIs will be integrated later.
+
+✅ Deliverables
+Fully working multi-page React application.
+
+Advanced, modern UI styled with Tailwind.
+
+Charts, forms, checklists, and mock data for all features.
+
+Ready to demo live on Replit (no placeholders left blank).
