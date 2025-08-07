@@ -16,6 +16,7 @@ const Navigation = () => {
     { path: "/carbon-credits", label: "Carbon Credits" },
     { path: "/reports", label: "Reports" },
     { path: "/ai-assistant", label: "AI Assistant" },
+    { path: "/nasa-media", label: "NASA Media" },
   ];
 
   const toggleMobileMenu = () => {

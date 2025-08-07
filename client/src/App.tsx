@@ -12,6 +12,7 @@ import RegenerativePractices from "@/pages/RegenerativePractices";
 import CarbonCredit from "@/pages/CarbonCredit";
 import SustainabilityReport from "@/pages/SustainabilityReport";
 import AIAssistant from "@/pages/AIAssistant";
+import NasaMedia from "@/pages/NasaMedia";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Privacy from "@/pages/Privacy";
@@ -30,6 +31,7 @@ function Router() {
         <Route path="/carbon-credits" component={CarbonCredit} />
         <Route path="/reports" component={SustainabilityReport} />
         <Route path="/ai-assistant" component={AIAssistant} />
+        <Route path="/nasa-media" component={NasaMedia} />
         <Route path="/about" component={About} />
         <Route path="/contact" component={Contact} />
         <Route path="/privacy" component={Privacy} />

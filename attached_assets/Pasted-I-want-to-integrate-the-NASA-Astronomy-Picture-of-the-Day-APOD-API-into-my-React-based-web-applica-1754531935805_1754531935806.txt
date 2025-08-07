@@ -1,0 +1,81 @@
+I want to integrate the NASA Astronomy Picture of the Day (APOD) API into my React-based web application called SOMA. This is a real-time, visually appealing API that fetches a new space-related image or video each day.
+
+Here are detailed instructions on how to implement it:
+
+🌌 Purpose of the NASA API in this App:
+The purpose of using the NASA API is to bring daily inspiration and science-backed space content to the users of SOMA.
+
+It should feel like a “Featured Insight of the Day” section, where users can see an image or video, along with a title and explanation.
+
+📄 Page Name:
+Create or update a page/component named: NasaMedia.js and route: /nasa-media
+
+🧩 Functionality Instructions:
+API Key:
+
+Use the NASA APOD endpoint:
+https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY
+
+Replace DEMO_KEY with an environment variable:
+REACT_APP_NASA_API_KEY
+
+Frontend Tech Stack:
+
+ReactJS functional component
+
+axios or fetch to make API call
+
+useEffect and useState hooks
+
+Show a loading spinner until the data is fetched
+
+What to Display (UI content):
+
+If the media is an image:
+
+Large centered image
+
+If the media is a video (like a YouTube embed):
+
+Use <iframe> to display it responsively
+
+Below the image/video:
+
+Title (bold, large)
+
+Explanation (paragraph)
+
+Date of publication
+
+A button/link to view directly on NASA’s website
+
+Styling:
+
+Dark theme, minimal glow
+
+Card-style container
+
+Fully responsive layout
+
+Use Tailwind CSS or clean modular CSS (your choice)
+
+Bonus Features (Optional but useful):
+
+Add a “Save as Favorite” button (just UI for now, no backend needed yet)
+
+Add tooltip/info icon explaining: “This data comes directly from NASA’s public science feed”
+
+🗂 Where this section should be linked:
+Add a "NASA Media" link in the navbar/sidebar.
+
+Route it to: /nasa-media
+
+🔐 .env Setup:
+Tell me if .env is already created, or else create a .env file and add:
+
+ini
+Copy
+Edit
+REACT_APP_NASA_API_KEY=your_actual_key_here
+And don’t forget to restart the dev server after saving .env.
+
