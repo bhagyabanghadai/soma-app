@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { LocationSearch } from "@/components/LocationSearch";
 import { 
   Loader2, 
   Navigation, 
@@ -269,7 +270,7 @@ const SustainabilityDashboard = () => {
           </p>
         </div>
 
-        {/* Location Input */}
+        {/* Location Input with Smart Search */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -278,59 +279,78 @@ const SustainabilityDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Button
-                onClick={getCurrentLocation}
-                disabled={geoLoading || loading}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                {geoLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Detecting...
-                  </>
-                ) : (
-                  <>
-                    <Navigation className="w-4 h-4 mr-2" />
-                    Use My Location
-                  </>
-                )}
-              </Button>
+            <div className="space-y-4">
+              {/* Location Search with Autocomplete Dropdown */}
+              <div>
+                <Label htmlFor="location-search" className="text-sm font-medium">Search for your farm location</Label>
+                <LocationSearch
+                  onLocationSelect={(lat, lon, locationName) => {
+                    setLocation({ latitude: lat, longitude: lon, locationName });
+                    setLocationInput({ lat: lat.toString(), lon: lon.toString(), name: locationName });
+                    loadAllData(lat, lon);
+                  }}
+                  placeholder="Start typing a city, farm name, or address..."
+                  className="mt-1"
+                />
+              </div>
 
-              <div className="flex space-x-2">
-                <Input
-                  type="number"
-                  placeholder="Latitude"
-                  value={locationInput.lat}
-                  onChange={(e) => setLocationInput(prev => ({ ...prev, lat: e.target.value }))}
-                  className="flex-1"
-                />
-                <Input
-                  type="number"
-                  placeholder="Longitude"
-                  value={locationInput.lon}
-                  onChange={(e) => setLocationInput(prev => ({ ...prev, lon: e.target.value }))}
-                  className="flex-1"
-                />
-                <Button onClick={handleManualLocation} variant="outline" disabled={loading}>
-                  Load
+              {/* Alternative Methods */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* GPS Location */}
+                <Button
+                  onClick={getCurrentLocation}
+                  disabled={geoLoading || loading}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  {geoLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Detecting...
+                    </>
+                  ) : (
+                    <>
+                      <Navigation className="w-4 h-4 mr-2" />
+                      Use My GPS Location
+                    </>
+                  )}
                 </Button>
+
+                {/* Manual Coordinates */}
+                <div className="flex space-x-2">
+                  <Input
+                    type="number"
+                    placeholder="Latitude"
+                    value={locationInput.lat}
+                    onChange={(e) => setLocationInput(prev => ({ ...prev, lat: e.target.value }))}
+                    className="flex-1 text-sm"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Longitude"
+                    value={locationInput.lon}
+                    onChange={(e) => setLocationInput(prev => ({ ...prev, lon: e.target.value }))}
+                    className="flex-1 text-sm"
+                  />
+                  <Button onClick={handleManualLocation} variant="outline" disabled={loading} size="sm">
+                    Load
+                  </Button>
+                </div>
               </div>
 
-              <div className="md:col-span-2 flex flex-wrap gap-2">
-                {presetLocations.map((preset, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePresetLocation(preset)}
-                    disabled={loading}
-                    className="text-xs"
-                  >
-                    {preset.name}
-                  </Button>
-                ))}
-              </div>
+              {/* Current Location Display */}
+              {location.latitude !== 0 && location.longitude !== 0 && (
+                <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <div className="text-sm">
+                      <span className="font-medium text-green-800">Current Location: </span>
+                      <span className="text-green-700">
+                        {location.locationName || `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
