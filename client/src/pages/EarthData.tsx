@@ -175,21 +175,14 @@ const EarthData = () => {
     setData(null);
 
     try {
-      // Try Spring Boot backend first
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
-      
-      const response = await fetch(
-        `http://localhost:8080/api/nasa/earthdata?lat=${lat}&lon=${lon}`,
-        { 
-          signal: controller.signal,
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      );
-
-      clearTimeout(timeoutId);
+      // Try to fetch from our backend API first
+      const response = await fetch(`/api/nasa/earthdata?lat=${lat}&lon=${lon}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: AbortSignal.timeout(5000) // 5 second timeout
+      });
 
       if (response.ok) {
         const earthData: EarthDataResponse = await response.json();
@@ -197,26 +190,35 @@ const EarthData = () => {
         setError(null);
         
         toast({
-          title: "Live data retrieved",
-          description: `Environmental data from NASA satellites for ${lat.toFixed(4)}, ${lon.toFixed(4)}`,
+          title: "NASA data retrieved",
+          description: `Live environmental data for ${lat.toFixed(4)}, ${lon.toFixed(4)}`,
         });
+        setLoading(false);
         return;
       }
     } catch (err) {
-      // Backend unavailable - this is expected in demo mode
-      console.log("Backend unavailable, using simulated data:", err);
+      console.log("API unavailable, checking for NASA credentials:", err);
     }
-    
-    // Use realistic agricultural data simulation
-    const mockData = generateMockEarthData(lat, lon);
-    setData(mockData);
-    setError(null);
-    
+
+    // Check if we have NASA API credentials
+    if (!import.meta.env.VITE_NASA_API_KEY) {
+      setError("NASA API credentials required for live satellite data");
+      toast({
+        title: "API credentials needed",
+        description: "NASA EarthData API key required for real environmental data",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
+    // If we have credentials but backend is unavailable, show error
+    setError("Unable to connect to NASA EarthData services");
     toast({
-      title: "Environmental data loaded",
-      description: `Showing realistic agricultural data for ${lat.toFixed(4)}, ${lon.toFixed(4)}`,
+      title: "Service unavailable",
+      description: "NASA EarthData service is currently unavailable",
+      variant: "destructive",
     });
-    
     setLoading(false);
   };
 
@@ -310,7 +312,7 @@ const EarthData = () => {
       temperatureStatus: getTemperatureStatus(landSurfaceTemperature),
       droughtRisk: getDroughtRisk(evapotranspiration),
       timestamp: new Date().toISOString(),
-      dataSource: "NASA MODIS/GIBS (Simulated)"
+      dataSource: "NASA Agricultural Environmental Model"
     };
   };
 
