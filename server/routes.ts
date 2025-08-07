@@ -81,6 +81,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI Assistant Chat API Route
+  app.post("/api/ai/chat", async (req, res) => {
+    try {
+      const { question, context } = req.body;
+      
+      if (!question || typeof question !== 'string') {
+        return res.status(400).json({ error: "Question parameter is required" });
+      }
+      
+      // Generate AI response based on agricultural context
+      const aiResponse = generateAgriculturalAIResponse(question.toLowerCase(), context);
+      
+      res.json({
+        response: aiResponse,
+        timestamp: new Date().toISOString(),
+        contextUsed: !!context
+      });
+      
+    } catch (error) {
+      console.error("Error in AI Chat API:", error);
+      res.status(500).json({ error: "Unable to generate AI response" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
@@ -329,4 +353,68 @@ function generateNASAEarthData(lat: number, lon: number) {
     timestamp: currentDate.toISOString(),
     dataSource: "NASA MODIS/VIIRS Agricultural Environmental Data"
   };
+}
+
+function generateAgriculturalAIResponse(question: string, context?: any): string {
+  // Soil Health Related Questions
+  if (question.includes('soil') && (question.includes('health') || question.includes('improve'))) {
+    return "To improve soil health: 1) Add organic compost (2-4 inches annually), 2) Plant diverse cover crops like crimson clover and winter rye, 3) Reduce tillage to preserve soil structure, 4) Test soil pH and adjust if needed (ideal range 6.0-7.0), 5) Rotate crops to break pest cycles. These practices increase organic matter and beneficial microorganisms.";
+  }
+  
+  if (question.includes('soil') && question.includes('ph')) {
+    return "For soil pH management: Test annually in fall. If pH < 6.0 (acidic), add agricultural lime at 1-2 tons per acre. If pH > 8.0 (alkaline), add sulfur or organic matter. Ideal pH for most crops is 6.0-7.0. Apply lime in fall for spring availability. Organic matter naturally buffers pH extremes.";
+  }
+  
+  // Water Management
+  if (question.includes('water') || question.includes('irrigation') || question.includes('drought')) {
+    return "For efficient water management: 1) Install drip irrigation to reduce water use by 30-50%, 2) Use soil moisture sensors to optimize timing, 3) Apply mulch to reduce evaporation, 4) Plant drought-resistant varieties, 5) Implement conservation tillage, 6) Schedule irrigation for early morning (4-8 AM) to minimize losses.";
+  }
+  
+  // Crop Selection and Planting
+  if (question.includes('crop') && (question.includes('plant') || question.includes('grow') || question.includes('season'))) {
+    return "For crop selection: Consider your hardiness zone, soil type, and market demand. For diversification: alternate between nitrogen-fixing legumes (soybeans, peas) and nitrogen-consuming grains (corn, wheat). Plant cover crops in off-seasons. Choose varieties adapted to your climate and resistant to local pests.";
+  }
+  
+  // Pest and Disease Management
+  if (question.includes('pest') || question.includes('disease') || question.includes('insect')) {
+    return "Integrated Pest Management (IPM): 1) Scout fields weekly for early detection, 2) Use beneficial insects like ladybugs and parasitic wasps, 3) Rotate crops to break pest cycles, 4) Plant trap crops to divert pests, 5) Apply targeted treatments only when economic thresholds are reached, 6) Maintain field borders with native plants for beneficial habitat.";
+  }
+  
+  // Fertilizer and Nutrients
+  if (question.includes('fertilizer') || question.includes('nutrient') || question.includes('nitrogen')) {
+    return "For sustainable nutrient management: 1) Conduct annual soil tests to determine actual needs, 2) Use precision application based on soil zones, 3) Apply nitrogen in split applications to reduce losses, 4) Include legume cover crops for natural nitrogen fixation, 5) Use organic sources like compost and manure when available, 6) Follow 4R principles: Right source, Right rate, Right time, Right place.";
+  }
+  
+  // Climate and Weather
+  if (question.includes('climate') || question.includes('weather') || question.includes('temperature')) {
+    return "Climate adaptation strategies: 1) Plant climate-appropriate varieties, 2) Adjust planting dates for changing seasons, 3) Use season extenders like row covers, 4) Implement diverse crop rotations for resilience, 5) Build soil organic matter for better water retention, 6) Monitor weather forecasts for optimal field operation timing.";
+  }
+  
+  // Carbon and Sustainability
+  if (question.includes('carbon') || question.includes('sustainable') || question.includes('environment')) {
+    return "For carbon sequestration and sustainability: 1) Practice no-till or reduced tillage, 2) Plant diverse cover crops year-round, 3) Implement rotational grazing if applicable, 4) Maintain permanent grasslands and buffers, 5) Use precision agriculture to reduce inputs, 6) These practices can sequester 0.5-2 tons CO₂ per acre annually while improving profitability.";
+  }
+  
+  // Equipment and Technology
+  if (question.includes('equipment') || question.includes('technology') || question.includes('precision')) {
+    return "Precision agriculture recommendations: 1) GPS-guided equipment for accurate applications, 2) Variable rate applicators for site-specific management, 3) Soil sampling grids for precision fertilization, 4) Drones for crop monitoring and early problem detection, 5) Yield mapping to identify productive zones, 6) Data management systems to track and analyze performance.";
+  }
+  
+  // Financial and Marketing
+  if (question.includes('profit') || question.includes('cost') || question.includes('market')) {
+    return "For farm profitability: 1) Track costs per acre for each enterprise, 2) Diversify crops and markets to spread risk, 3) Consider value-added products (direct sales, processing), 4) Optimize input timing for best prices, 5) Use forward contracting for price risk management, 6) Implement practices that reduce input costs while maintaining yields.";
+  }
+  
+  // General farming questions
+  if (question.includes('farm') || question.includes('agriculture') || question.includes('grow')) {
+    return "General farming best practices: 1) Plan crop rotations 3-5 years ahead, 2) Keep detailed records of all inputs and yields, 3) Build relationships with extension agents and other farmers, 4) Stay informed about new research and technologies, 5) Focus on soil health as the foundation, 6) Consider both short-term profitability and long-term sustainability.";
+  }
+  
+  // Harvest and Storage
+  if (question.includes('harvest') || question.includes('storage') || question.includes('post-harvest')) {
+    return "Harvest and storage optimization: 1) Monitor crops for optimal harvest timing (moisture content, maturity), 2) Maintain equipment for efficient harvesting, 3) Dry grain to proper moisture levels (corn: 15.5%, soybeans: 13%), 4) Use proper storage facilities with aeration, 5) Monitor stored grain regularly for pests and moisture, 6) Consider harvest timing for market advantages.";
+  }
+  
+  // Default response for unmatched questions
+  return "Based on sustainable farming principles, I recommend: 1) Focus on soil health through organic matter and cover crops, 2) Use precision agriculture for efficient resource use, 3) Implement integrated pest management, 4) Practice crop rotation for long-term productivity, 5) Monitor and adapt based on local conditions. Could you provide more specific details about your situation for a more targeted recommendation?";
 }

@@ -62,8 +62,8 @@ const AIAssistant = () => {
     setIsTyping(true);
 
     try {
-      // Try to connect to Spring Boot backend
-      const response = await fetch('http://localhost:8080/api/ai/chat', {
+      // Connect to Express backend AI endpoint
+      const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,8 +76,7 @@ const AIAssistant = () => {
         const data = await response.json();
         aiResponseText = data.response;
       } else {
-        // Fallback to local AI responses
-        aiResponseText = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+        throw new Error(`Backend responded with status ${response.status}`);
       }
 
       const aiMessage: ChatMessage = {
@@ -89,17 +88,15 @@ const AIAssistant = () => {
       
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
-      // Improved error handling with proper logging
-      console.warn('Backend unavailable, using local AI responses:', error);
-      const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-      const aiMessage: ChatMessage = {
+      console.error('AI Assistant error:', error);
+      const errorMessage: ChatMessage = {
         id: timestamp + 1,
-        message: randomResponse,
+        message: "I apologize, but I'm having trouble processing your request right now. Please try asking your question again, or try one of the suggested questions below.",
         isUser: false,
         timestamp: new Date(),
       };
       
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsTyping(false);
     }

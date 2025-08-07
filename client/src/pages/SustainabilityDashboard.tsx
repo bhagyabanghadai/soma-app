@@ -502,24 +502,49 @@ const SustainabilityDashboard = () => {
               {showChat && (
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="h-48 bg-gray-50 rounded-lg p-4 overflow-y-auto">
-                      <div className="text-sm text-gray-600">
-                        AI Assistant chat functionality coming soon. 
-                        Ask questions like:
-                        <ul className="mt-2 list-disc list-inside text-xs">
-                          <li>"How can I improve soil health?"</li>
-                          <li>"What's my irrigation schedule?"</li>
-                          <li>"When should I harvest?"</li>
-                        </ul>
-                      </div>
+                    <div className="text-sm text-center text-gray-600 mb-4">
+                      Ask me anything about sustainable farming practices!
                     </div>
-                    <div className="flex space-x-2">
-                      <Input 
-                        placeholder="Ask about your farm conditions..."
-                        className="flex-1"
-                        disabled
-                      />
-                      <Button size="sm" disabled>Send</Button>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {["How to improve soil health?", "Water management tips?", "Best cover crops?", "Pest control strategies?"].map((suggestion, index) => (
+                        <Button
+                          key={index}
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            try {
+                              const response = await fetch('/api/ai/chat', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ question: suggestion })
+                              });
+                              const data = await response.json();
+                              toast({
+                                title: "AI Recommendation",
+                                description: data.response.substring(0, 100) + "...",
+                              });
+                            } catch (error) {
+                              toast({
+                                title: "AI Assistant",
+                                description: "Visit the AI Assistant page for full chat functionality",
+                                variant: "default",
+                              });
+                            }
+                          }}
+                          className="text-xs"
+                        >
+                          {suggestion}
+                        </Button>
+                      ))}
+                    </div>
+                    <div className="text-center">
+                      <Button
+                        onClick={() => window.location.href = '/ai-assistant'}
+                        className="bg-blue-600 hover:bg-blue-700"
+                        size="sm"
+                      >
+                        Open Full AI Chat
+                      </Button>
                     </div>
                   </div>
                 </CardContent>

@@ -85,7 +85,7 @@ The backend provides comprehensive REST APIs including:
 - **Weather Forecast**: `/api/weather?lat={lat}&lon={lon}` using National Weather Service API with location-based forecasts
 - **NASA EarthData**: `/api/nasa/earthdata?lat={lat}&lon={lon}` for satellite agricultural data (NDVI, LST, ET)
 - **Air Quality**: `/api/air-quality?lat={lat}&lon={lon}` using AQICN World Air Quality Index API for pollution monitoring
-- **AI Assistant**: `/api/ai/chat` for farming recommendations and insights
+- **AI Assistant**: `POST /api/ai/chat` with intelligent agricultural knowledge base for farming recommendations and insights
 - **Sustainability Metrics**: `/api/metrics/*` for carbon and water usage tracking
 - **Authentication**: `/api/auth/register`, `/api/auth/login`, `/api/auth/profile`
 - **Admin Panel**: `/api/admin/*` for user and metrics management
@@ -101,3 +101,11 @@ The architecture supports both live Spring Boot backend connection and graceful 
 - **AI Insights**: Smart recommendations based on current environmental conditions and agricultural best practices
 - **Mobile Friendly**: Single-column layout on mobile devices with collapsible sections
 - **Navigation**: Removed separate environmental monitoring pages in favor of unified dashboard experience
+
+## AI Assistant Integration (Latest Update)
+- **Purpose**: Intelligent agricultural knowledge base providing expert farming advice and recommendations
+- **Frontend Component**: `/ai-assistant` route with full chat interface and quick suggestions in dashboard
+- **Backend Service**: Express API endpoint with comprehensive agricultural knowledge covering soil health, water management, pest control, crop selection, and sustainability practices
+- **Knowledge Areas**: Soil health, water/irrigation, crop selection, pest management, fertilizer management, climate adaptation, carbon sequestration, equipment/technology, financial planning, harvest/storage
+- **Response System**: Context-aware responses based on farming best practices and sustainable agriculture principles
+- **Integration**: Quick access buttons in main dashboard with full chat experience available on dedicated page
