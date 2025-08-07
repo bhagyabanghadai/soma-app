@@ -17,6 +17,7 @@ const Navigation = () => {
     { path: "/reports", label: "Reports" },
     { path: "/ai-assistant", label: "AI Assistant" },
     { path: "/earth-data", label: "Earth Data" },
+    { path: "/weather", label: "Weather" },
   ];
 
   const toggleMobileMenu = () => {

@@ -81,18 +81,25 @@ The backend follows a Spring Boot microservice architecture with the following p
 - **JJWT**: JWT token creation and validation library
 
 ## API Endpoints Implementation
-The Spring Boot backend provides comprehensive REST APIs including:
-- **Authentication**: `/api/auth/register`, `/api/auth/login`, `/api/auth/profile`
-- **Weather Service**: `/api/weather/current` with location-based data
-- **AI Assistant**: `/api/ai/chat` for farming recommendations and insights
+The backend provides comprehensive REST APIs including:
+- **Weather Forecast**: `/api/weather?lat={lat}&lon={lon}` using National Weather Service API with location-based forecasts
 - **NASA EarthData**: `/api/nasa/earthdata?lat={lat}&lon={lon}` for satellite agricultural data (NDVI, LST, ET)
+- **AI Assistant**: `/api/ai/chat` for farming recommendations and insights
 - **Sustainability Metrics**: `/api/metrics/*` for carbon and water usage tracking
-- **Regenerative Tips**: `/api/tips/*` with admin-only CRUD operations
+- **Authentication**: `/api/auth/register`, `/api/auth/login`, `/api/auth/profile`
 - **Admin Panel**: `/api/admin/*` for user and metrics management
 
 The architecture supports both live Spring Boot backend connection and graceful fallback to mock data for development/demo purposes, ensuring the application remains functional regardless of backend availability.
 
-## NASA EarthData Integration (Latest Addition)
+## Weather Forecast Integration (Latest Addition)
+- **Purpose**: Real-time weather forecasting for agricultural planning using National Weather Service API
+- **Frontend Component**: `/weather` route with multiple location input methods (GPS, search, coordinates)
+- **Backend Service**: NWS API integration with proper User-Agent headers and two-step API calls
+- **Data Types**: Current conditions, temperature high/low, wind speed, humidity, 3-day forecast
+- **Agricultural Focus**: Weather alerts and conditions specifically relevant to farming operations
+- **Geographic Coverage**: Complete United States coverage via National Weather Service
+
+## NASA EarthData Integration
 - **Purpose**: Real-time agricultural environmental monitoring using NASA satellite data
 - **Frontend Component**: `/earth-data` route with location input and preset farm locations
 - **Backend Service**: EarthDataService with realistic agricultural data generation

@@ -3,6 +3,32 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Weather API Route - National Weather Service
+  app.get("/api/weather", async (req, res) => {
+    try {
+      const { lat, lon } = req.query;
+      
+      if (!lat || !lon) {
+        return res.status(400).json({ error: "Latitude and longitude parameters are required" });
+      }
+      
+      const latitude = parseFloat(lat as string);
+      const longitude = parseFloat(lon as string);
+      
+      if (isNaN(latitude) || isNaN(longitude)) {
+        return res.status(400).json({ error: "Invalid latitude or longitude values" });
+      }
+      
+      // Call NWS API to get weather data
+      const weatherData = await fetchNWSWeatherData(latitude, longitude);
+      res.json(weatherData);
+      
+    } catch (error) {
+      console.error("Error in Weather API:", error);
+      res.status(500).json({ error: "Unable to fetch weather data from National Weather Service" });
+    }
+  });
+
   // NASA EarthData API Route
   app.get("/api/nasa/earthdata", async (req, res) => {
     try {
@@ -31,6 +57,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const httpServer = createServer(app);
   return httpServer;
+}
+
+async function fetchNWSWeatherData(lat: number, lon: number) {
+  try {
+    // Step 1: Get forecast metadata from NWS points API
+    const pointsResponse = await fetch(`https://api.weather.gov/points/${lat},${lon}`, {
+      headers: {
+        'User-Agent': 'soma-weather-app (contact@example.com)'
+      }
+    });
+    
+    if (!pointsResponse.ok) {
+      throw new Error(`NWS Points API error: ${pointsResponse.status}`);
+    }
+    
+    const pointsData = await pointsResponse.json();
+    const forecastUrl = pointsData.properties.forecast;
+    const forecastHourlyUrl = pointsData.properties.forecastHourly;
+    
+    if (!forecastUrl) {
+      throw new Error('No forecast URL available for this location');
+    }
+    
+    // Step 2: Get the actual forecast data
+    const forecastResponse = await fetch(forecastUrl, {
+      headers: {
+        'User-Agent': 'soma-weather-app (contact@example.com)'
+      }
+    });
+    
+    if (!forecastResponse.ok) {
+      throw new Error(`NWS Forecast API error: ${forecastResponse.status}`);
+    }
+    
+    const forecastData = await forecastResponse.json();
+    const periods = forecastData.properties.periods;
+    
+    if (!periods || periods.length === 0) {
+      throw new Error('No forecast periods available');
+    }
+    
+    // Extract current and 3-day forecast
+    const today = periods[0];
+    const threeDayForecast = periods.slice(0, 6); // Get 3 days (day/night pairs)
+    
+    return {
+      location: {
+        latitude: lat,
+        longitude: lon,
+        city: pointsData.properties.relativeLocation?.properties?.city || 'Unknown',
+        state: pointsData.properties.relativeLocation?.properties?.state || 'Unknown'
+      },
+      current: {
+        temperature: today.temperature,
+        temperatureUnit: today.temperatureUnit,
+        conditions: today.shortForecast,
+        detailedForecast: today.detailedForecast,
+        windSpeed: today.windSpeed,
+        windDirection: today.windDirection,
+        isDaytime: today.isDaytime,
+        icon: today.icon,
+        period: today.name
+      },
+      forecast: threeDayForecast.map((period: any) => ({
+        name: period.name,
+        temperature: period.temperature,
+        temperatureUnit: period.temperatureUnit,
+        conditions: period.shortForecast,
+        detailedForecast: period.detailedForecast,
+        windSpeed: period.windSpeed,
+        windDirection: period.windDirection,
+        isDaytime: period.isDaytime,
+        icon: period.icon
+      })),
+      timestamp: new Date().toISOString(),
+      dataSource: "National Weather Service"
+    };
+    
+  } catch (error) {
+    console.error('Error fetching NWS weather data:', error);
+    throw error;
+  }
 }
 
 function generateNASAEarthData(lat: number, lon: number) {
