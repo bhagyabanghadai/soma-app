@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { Twitter, Linkedin, Facebook } from "lucide-react";
 
 const Footer = () => {
@@ -36,24 +37,24 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">Platform</h4>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <a href="/dashboard" className="hover:text-soma-green transition-colors duration-200">
+                <Link href="/dashboard" className="hover:text-soma-green transition-colors duration-200">
                   Dashboard
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/soil-health" className="hover:text-soma-green transition-colors duration-200">
+                <Link href="/soil-health" className="hover:text-soma-green transition-colors duration-200">
                   Soil Analysis
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/water-usage" className="hover:text-soma-green transition-colors duration-200">
+                <Link href="/water-usage" className="hover:text-soma-green transition-colors duration-200">
                   Water Management
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/carbon-credits" className="hover:text-soma-green transition-colors duration-200">
+                <Link href="/carbon-credits" className="hover:text-soma-green transition-colors duration-200">
                   Carbon Credits
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -61,24 +62,24 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <a href="#" className="hover:text-soma-green transition-colors duration-200">
+                <Link href="/about" className="hover:text-soma-green transition-colors duration-200">
                   About
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-soma-green transition-colors duration-200">
+                <Link href="/contact" className="hover:text-soma-green transition-colors duration-200">
                   Contact
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-soma-green transition-colors duration-200">
+                <Link href="/privacy" className="hover:text-soma-green transition-colors duration-200">
                   Privacy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-soma-green transition-colors duration-200">
+                <Link href="/terms" className="hover:text-soma-green transition-colors duration-200">
                   Terms
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
