@@ -42,7 +42,7 @@ const AIAssistant = () => {
     "Your soil pH levels indicate slightly acidic conditions. Adding agricultural lime could improve nutrient availability for your crops.",
   ];
 
-  const handleSendMessage = (message?: string) => {
+  const handleSendMessage = async (message?: string) => {
     const messageText = message || inputMessage.trim();
     if (!messageText) return;
 
@@ -58,8 +58,37 @@ const AIAssistant = () => {
     setInputMessage("");
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      // Try to connect to Spring Boot backend
+      const response = await fetch('http://localhost:8080/api/ai/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: messageText }),
+      });
+
+      let aiResponseText;
+      if (response.ok) {
+        const data = await response.json();
+        aiResponseText = data.response;
+      } else {
+        // Fallback to local AI responses
+        aiResponseText = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+      }
+
+      const aiMessage: ChatMessage = {
+        id: messages.length + 2,
+        message: aiResponseText,
+        isUser: false,
+        timestamp: new Date(),
+      };
+      
+      setMessages(prev => [...prev, aiMessage]);
+      setIsTyping(false);
+    } catch (error) {
+      // Fallback to local AI responses if backend is unavailable
+      console.warn('Backend unavailable, using local AI responses');
       const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
       const aiMessage: ChatMessage = {
         id: messages.length + 2,
@@ -70,7 +99,7 @@ const AIAssistant = () => {
       
       setMessages(prev => [...prev, aiMessage]);
       setIsTyping(false);
-    }, 1000);
+    }
   };
 
   const handleQuickSuggestion = (suggestion: string) => {

@@ -1,6 +1,6 @@
 # Overview
 
-Soma Dashboard is a comprehensive React-based web application designed for sustainable agriculture management. The platform provides farmers with AI-powered insights and tools to optimize their farming operations while focusing on sustainability, soil health, water management, and carbon footprint tracking. The application features a modern, professional UI built with React.js, Tailwind CSS, and shadcn/ui components, themed around green technology and environmental consciousness.
+Soma Dashboard is a comprehensive full-stack web application designed for sustainable agriculture management. The platform provides farmers with AI-powered insights and tools to optimize their farming operations while focusing on sustainability, soil health, water management, and carbon footprint tracking. The application features a modern React.js frontend with a robust Java Spring Boot backend, offering production-ready APIs and enterprise-grade security.
 
 # User Preferences
 
@@ -17,16 +17,21 @@ The application uses a React single-page application (SPA) architecture with the
 - **Build Tool**: Vite for fast development and optimized production builds
 
 ## Backend Architecture
-The backend follows an Express.js server architecture with the following patterns:
-- **API Layer**: Express.js with middleware for request logging and error handling
-- **Storage Interface**: Abstracted storage layer with IStorage interface, currently implemented as in-memory storage but designed for easy database integration
-- **Development Setup**: Vite middleware integration for development server with hot module replacement
-- **Build Process**: ESBuild for server-side bundling with platform-specific optimizations
+The backend follows a Spring Boot microservice architecture with the following patterns:
+- **API Layer**: Spring Boot REST controllers with JWT authentication and role-based authorization
+- **Service Layer**: Business logic separation with transactional support and dependency injection
+- **Repository Layer**: Spring Data JPA with PostgreSQL/H2 database support
+- **Security**: Spring Security with JWT tokens, BCrypt password encoding, and CORS configuration
+- **Database**: Hibernate ORM with automatic schema generation and optimized queries
+- **Documentation**: Swagger/OpenAPI 3 integration for comprehensive API documentation
+- **Testing**: JUnit unit tests for service layer components with Mockito mocking
 
 ## Data Management
-- **Mock Data**: Currently uses static mock data for demonstration purposes, structured to simulate real farm metrics
-- **Database Schema**: Prepared with Drizzle ORM schema for PostgreSQL integration, including user management tables
-- **Type Safety**: TypeScript throughout with shared type definitions between client and server
+- **Database Schema**: Complete JPA entity models for Users, SustainabilityMetrics, and Tips with proper relationships
+- **Data Transfer Objects**: Comprehensive DTOs for API requests/responses with validation annotations
+- **Repository Pattern**: Spring Data JPA repositories with custom queries and aggregation functions
+- **Type Safety**: Java generic types and validation with Bean Validation API
+- **Fallback System**: React frontend gracefully falls back to mock data when backend is unavailable
 
 ## UI/UX Design Patterns
 - **Responsive Design**: Mobile-first approach with breakpoint-specific layouts
@@ -39,8 +44,9 @@ The backend follows an Express.js server architecture with the following pattern
 
 ## Core Frameworks
 - **React 18**: Primary frontend framework with concurrent features
-- **Express.js**: Backend server framework
-- **TypeScript**: Type safety across the entire stack
+- **Spring Boot 3.2**: Backend framework with embedded Tomcat server
+- **Java 17**: Backend programming language with modern features
+- **TypeScript**: Frontend type safety with API integration layer
 
 ## UI Components & Styling
 - **Tailwind CSS**: Utility-first CSS framework with custom design system
@@ -55,8 +61,10 @@ The backend follows an Express.js server architecture with the following pattern
 - **date-fns**: Date manipulation utilities
 
 ## Database & ORM
-- **Drizzle ORM**: Type-safe database ORM with PostgreSQL support
-- **Neon Database**: Serverless PostgreSQL database (configured for production)
+- **Spring Data JPA**: Enterprise-grade ORM with Hibernate implementation
+- **PostgreSQL**: Production database with H2 for development/testing
+- **Maven**: Dependency management and build automation
+- **JWT Authentication**: Secure token-based authentication with role management
 
 ## Development Tools
 - **Vite**: Build tool and development server
@@ -66,7 +74,19 @@ The backend follows an Express.js server architecture with the following pattern
 ## Data Visualization
 - **Recharts**: React charting library for interactive data visualization
 
-## Session Management
-- **connect-pg-simple**: PostgreSQL session store for Express sessions
+## Additional Backend Dependencies
+- **Lombok**: Reduces boilerplate code with annotations
+- **ModelMapper**: Object mapping between DTOs and entities
+- **Swagger/OpenAPI**: API documentation and testing interface
+- **JJWT**: JWT token creation and validation library
 
-The architecture is designed for scalability and maintainability, with clear separation of concerns between frontend and backend, and preparation for real database integration while currently operating with mock data for demonstration purposes.
+## API Endpoints Implementation
+The Spring Boot backend provides comprehensive REST APIs including:
+- **Authentication**: `/api/auth/register`, `/api/auth/login`, `/api/auth/profile`
+- **Weather Service**: `/api/weather/current` with location-based data
+- **AI Assistant**: `/api/ai/chat` for farming recommendations and insights
+- **Sustainability Metrics**: `/api/metrics/*` for carbon and water usage tracking
+- **Regenerative Tips**: `/api/tips/*` with admin-only CRUD operations
+- **Admin Panel**: `/api/admin/*` for user and metrics management
+
+The architecture supports both live Spring Boot backend connection and graceful fallback to mock data for development/demo purposes, ensuring the application remains functional regardless of backend availability.
