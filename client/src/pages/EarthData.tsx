@@ -175,13 +175,13 @@ const EarthData = () => {
     setData(null);
 
     try {
-      // Try to fetch from our backend API first
+      // Fetch from NASA EarthData API via our backend
       const response = await fetch(`/api/nasa/earthdata?lat=${lat}&lon=${lon}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        signal: AbortSignal.timeout(5000) // 5 second timeout
+        signal: AbortSignal.timeout(5000)
       });
 
       if (response.ok) {
@@ -190,35 +190,23 @@ const EarthData = () => {
         setError(null);
         
         toast({
-          title: "NASA data retrieved",
-          description: `Live environmental data for ${lat.toFixed(4)}, ${lon.toFixed(4)}`,
+          title: "NASA EarthData retrieved",
+          description: `Environmental data for ${lat.toFixed(4)}, ${lon.toFixed(4)}`,
         });
-        setLoading(false);
-        return;
+      } else {
+        throw new Error(`API responded with status ${response.status}`);
       }
     } catch (err) {
-      console.log("API unavailable, checking for NASA credentials:", err);
-    }
-
-    // Check if we have NASA API credentials
-    if (!import.meta.env.VITE_NASA_API_KEY) {
-      setError("NASA API credentials required for live satellite data");
+      console.error("Error fetching NASA EarthData:", err);
+      setError("Unable to fetch NASA EarthData");
+      
       toast({
-        title: "API credentials needed",
-        description: "NASA EarthData API key required for real environmental data",
+        title: "Data unavailable",
+        description: "Could not retrieve NASA environmental data",
         variant: "destructive",
       });
-      setLoading(false);
-      return;
     }
-
-    // If we have credentials but backend is unavailable, show error
-    setError("Unable to connect to NASA EarthData services");
-    toast({
-      title: "Service unavailable",
-      description: "NASA EarthData service is currently unavailable",
-      variant: "destructive",
-    });
+    
     setLoading(false);
   };
 
