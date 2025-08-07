@@ -1,3 +1,6 @@
+/home/runner/workspace/backend/src/main/java/com/soma/dto/EarthDataRequest.java
+/home/runner/workspace/backend/src/main/java/com/soma/dto/EarthDataResponse.java
+/home/runner/workspace/backend/src/main/java/com/soma/service/EarthDataService.java
 /home/runner/workspace/backend/src/main/java/com/soma/repository/UserRepository.java
 /home/runner/workspace/backend/src/main/java/com/soma/exception/ResourceNotFoundException.java
 /home/runner/workspace/backend/src/main/java/com/soma/security/JwtAuthenticationFilter.java
@@ -25,6 +28,7 @@
 /home/runner/workspace/backend/src/main/java/com/soma/model/Tip.java
 /home/runner/workspace/backend/src/main/java/com/soma/exception/GlobalExceptionHandler.java
 /home/runner/workspace/backend/src/main/java/com/soma/service/UserService.java
+/home/runner/workspace/backend/src/main/java/com/soma/controller/EarthDataController.java
 /home/runner/workspace/backend/src/main/java/com/soma/model/SustainabilityMetrics.java
 /home/runner/workspace/backend/src/main/java/com/soma/service/SustainabilityMetricsService.java
 /home/runner/workspace/backend/src/main/java/com/soma/exception/UserAlreadyExistsException.java

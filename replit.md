@@ -85,8 +85,17 @@ The Spring Boot backend provides comprehensive REST APIs including:
 - **Authentication**: `/api/auth/register`, `/api/auth/login`, `/api/auth/profile`
 - **Weather Service**: `/api/weather/current` with location-based data
 - **AI Assistant**: `/api/ai/chat` for farming recommendations and insights
+- **NASA EarthData**: `/api/nasa/earthdata?lat={lat}&lon={lon}` for satellite agricultural data (NDVI, LST, ET)
 - **Sustainability Metrics**: `/api/metrics/*` for carbon and water usage tracking
 - **Regenerative Tips**: `/api/tips/*` with admin-only CRUD operations
 - **Admin Panel**: `/api/admin/*` for user and metrics management
 
 The architecture supports both live Spring Boot backend connection and graceful fallback to mock data for development/demo purposes, ensuring the application remains functional regardless of backend availability.
+
+## NASA EarthData Integration (Latest Addition)
+- **Purpose**: Real-time agricultural environmental monitoring using NASA satellite data
+- **Frontend Component**: `/earth-data` route with location input and preset farm locations
+- **Backend Service**: EarthDataService with realistic agricultural data generation
+- **Data Types**: Vegetation Index (NDVI), Land Surface Temperature, Evapotranspiration rates
+- **Agricultural Insights**: Automated status calculations for vegetation health, temperature stress, and drought risk
+- **Geographic Coverage**: Global coordinates with climate-zone appropriate realistic data modeling
