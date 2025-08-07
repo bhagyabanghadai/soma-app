@@ -46,9 +46,12 @@ const AIAssistant = () => {
     const messageText = message || inputMessage.trim();
     if (!messageText) return;
 
+    // Generate unique IDs using timestamp to avoid duplicates
+    const timestamp = Date.now();
+    
     // Add user message
     const userMessage: ChatMessage = {
-      id: messages.length + 1,
+      id: timestamp,
       message: messageText,
       isUser: true,
       timestamp: new Date(),
@@ -78,26 +81,26 @@ const AIAssistant = () => {
       }
 
       const aiMessage: ChatMessage = {
-        id: messages.length + 2,
+        id: timestamp + 1,
         message: aiResponseText,
         isUser: false,
         timestamp: new Date(),
       };
       
       setMessages(prev => [...prev, aiMessage]);
-      setIsTyping(false);
     } catch (error) {
-      // Fallback to local AI responses if backend is unavailable
-      console.warn('Backend unavailable, using local AI responses');
+      // Improved error handling with proper logging
+      console.warn('Backend unavailable, using local AI responses:', error);
       const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
       const aiMessage: ChatMessage = {
-        id: messages.length + 2,
+        id: timestamp + 1,
         message: randomResponse,
         isUser: false,
         timestamp: new Date(),
       };
       
       setMessages(prev => [...prev, aiMessage]);
+    } finally {
       setIsTyping(false);
     }
   };
