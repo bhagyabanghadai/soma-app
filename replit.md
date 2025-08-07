@@ -92,35 +92,12 @@ The backend provides comprehensive REST APIs including:
 
 The architecture supports both live Spring Boot backend connection and graceful fallback to mock data for development/demo purposes, ensuring the application remains functional regardless of backend availability.
 
-## Sustainability Dashboard (Latest Addition)
-- **Purpose**: Unified environmental monitoring dashboard combining all agricultural insights in one intelligent layout
+## Sustainability Dashboard (Latest Update)
+- **Purpose**: Unified environmental monitoring dashboard replacing separate Earth Data, Weather, and Air Quality pages
 - **Frontend Component**: Root `/` route with comprehensive environmental data visualization
 - **Location Input**: Multiple methods - GPS detection, place name search, manual coordinates, and preset farm locations
 - **Data Integration**: Combines NASA EarthData, Weather Forecast, and Air Quality data in real-time
 - **Layout**: 2-column responsive grid with environmental summary, weather forecast, air quality index, and AI suggestions
 - **AI Insights**: Smart recommendations based on current environmental conditions and agricultural best practices
 - **Mobile Friendly**: Single-column layout on mobile devices with collapsible sections
-
-## Air Quality Integration
-- **Purpose**: Real-time air pollution monitoring for safe farming operations using AQICN World Air Quality Index API
-- **Frontend Component**: `/air-quality` route with location detection, search, and manual coordinate input
-- **Backend Service**: AQICN API integration with secure token storage and comprehensive pollution data parsing
-- **Data Types**: AQI value, main pollutant identification, health status classification, location name and timestamp
-- **Agricultural Focus**: Color-coded health advisories and farming operation safety recommendations
-- **Geographic Coverage**: Global air quality monitoring stations via World Air Quality Index Project
-
-## Weather Forecast Integration
-- **Purpose**: Real-time weather forecasting for agricultural planning using National Weather Service API
-- **Frontend Component**: `/weather` route with multiple location input methods (GPS, search, coordinates)
-- **Backend Service**: NWS API integration with proper User-Agent headers and two-step API calls
-- **Data Types**: Current conditions, temperature high/low, wind speed, humidity, 3-day forecast
-- **Agricultural Focus**: Weather alerts and conditions specifically relevant to farming operations
-- **Geographic Coverage**: Complete United States coverage via National Weather Service
-
-## NASA EarthData Integration
-- **Purpose**: Real-time agricultural environmental monitoring using NASA satellite data
-- **Frontend Component**: `/earth-data` route with location input and preset farm locations
-- **Backend Service**: EarthDataService with realistic agricultural data generation
-- **Data Types**: Vegetation Index (NDVI), Land Surface Temperature, Evapotranspiration rates
-- **Agricultural Insights**: Automated status calculations for vegetation health, temperature stress, and drought risk
-- **Geographic Coverage**: Global coordinates with climate-zone appropriate realistic data modeling
+- **Navigation**: Removed separate environmental monitoring pages in favor of unified dashboard experience

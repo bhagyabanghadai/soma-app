@@ -8,7 +8,6 @@ const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { path: "/", label: "Home" },
     { path: "/", label: "Dashboard" },
     { path: "/soil-health", label: "Soil Health" },
     { path: "/water-usage", label: "Water Usage" },
@@ -16,9 +15,6 @@ const Navigation = () => {
     { path: "/carbon-credits", label: "Carbon Credits" },
     { path: "/reports", label: "Reports" },
     { path: "/ai-assistant", label: "AI Assistant" },
-    { path: "/earth-data", label: "Earth Data" },
-    { path: "/weather", label: "Weather" },
-    { path: "/air-quality", label: "Air Quality" },
   ];
 
   const toggleMobileMenu = () => {
