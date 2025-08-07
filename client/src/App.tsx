@@ -14,6 +14,7 @@ import SustainabilityReport from "@/pages/SustainabilityReport";
 import AIAssistant from "@/pages/AIAssistant";
 import EarthData from "@/pages/EarthData";
 import Weather from "@/pages/Weather";
+import AirQuality from "@/pages/AirQuality";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Privacy from "@/pages/Privacy";
@@ -34,6 +35,7 @@ function Router() {
         <Route path="/ai-assistant" component={AIAssistant} />
         <Route path="/earth-data" component={EarthData} />
         <Route path="/weather" component={Weather} />
+        <Route path="/air-quality" component={AirQuality} />
         <Route path="/about" component={About} />
         <Route path="/contact" component={Contact} />
         <Route path="/privacy" component={Privacy} />

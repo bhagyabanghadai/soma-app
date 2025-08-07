@@ -84,6 +84,7 @@ The backend follows a Spring Boot microservice architecture with the following p
 The backend provides comprehensive REST APIs including:
 - **Weather Forecast**: `/api/weather?lat={lat}&lon={lon}` using National Weather Service API with location-based forecasts
 - **NASA EarthData**: `/api/nasa/earthdata?lat={lat}&lon={lon}` for satellite agricultural data (NDVI, LST, ET)
+- **Air Quality**: `/api/air-quality?lat={lat}&lon={lon}` using AQICN World Air Quality Index API for pollution monitoring
 - **AI Assistant**: `/api/ai/chat` for farming recommendations and insights
 - **Sustainability Metrics**: `/api/metrics/*` for carbon and water usage tracking
 - **Authentication**: `/api/auth/register`, `/api/auth/login`, `/api/auth/profile`
@@ -91,7 +92,15 @@ The backend provides comprehensive REST APIs including:
 
 The architecture supports both live Spring Boot backend connection and graceful fallback to mock data for development/demo purposes, ensuring the application remains functional regardless of backend availability.
 
-## Weather Forecast Integration (Latest Addition)
+## Air Quality Integration (Latest Addition)
+- **Purpose**: Real-time air pollution monitoring for safe farming operations using AQICN World Air Quality Index API
+- **Frontend Component**: `/air-quality` route with location detection, search, and manual coordinate input
+- **Backend Service**: AQICN API integration with secure token storage and comprehensive pollution data parsing
+- **Data Types**: AQI value, main pollutant identification, health status classification, location name and timestamp
+- **Agricultural Focus**: Color-coded health advisories and farming operation safety recommendations
+- **Geographic Coverage**: Global air quality monitoring stations via World Air Quality Index Project
+
+## Weather Forecast Integration
 - **Purpose**: Real-time weather forecasting for agricultural planning using National Weather Service API
 - **Frontend Component**: `/weather` route with multiple location input methods (GPS, search, coordinates)
 - **Backend Service**: NWS API integration with proper User-Agent headers and two-step API calls

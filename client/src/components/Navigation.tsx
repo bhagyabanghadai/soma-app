@@ -18,6 +18,7 @@ const Navigation = () => {
     { path: "/ai-assistant", label: "AI Assistant" },
     { path: "/earth-data", label: "Earth Data" },
     { path: "/weather", label: "Weather" },
+    { path: "/air-quality", label: "Air Quality" },
   ];
 
   const toggleMobileMenu = () => {

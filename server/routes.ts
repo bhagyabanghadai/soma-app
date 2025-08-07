@@ -3,6 +3,32 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Air Quality API Route - AQICN World Air Quality Index
+  app.get("/api/air-quality", async (req, res) => {
+    try {
+      const { lat, lon } = req.query;
+      
+      if (!lat || !lon) {
+        return res.status(400).json({ error: "Latitude and longitude parameters are required" });
+      }
+      
+      const latitude = parseFloat(lat as string);
+      const longitude = parseFloat(lon as string);
+      
+      if (isNaN(latitude) || isNaN(longitude)) {
+        return res.status(400).json({ error: "Invalid latitude or longitude values" });
+      }
+      
+      // Call AQICN API to get air quality data
+      const airQualityData = await fetchAQICNData(latitude, longitude);
+      res.json(airQualityData);
+      
+    } catch (error) {
+      console.error("Error in Air Quality API:", error);
+      res.status(500).json({ error: "Unable to fetch air quality data from AQICN" });
+    }
+  });
+
   // Weather API Route - National Weather Service
   app.get("/api/weather", async (req, res) => {
     try {
@@ -57,6 +83,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const httpServer = createServer(app);
   return httpServer;
+}
+
+async function fetchAQICNData(lat: number, lon: number) {
+  try {
+    const token = process.env.AQICN_API_TOKEN;
+    if (!token) {
+      throw new Error('AQICN API token not configured');
+    }
+
+    const response = await fetch(`https://api.waqi.info/feed/geo:${lat};${lon}/?token=${token}`);
+    
+    if (!response.ok) {
+      throw new Error(`AQICN API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    if (data.status !== 'ok') {
+      throw new Error(`AQICN API returned status: ${data.status}`);
+    }
+    
+    const aqiData = data.data;
+    const aqi = aqiData.aqi;
+    
+    // Determine health status based on AQI value
+    const getAQIStatus = (aqi: number) => {
+      if (aqi <= 50) return { status: "Good", level: "good" };
+      if (aqi <= 100) return { status: "Moderate", level: "moderate" };
+      if (aqi <= 150) return { status: "Unhealthy for Sensitive Groups", level: "unhealthy-sensitive" };
+      if (aqi <= 200) return { status: "Unhealthy", level: "unhealthy" };
+      if (aqi <= 300) return { status: "Very Unhealthy", level: "very-unhealthy" };
+      return { status: "Hazardous", level: "hazardous" };
+    };
+    
+    // Find main pollutant
+    const pollutants = aqiData.iaqi || {};
+    let mainPollutant = "Unknown";
+    let maxValue = 0;
+    
+    for (const [pollutant, data] of Object.entries(pollutants)) {
+      if (typeof data === 'object' && data !== null && 'v' in data) {
+        const value = (data as any).v;
+        if (value > maxValue) {
+          maxValue = value;
+          mainPollutant = pollutant.toUpperCase();
+        }
+      }
+    }
+    
+    const statusInfo = getAQIStatus(aqi);
+    
+    return {
+      location: aqiData.city?.name || "Unknown Location",
+      aqi: aqi,
+      mainPollutant: mainPollutant,
+      status: statusInfo.status,
+      level: statusInfo.level,
+      timestamp: aqiData.time?.s || new Date().toISOString(),
+      coordinates: {
+        latitude: lat,
+        longitude: lon
+      },
+      dataSource: "World Air Quality Index Project (AQICN)"
+    };
+    
+  } catch (error) {
+    console.error('Error fetching AQICN air quality data:', error);
+    throw error;
+  }
 }
 
 async function fetchNWSWeatherData(lat: number, lon: number) {
