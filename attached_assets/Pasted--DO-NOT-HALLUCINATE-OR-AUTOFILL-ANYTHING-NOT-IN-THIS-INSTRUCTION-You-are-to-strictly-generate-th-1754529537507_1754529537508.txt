@@ -1,0 +1,188 @@
+🚨 DO NOT HALLUCINATE OR AUTOFILL ANYTHING NOT IN THIS INSTRUCTION.
+
+You are to strictly generate the complete backend of a production-ready web application called SOMA, an AI-powered sustainability assistant for farmers and agricultural experts.
+
+🧠 Important Instructions:
+
+ONLY generate code explicitly mentioned below.
+
+DO NOT make assumptions, create extra endpoints, or invent data models on your own.
+
+Ask for approval before:
+
+Adding new entities
+
+Creating new business logic
+
+Integrating external APIs not mentioned here
+
+💻 Technology Stack
+Use only the following stack (do not replace or mix with alternatives):
+
+Language: Java 17
+
+Framework: Spring Boot 3.x
+
+Database: PostgreSQL (use H2 for development)
+
+ORM: Spring Data JPA
+
+Security: Spring Security with JWT (JSON Web Token)
+
+Build Tool: Maven
+
+Documentation: Swagger/OpenAPI 3
+
+Other: ModelMapper, Lombok
+
+🧱 Backend Structure
+Create the project with the following clean architecture structure:
+
+css
+Copy
+Edit
+src/main/java/com/soma
+  ├── controller/
+  ├── service/
+  ├── repository/
+  ├── model/
+  ├── dto/
+  ├── config/
+  ├── security/
+  ├── exception/
+🔐 Authentication
+Use Spring Security with JWT token-based login.
+
+Provide endpoints:
+
+POST /api/auth/register
+
+POST /api/auth/login
+
+Roles: ROLE_USER, ROLE_ADMIN
+
+Passwords must be hashed with BCrypt
+
+🌿 Core Features and APIs
+✅ User Module
+
+User: id, name, email, password, role
+
+Endpoints: register, login, getProfile, updateProfile
+
+✅ Sustainability Dashboard
+
+SustainabilityMetrics: id, userId, carbonUsage, waterUsage, date, aiInsights
+
+Endpoints:
+
+POST /api/metrics/submit
+
+GET /api/metrics/user/{id}
+
+GET /api/metrics/summary
+
+✅ Weather Integration
+
+Endpoint: GET /api/weather/current?location=city
+
+Use OpenWeatherMap API (mock it for now)
+
+✅ Crop Advisory (AI-based)
+
+Endpoint: POST /api/ai/chat
+
+Input: user question
+
+Output: AI-generated farming advice (mock response now)
+
+✅ Regenerative Tips
+
+Tip: id, title, description
+
+Admin-only CRUD:
+
+POST /api/tips
+
+GET /api/tips
+
+PUT /api/tips/{id}
+
+DELETE /api/tips/{id}
+
+✅ Admin Panel
+
+GET /api/admin/users
+
+GET /api/admin/metrics
+
+DELETE /api/admin/user/{id}
+
+✅ AI Insights Summary
+
+GET /api/ai/recommendations?userId=
+
+Return insights from sustainability metrics
+
+⚙️ Configuration
+CORS enabled for all domains (for dev only)
+
+Swagger enabled on /swagger-ui/index.html
+
+All endpoints under /api/**
+
+📄 Environment Setup
+application.yml
+
+Spring datasource for PostgreSQL + fallback H2
+
+JWT secret key
+
+CORS allowed origins
+
+📦 Maven Dependencies
+Include dependencies for:
+
+Spring Web
+
+Spring Data JPA
+
+Spring Security
+
+PostgreSQL + H2
+
+Lombok
+
+ModelMapper
+
+Swagger
+
+JWT (io.jsonwebtoken)
+
+🧪 Testing
+Add unit tests using JUnit for:
+
+AuthService
+
+AIChatService
+
+MetricService
+
+🚫 Strict Boundaries
+DO NOT:
+
+Invent new models or fields
+
+Use MongoDB or MySQL
+
+Integrate AI libraries directly yet (mock AI response)
+
+Add UI, frontend code, or HTML
+
+WAIT FOR APPROVAL BEFORE:
+
+Adding new APIs
+
+Modifying project structure
+
+Changing fields in data models
