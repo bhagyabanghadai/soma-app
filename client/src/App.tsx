@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Dashboard from "@/pages/Dashboard";
+import SustainabilityDashboard from "@/pages/SustainabilityDashboard";
 import SoilHealth from "@/pages/SoilHealth";
 import WaterUsage from "@/pages/WaterUsage";
 import RegenerativePractices from "@/pages/RegenerativePractices";
@@ -25,8 +26,9 @@ function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/" component={SustainabilityDashboard} />
+        <Route path="/dashboard" component={SustainabilityDashboard} />
+        <Route path="/old-dashboard" component={Dashboard} />
         <Route path="/soil-health" component={SoilHealth} />
         <Route path="/water-usage" component={WaterUsage} />
         <Route path="/practices" component={RegenerativePractices} />

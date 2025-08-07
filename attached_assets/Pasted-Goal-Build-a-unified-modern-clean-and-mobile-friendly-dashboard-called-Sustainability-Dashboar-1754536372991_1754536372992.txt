@@ -1,0 +1,74 @@
+Goal:
+Build a unified, modern, clean, and mobile-friendly dashboard called "Sustainability Dashboard" for a smart agriculture app. The page should replace multiple scattered feature pages with one intelligent layout.
+
+🚜 Target User: Farmers and Agri-specialists
+🎯 Purpose: To give real-time environmental insights on air, soil, water, and climate in a single glance.
+
+🌿 Page: `/dashboard` or set it as default home
+
+⚙️ UI Layout (2-column grid on large screens; single-column on mobile):
+--------------------------------------------------------------------
+| 🌍 Environmental Summary         | 🧠 AI Assistant (Chat box)    |
+| 🌿 Vegetation Index (NDVI)       | 📊 Air Quality Index          |
+| 🌡️ Surface Temperature           | 🌧️ Weather Forecast (3-day)   |
+| 💧 Evapotranspiration & Drought  | 💡 Smart Suggestions (AI-generated text) |
+| 📍 Location Picker (Lat/Lon or dropdown)                            |
+
+✔️ Features and Design Details:
+
+1. 🗺️ **Farm Location Input**  
+   - Input method: "Use my location", or enter coordinates manually  
+   - Show detected location in heading  
+   - Geolocation API support
+
+2. 🌍 **Vegetation Index (NDVI)**  
+   - Show real value (e.g., 0.48) with a tag (Low/Moderate/High)  
+   - Include color-coded status (red/yellow/green)
+
+3. 🌡️ **Surface Temperature**  
+   - Large temperature in °C or °F  
+   - Add tooltip: “Impacts water need and plant growth”
+
+4. 💧 **Evapotranspiration & Drought Risk**  
+   - Show in mm/day  
+   - Add drought warning badge if high
+
+5. 🌫️ **Air Quality Index (AQI)**  
+   - Value + Health level (e.g., Good, Moderate, Unhealthy)  
+   - Suggest mitigation if AQI is poor
+
+6. 🌦️ **Weather Forecast**  
+   - Display 3-day forecast with icons (temperature, rainfall, etc.)
+
+7. 🧠 **AI Assistant Panel**  
+   - Floating button opens chat card  
+   - Placeholder for POST /api/ai/chat  
+   - Shows: "How can I improve soil health today?" or “What’s my water risk?”
+
+8. 🧠 **AI Suggestions Card**  
+   - Static or dynamic text:  
+     “Based on temperature and AQI, consider irrigating early morning.”  
+     “Your NDVI suggests poor vegetation. Add organic fertilizer.”
+
+9. 📈 **Visuals**  
+   - Use mini charts or gauges where needed  
+   - Use icons for each metric (Leaf, Thermometer, Drop, Wind)
+
+10. 📱 **Responsive Design**  
+   - 1-column view on mobile  
+   - Tabs/collapsible sections for small screens
+
+Color Theme:  
+- Background: White or light gray  
+- Primary: Forest Green (#228B22)  
+- Accent: Soft Yellow / Earthy Orange / Sky Blue  
+- Font: Clean, readable (e.g., Inter or Open Sans)
+
+🏁 Deliverables:  
+- Working React component for `/dashboard`  
+- Uses mock data for now (API placeholders in JSON or functions)  
+- Include all visual sections described  
+- Tailwind used for styling  
+
+Do NOT create separate pages like `/air-quality`, `/weather`, etc.  
+All features must appear in ONE page with smart layout.

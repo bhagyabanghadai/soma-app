@@ -9,7 +9,7 @@ const Navigation = () => {
 
   const navItems = [
     { path: "/", label: "Home" },
-    { path: "/dashboard", label: "Dashboard" },
+    { path: "/", label: "Dashboard" },
     { path: "/soil-health", label: "Soil Health" },
     { path: "/water-usage", label: "Water Usage" },
     { path: "/practices", label: "Practices" },

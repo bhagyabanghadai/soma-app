@@ -92,7 +92,16 @@ The backend provides comprehensive REST APIs including:
 
 The architecture supports both live Spring Boot backend connection and graceful fallback to mock data for development/demo purposes, ensuring the application remains functional regardless of backend availability.
 
-## Air Quality Integration (Latest Addition)
+## Sustainability Dashboard (Latest Addition)
+- **Purpose**: Unified environmental monitoring dashboard combining all agricultural insights in one intelligent layout
+- **Frontend Component**: Root `/` route with comprehensive environmental data visualization
+- **Location Input**: Multiple methods - GPS detection, place name search, manual coordinates, and preset farm locations
+- **Data Integration**: Combines NASA EarthData, Weather Forecast, and Air Quality data in real-time
+- **Layout**: 2-column responsive grid with environmental summary, weather forecast, air quality index, and AI suggestions
+- **AI Insights**: Smart recommendations based on current environmental conditions and agricultural best practices
+- **Mobile Friendly**: Single-column layout on mobile devices with collapsible sections
+
+## Air Quality Integration
 - **Purpose**: Real-time air pollution monitoring for safe farming operations using AQICN World Air Quality Index API
 - **Frontend Component**: `/air-quality` route with location detection, search, and manual coordinate input
 - **Backend Service**: AQICN API integration with secure token storage and comprehensive pollution data parsing
