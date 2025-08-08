@@ -46,8 +46,13 @@ const AIAssistant = () => {
 
   const handleSendMessage = async (message?: string) => {
     const messageText = message || inputMessage.trim();
-    if (!messageText) return;
+    if (!messageText) {
+      console.log('No message to send');
+      return;
+    }
 
+    console.log('Sending message:', messageText);
+    
     // Generate unique IDs using timestamp to avoid duplicates
     const timestamp = Date.now();
     
@@ -225,20 +230,26 @@ const AIAssistant = () => {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
+                    console.log('Form submitted, input value:', inputMessage);
                     handleSendMessage();
                   }}
                   className="flex space-x-3"
                 >
                   <Input
                     value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
+                    onChange={(e) => {
+                      console.log('Input changed:', e.target.value);
+                      setInputMessage(e.target.value);
+                    }}
                     placeholder="Ask me anything about sustainable farming..."
                     className="flex-1 focus:ring-soma-green focus:border-soma-green"
+                    disabled={isTyping}
                   />
                   <Button 
                     type="submit" 
                     disabled={!inputMessage.trim() || isTyping}
                     className="bg-soma-green hover:bg-soma-green/90"
+                    onClick={() => console.log('Send button clicked, input:', inputMessage)}
                   >
                     <Send className="w-4 h-4" />
                   </Button>

@@ -538,9 +538,9 @@ const SustainabilityDashboard = () => {
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ 
                                   question: suggestion,
-                                  context: currentLocation ? {
-                                    location: currentLocation.locationName,
-                                    coordinates: { lat: currentLocation.latitude, lon: currentLocation.longitude },
+                                  context: location ? {
+                                    location: location.locationName,
+                                    coordinates: { lat: location.latitude, lon: location.longitude },
                                     earthData: earthData,
                                     weatherData: weatherData,
                                     airQuality: airQualityData
