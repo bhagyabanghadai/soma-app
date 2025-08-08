@@ -27,10 +27,12 @@ const AIAssistant = () => {
   const [isTyping, setIsTyping] = useState(false);
 
   const quickSuggestions = [
-    "What crops should I plant for next season?",
-    "How can I improve my soil health?",
-    "What are the best cover crops for my region?",
-    "How do I maximize carbon sequestration?",
+    "What crops should I plant for next season based on current market trends?",
+    "How can I improve my soil health cost-effectively?",
+    "What are the best cover crops for nitrogen fixation in my climate zone?",
+    "How do I maximize carbon sequestration while maintaining profitability?",
+    "What precision agriculture tools should I invest in first?",
+    "How should I adjust my irrigation schedule for drought conditions?",
   ];
 
   const aiResponses = [
@@ -114,10 +116,13 @@ const AIAssistant = () => {
     <div className="min-h-screen bg-soma-grey py-8 fade-in">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">AI Assistant</h1>
+          <h1 className="text-3xl font-bold text-gray-900">🌱 AI Agricultural Assistant</h1>
           <p className="text-gray-600 mt-2">
-            Get instant answers to your farming questions and personalized recommendations
+            Get expert advice on sustainable farming practices powered by GLM 4.5 AI model
           </p>
+          <div className="mt-2 text-sm text-green-600 font-medium">
+            ✨ Enhanced with GLM 4.5 for Advanced Agricultural Intelligence
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -131,7 +136,7 @@ const AIAssistant = () => {
                 </div>
                 <div>
                   <CardTitle className="text-white">Soma AI Assistant</CardTitle>
-                  <p className="text-green-100 text-sm">Your sustainable farming expert</p>
+                  <p className="text-green-100 text-sm">Powered by GLM 4.5 • Agricultural Expert</p>
                 </div>
                 <div className="ml-auto">
                   <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>

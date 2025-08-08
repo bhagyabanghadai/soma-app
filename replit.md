@@ -102,10 +102,12 @@ The architecture supports both live Spring Boot backend connection and graceful 
 - **Mobile Friendly**: Single-column layout on mobile devices with collapsible sections
 - **Navigation**: Removed separate environmental monitoring pages in favor of unified dashboard experience
 
-## AI Assistant Integration (Latest Update)
-- **Purpose**: Intelligent agricultural knowledge base providing expert farming advice and recommendations
-- **Frontend Component**: `/ai-assistant` route with full chat interface and quick suggestions in dashboard
-- **Backend Service**: Express API endpoint with comprehensive agricultural knowledge covering soil health, water management, pest control, crop selection, and sustainability practices
+## AI Assistant Integration (Latest Update - GLM 4.5)
+- **Purpose**: Advanced agricultural intelligence powered by GLM 4.5 language model for expert farming advice
+- **AI Model**: GLM 4.5 (glm-4-plus) integrated via ZhipuAI API with fallback to local knowledge base
+- **Frontend Component**: `/ai-assistant` route with enhanced chat interface featuring GLM 4.5 branding
+- **Backend Service**: Express API endpoint with GLM 4.5 integration and comprehensive agricultural knowledge fallback
 - **Knowledge Areas**: Soil health, water/irrigation, crop selection, pest management, fertilizer management, climate adaptation, carbon sequestration, equipment/technology, financial planning, harvest/storage
-- **Response System**: Context-aware responses based on farming best practices and sustainable agriculture principles
-- **Integration**: Quick access buttons in main dashboard with full chat experience available on dedicated page
+- **Response System**: Context-aware AI responses with professional agricultural expertise and actionable recommendations
+- **Integration**: Quick access buttons in main dashboard with full GLM-powered chat experience
+- **API Configuration**: Secure GLM_API_KEY environment variable with proper error handling and fallbacks

@@ -81,7 +81,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Assistant Chat API Route
+  // AI Assistant Chat API Route with GLM 4.5
   app.post("/api/ai/chat", async (req, res) => {
     try {
       const { question, context } = req.body;
@@ -90,13 +90,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Question parameter is required" });
       }
       
-      // Generate AI response based on agricultural context
-      const aiResponse = generateAgriculturalAIResponse(question.toLowerCase(), context);
+      // Try GLM 4.5 API first, fallback to local knowledge base
+      let aiResponse;
+      
+      try {
+        aiResponse = await getGLMAIResponse(question, context);
+      } catch (glmError: any) {
+        console.warn("GLM API unavailable, using agricultural knowledge base:", glmError.message);
+        aiResponse = generateAgriculturalAIResponse(question.toLowerCase(), context);
+      }
       
       res.json({
         response: aiResponse,
         timestamp: new Date().toISOString(),
-        contextUsed: !!context
+        contextUsed: !!context,
+        source: aiResponse.includes('GLM') ? 'GLM-4.5' : 'Knowledge Base'
       });
       
     } catch (error) {
@@ -417,4 +425,75 @@ function generateAgriculturalAIResponse(question: string, context?: any): string
   
   // Default response for unmatched questions
   return "Based on sustainable farming principles, I recommend: 1) Focus on soil health through organic matter and cover crops, 2) Use precision agriculture for efficient resource use, 3) Implement integrated pest management, 4) Practice crop rotation for long-term productivity, 5) Monitor and adapt based on local conditions. Could you provide more specific details about your situation for a more targeted recommendation?";
+}
+
+async function getGLMAIResponse(question: string, context?: any): Promise<string> {
+  const GLM_API_KEY = process.env.GLM_API_KEY;
+  
+  if (!GLM_API_KEY) {
+    throw new Error('GLM API key not configured');
+  }
+
+  // Create agricultural context-aware prompt
+  const systemPrompt = `You are an expert agricultural advisor with decades of experience in sustainable farming practices. You provide practical, science-based advice to farmers about:
+
+- Soil health improvement and nutrient management
+- Water conservation and irrigation optimization  
+- Crop selection and rotation strategies
+- Integrated pest management (IPM)
+- Climate adaptation and resilience
+- Carbon sequestration and sustainability
+- Equipment and precision agriculture
+- Financial planning and market strategies
+
+Always provide specific, actionable recommendations with concrete steps farmers can implement. Use clear, professional language and include relevant measurements, timing, and cost considerations when appropriate.`;
+
+  const userPrompt = context 
+    ? `Farm Context: ${JSON.stringify(context)}\n\nFarmer Question: ${question}`
+    : `Farmer Question: ${question}`;
+
+  try {
+    // GLM-4.5 API call using OpenAI-compatible endpoint
+    const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GLM_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'glm-4-plus',
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt
+          },
+          {
+            role: 'user', 
+            content: userPrompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 800,
+        top_p: 0.9,
+        stream: false
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`GLM API error ${response.status}: ${errorData}`);
+    }
+
+    const data = await response.json();
+    
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      return data.choices[0].message.content;
+    } else {
+      throw new Error('Invalid GLM API response format');
+    }
+
+  } catch (error) {
+    console.error('GLM API request failed:', error);
+    throw error;
+  }
 }

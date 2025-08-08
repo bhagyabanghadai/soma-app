@@ -526,7 +526,7 @@ const SustainabilityDashboard = () => {
                       Ask me anything about sustainable farming practices!
                     </div>
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {["How to improve soil health?", "Water management tips?", "Best cover crops?", "Pest control strategies?"].map((suggestion, index) => (
+                      {["How to improve soil health cost-effectively?", "Best water conservation practices?", "Climate-adapted cover crops?", "Precision agriculture recommendations?"].map((suggestion, index) => (
                         <Button
                           key={index}
                           variant="outline"
@@ -536,12 +536,22 @@ const SustainabilityDashboard = () => {
                               const response = await fetch('/api/ai/chat', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ question: suggestion })
+                                body: JSON.stringify({ 
+                                  question: suggestion,
+                                  context: currentLocation ? {
+                                    location: currentLocation.locationName,
+                                    coordinates: { lat: currentLocation.latitude, lon: currentLocation.longitude },
+                                    earthData: earthData,
+                                    weatherData: weatherData,
+                                    airQuality: airQualityData
+                                  } : null
+                                })
                               });
                               const data = await response.json();
                               toast({
-                                title: "AI Recommendation",
-                                description: data.response.substring(0, 100) + "...",
+                                title: `GLM 4.5 Recommendation ${data.source ? `(${data.source})` : ''}`,
+                                description: data.response.substring(0, 120) + "...",
+                                duration: 6000
                               });
                             } catch (error) {
                               toast({
