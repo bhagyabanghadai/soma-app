@@ -13,7 +13,7 @@ import WaterUsage from "@/pages/WaterUsage";
 import RegenerativePractices from "@/pages/RegenerativePractices";
 import CarbonCredit from "@/pages/CarbonCredit";
 import SustainabilityReport from "@/pages/SustainabilityReport";
-import AIAssistant from "@/pages/AIAssistant";
+
 import EarthData from "@/pages/EarthData";
 import Weather from "@/pages/Weather";
 import AirQuality from "@/pages/AirQuality";

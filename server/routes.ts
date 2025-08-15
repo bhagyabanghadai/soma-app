@@ -95,9 +95,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       try {
         aiResponse = await getGLMAIResponse(question, context);
+        // Remove ** formatting from GLM responses
+        aiResponse = aiResponse.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1');
       } catch (glmError: any) {
         console.warn("GLM API unavailable, using agricultural knowledge base:", glmError.message);
         aiResponse = generateAgriculturalAIResponse(question.toLowerCase(), context);
+        // Clean up fallback response too
+        aiResponse = aiResponse.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1');
       }
       
       res.json({
@@ -513,7 +517,12 @@ Please provide specific, actionable recommendations considering all the above co
     const data = await response.json();
     
     if (data.choices && data.choices[0] && data.choices[0].message) {
-      return data.choices[0].message.content;
+      let aiResponse = data.choices[0].message.content;
+      
+      // Remove ** formatting from AI responses
+      aiResponse = aiResponse.replace(/\*\*(.*?)\*\*/g, '$1');
+      
+      return aiResponse;
     } else {
       throw new Error('Invalid GLM API response format');
     }

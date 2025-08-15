@@ -102,12 +102,14 @@ The architecture supports both live Spring Boot backend connection and graceful 
 - **Mobile Friendly**: Single-column layout on mobile devices with collapsible sections
 - **Navigation**: Removed separate environmental monitoring pages in favor of unified dashboard experience
 
-## AI Assistant Integration (Latest Update - GLM 4.5)
-- **Purpose**: Advanced agricultural intelligence powered by GLM 4.5 language model for expert farming advice
+## Floating AI Assistant Integration (Latest Update - GLM 4.5)
+- **Purpose**: Website-wide floating AI assistant powered by GLM 4.5 language model accessible from all pages
 - **AI Model**: GLM 4.5 (glm-4-plus) integrated via ZhipuAI API with fallback to local knowledge base
-- **Frontend Component**: `/ai-assistant` route with enhanced chat interface featuring GLM 4.5 branding
-- **Backend Service**: Express API endpoint with GLM 4.5 integration and comprehensive agricultural knowledge fallback
+- **Frontend Component**: Floating chat box accessible globally across all pages with minimizable interface
+- **Backend Service**: Express API endpoint with GLM 4.5 integration, comprehensive context awareness, and agricultural knowledge fallback
 - **Knowledge Areas**: Soil health, water/irrigation, crop selection, pest management, fertilizer management, climate adaptation, carbon sequestration, equipment/technology, financial planning, harvest/storage
-- **Response System**: Context-aware AI responses with professional agricultural expertise and actionable recommendations
-- **Integration**: Quick access buttons in main dashboard with full GLM-powered chat experience
-- **API Configuration**: Secure GLM_API_KEY environment variable with proper error handling and fallbacks
+- **Context Integration**: AI has access to current location, environmental data (weather, air quality, soil health), user profile, and page context
+- **Response System**: Context-aware AI responses with confidence scoring, source attribution, and actionable recommendations
+- **Data Quality**: API response normalization layer with intelligent caching, validation, and cross-source correlation
+- **UI Features**: Professional floating interface with quick suggestions, conversation history, typing indicators, and confidence scoring
+- **Navigation Update**: Removed dedicated AI Assistant page in favor of global floating chat accessibility

@@ -14,7 +14,6 @@ const Navigation = () => {
     { path: "/practices", label: "Practices" },
     { path: "/carbon-credits", label: "Carbon Credits" },
     { path: "/reports", label: "Reports" },
-    { path: "/ai-assistant", label: "AI Assistant" },
   ];
 
   const toggleMobileMenu = () => {
