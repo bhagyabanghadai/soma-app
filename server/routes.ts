@@ -448,9 +448,35 @@ async function getGLMAIResponse(question: string, context?: any): Promise<string
 
 Always provide specific, actionable recommendations with concrete steps farmers can implement. Use clear, professional language and include relevant measurements, timing, and cost considerations when appropriate.`;
 
-  const userPrompt = context 
-    ? `Farm Context: ${JSON.stringify(context)}\n\nFarmer Question: ${question}`
-    : `Farmer Question: ${question}`;
+  // Enhanced context-aware prompt with website data
+  let contextualPrompt = `Farmer Question: ${question}`;
+  
+  if (context) {
+    contextualPrompt = `COMPREHENSIVE FARM CONTEXT:
+    
+Location: ${context.location?.locationName || 'Unknown'} (${context.location?.coordinates?.lat}, ${context.location?.coordinates?.lon})
+
+Environmental Conditions:
+- Weather: ${context.environmental?.weatherData ? `${context.environmental.weatherData.current?.temperature}°${context.environmental.weatherData.current?.temperatureUnit} - ${context.environmental.weatherData.current?.conditions}` : 'Not available'}
+- Air Quality: ${context.environmental?.airQualityData ? `AQI ${context.environmental.airQualityData.aqi} (${context.environmental.airQualityData.status})` : 'Not available'}  
+- Soil Health: ${context.environmental?.earthData ? `NDVI ${context.environmental.earthData.ndvi}, LST ${context.environmental.earthData.landSurfaceTemperature}°C, Vegetation: ${context.environmental.earthData.vegetationStatus}` : 'Not available'}
+
+Farm Profile:
+- Crops: ${context.user?.cropTypes?.join(', ') || 'Not specified'}
+- Farm Size: ${context.user?.farmSize || 'Not specified'} acres
+- Equipment: ${context.user?.equipment?.join(', ') || 'Not specified'}
+
+Website Context:
+- Current Page: ${context.pageContext?.currentPage || '/'}
+- Page Title: ${context.pageContext?.pageTitle || 'Soma Dashboard'}
+- Timestamp: ${context.timestamp}
+
+FARMER'S QUESTION: ${question}
+
+Please provide specific, actionable recommendations considering all the above context. Reference the specific environmental conditions and farm characteristics when relevant.`;
+  }
+  
+  const userPrompt = contextualPrompt;
 
   try {
     // GLM-4.5 API call using OpenAI-compatible endpoint

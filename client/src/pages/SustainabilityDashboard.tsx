@@ -21,6 +21,7 @@ import {
   CheckCircle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import FloatingChatBox from "@/components/FloatingChatBox";
 
 interface LocationData {
   latitude: number;
@@ -588,6 +589,8 @@ const SustainabilityDashboard = () => {
           Environmental data from NASA MODIS/VIIRS, Weather from National Weather Service, Air Quality from AQICN
         </div>
       </div>
+
+      {/* Floating Chat Box is now globally available via App.tsx */}
     </div>
   );
 };
