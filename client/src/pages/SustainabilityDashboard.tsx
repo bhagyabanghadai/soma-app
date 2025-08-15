@@ -70,7 +70,7 @@ interface AirQualityData {
 }
 
 const SustainabilityDashboard = () => {
-  const [location, setLocation] = useState<LocationData>({ latitude: 0, longitude: 0 });
+  const [location, setLocationState] = useState<LocationData>({ latitude: 0, longitude: 0 });
   const [locationInput, setLocationInput] = useState({ lat: "", lon: "", name: "" });
   const [loading, setLoading] = useState(false);
   const [geoLoading, setGeoLoading] = useState(false);
@@ -84,6 +84,23 @@ const SustainabilityDashboard = () => {
   const [selectedScenario, setSelectedScenario] = useState<TestScenario | null>(null);
   const [isTestMode, setIsTestMode] = useState(false);
   const { toast } = useToast();
+
+  // Custom location setter that also saves to localStorage
+  const setLocation = (newLocation: LocationData) => {
+    setLocationState(newLocation);
+    localStorage.setItem('soma-dashboard-location', JSON.stringify(newLocation));
+    
+    // Reset test mode when setting real location
+    if (isTestMode) {
+      setIsTestMode(false);
+      setSelectedScenario(null);
+    }
+    
+    // Clear existing data to force refresh
+    setEarthData(null);
+    setWeatherData(null);
+    setAirQualityData(null);
+  };
 
   const presetLocations = [
     { name: "Iowa Corn Belt", lat: 42.0308, lon: -93.6319 },
@@ -116,10 +133,7 @@ const SustainabilityDashboard = () => {
     });
   };
 
-  const loadRandomScenario = () => {
-    const randomScenario = getRandomTestScenario();
-    loadTestScenario(randomScenario);
-  };
+  // Removed random scenario functionality - not needed for production app
 
   const exitTestMode = () => {
     setIsTestMode(false);
@@ -398,9 +412,6 @@ const SustainabilityDashboard = () => {
                 ))}
               </div>
               <div className="flex gap-2">
-                <Button onClick={loadRandomScenario} className="bg-blue-600 hover:bg-blue-700">
-                  🎲 Random Scenario
-                </Button>
                 <select 
                   onChange={(e) => {
                     if (e.target.value) {
@@ -412,7 +423,7 @@ const SustainabilityDashboard = () => {
                   className="px-3 py-2 border rounded-md text-sm bg-white"
                   defaultValue=""
                 >
-                  <option value="">More scenarios...</option>
+                  <option value="">Choose test scenario...</option>
                   {testScenarios.map((scenario) => (
                     <option key={scenario.id} value={scenario.id}>
                       {scenario.name} - {scenario.location.locationName}

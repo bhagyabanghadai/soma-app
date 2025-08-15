@@ -59,12 +59,26 @@ const SustainabilityReport = () => {
     enabled: !!farmData,
   });
 
-  // Initialize farm data from localStorage or use default Iowa location
+  // Initialize farm data from localStorage or get from dashboard location
   useEffect(() => {
-    const stored = localStorage.getItem('soma-farm-profile');
-    if (stored) {
-      setFarmData(JSON.parse(stored));
+    const storedProfile = localStorage.getItem('soma-farm-profile');
+    const storedLocation = localStorage.getItem('soma-dashboard-location');
+    
+    if (storedProfile) {
+      const profile = JSON.parse(storedProfile);
+      setFarmData(profile);
+    } else if (storedLocation) {
+      // Use location from dashboard
+      const dashboardLocation = JSON.parse(storedLocation);
+      setFarmData({
+        location: dashboardLocation.locationName || "Selected Location",
+        coordinates: { lat: dashboardLocation.latitude, lon: dashboardLocation.longitude },
+        farmSize: 200,
+        cropTypes: ["corn", "soybeans"],
+        lastUpdated: new Date().toISOString()
+      });
     } else {
+      // Default to Iowa only if no other location data exists
       setFarmData({
         location: "Iowa Corn Belt",
         coordinates: { lat: 42.0308, lon: -93.6319 },

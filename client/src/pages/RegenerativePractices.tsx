@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Leaf, 
   Target, 
@@ -208,6 +209,7 @@ const regenerativePractices: Practice[] = [
 ];
 
 const RegenerativePractices = () => {
+  const { toast } = useToast();
   const [farmProfile, setFarmProfile] = useState<FarmProfile | null>(null);
   const [selectedPractice, setSelectedPractice] = useState<Practice | null>(null);
   const [userPractices, setUserPractices] = useState<UserPractice[]>([]);
@@ -247,6 +249,13 @@ const RegenerativePractices = () => {
       const updatedProfile = { ...farmProfile, currentPractices: userPractices };
       localStorage.setItem('soma-farm-profile', JSON.stringify(updatedProfile));
       setFarmProfile(updatedProfile);
+      
+      // Show success message
+      toast({
+        title: "Practices Saved Successfully!",
+        description: `Saved ${userPractices.length} practices to your farm profile`,
+        variant: "default",
+      });
     }
   };
 
