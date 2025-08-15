@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import FloatingChatBox from "@/components/FloatingChatBox";
+import { testScenarios, getRandomTestScenario, type TestScenario } from "@/data/testScenarios";
 
 interface LocationData {
   latitude: number;
@@ -72,6 +73,8 @@ const SustainabilityDashboard = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [airQualityData, setAirQualityData] = useState<AirQualityData | null>(null);
   const [showChat, setShowChat] = useState(false);
+  const [selectedScenario, setSelectedScenario] = useState<TestScenario | null>(null);
+  const [isTestMode, setIsTestMode] = useState(false);
   const { toast } = useToast();
 
   const presetLocations = [
@@ -81,6 +84,46 @@ const SustainabilityDashboard = () => {
     { name: "Kansas Wheat Fields", lat: 38.5267, lon: -96.7265 },
     { name: "Texas Panhandle", lat: 35.2211, lon: -101.8313 },
   ];
+
+  // Test scenario functions
+  const loadTestScenario = (scenario: TestScenario) => {
+    setSelectedScenario(scenario);
+    setIsTestMode(true);
+    setLocation(scenario.location);
+    setLocationInput({
+      lat: scenario.location.latitude.toString(),
+      lon: scenario.location.longitude.toString(),
+      name: scenario.location.locationName
+    });
+    
+    // Set mock data
+    setEarthData(scenario.mockData.earthData);
+    setWeatherData(scenario.mockData.weatherData);
+    setAirQualityData(scenario.mockData.airQualityData);
+    
+    toast({
+      title: `Test Scenario Loaded: ${scenario.name}`,
+      description: scenario.description,
+      duration: 4000,
+    });
+  };
+
+  const loadRandomScenario = () => {
+    const randomScenario = getRandomTestScenario();
+    loadTestScenario(randomScenario);
+  };
+
+  const exitTestMode = () => {
+    setIsTestMode(false);
+    setSelectedScenario(null);
+    setEarthData(null);
+    setWeatherData(null);
+    setAirQualityData(null);
+    toast({
+      title: "Test Mode Disabled",
+      description: "Switch to live data by selecting a location",
+    });
+  };
 
   const getCurrentLocation = () => {
     setGeoLoading(true);
@@ -157,6 +200,7 @@ const SustainabilityDashboard = () => {
   };
 
   const loadAllData = async (lat: number, lon: number) => {
+    if (isTestMode) return; // Don't load live data in test mode
     setLoading(true);
     
     try {
@@ -271,12 +315,98 @@ const SustainabilityDashboard = () => {
           </p>
         </div>
 
+        {/* Test Scenarios Section */}
+        {!isTestMode && (
+          <Card className="mb-6 border-l-4 border-l-blue-500">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-blue-700">
+                🧪 Test Scenarios
+              </CardTitle>
+              <p className="text-sm text-gray-600">
+                Explore different farming conditions with realistic test data to see how the dashboard and AI respond to various scenarios.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                {testScenarios.slice(0, 3).map((scenario) => (
+                  <Button
+                    key={scenario.id}
+                    onClick={() => loadTestScenario(scenario)}
+                    variant="outline"
+                    className="p-4 h-auto text-left flex flex-col items-start space-y-2"
+                  >
+                    <span className="font-medium text-sm">{scenario.name}</span>
+                    <span className="text-xs text-gray-500">{scenario.description}</span>
+                    <Badge variant="secondary" className="text-xs">
+                      {scenario.farmProfile.cropTypes.join(", ")}
+                    </Badge>
+                  </Button>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={loadRandomScenario} className="bg-blue-600 hover:bg-blue-700">
+                  🎲 Random Scenario
+                </Button>
+                <select 
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      const scenario = testScenarios.find(s => s.id === e.target.value);
+                      if (scenario) loadTestScenario(scenario);
+                      e.target.value = '';
+                    }
+                  }}
+                  className="px-3 py-2 border rounded-md text-sm bg-white"
+                  defaultValue=""
+                >
+                  <option value="">More scenarios...</option>
+                  {testScenarios.map((scenario) => (
+                    <option key={scenario.id} value={scenario.id}>
+                      {scenario.name} - {scenario.location.locationName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Test Mode Banner */}
+        {isTestMode && selectedScenario && (
+          <Card className="mb-6 bg-gradient-to-r from-blue-50 to-green-50 border-blue-200">
+            <CardContent className="pt-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge className="bg-blue-100 text-blue-800">🧪 TEST MODE</Badge>
+                    <Badge variant="outline">{selectedScenario.name}</Badge>
+                  </div>
+                  <p className="text-sm text-gray-700 mb-1">
+                    <strong>Scenario:</strong> {selectedScenario.description}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-1">
+                    <strong>Farm:</strong> {selectedScenario.farmProfile.farmSize} acres • 
+                    {selectedScenario.farmProfile.cropTypes.join(", ")} • 
+                    {selectedScenario.farmProfile.equipment.length} equipment types
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Expected Insights:</strong> {selectedScenario.expectedInsights.join(" • ")}
+                  </p>
+                </div>
+                <Button onClick={exitTestMode} variant="outline" size="sm">
+                  Exit Test Mode
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Location Input with Smart Search */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <MapPin className="w-5 h-5 text-green-600" />
-              <span>Farm Location</span>
+              <span>{isTestMode ? "Test Location" : "Farm Location"}</span>
+              {isTestMode && <Badge className="ml-2 bg-blue-100 text-blue-800">TEST DATA</Badge>}
             </CardTitle>
           </CardHeader>
           <CardContent>

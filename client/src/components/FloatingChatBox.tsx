@@ -125,7 +125,7 @@ const FloatingChatBox: React.FC<FloatingChatBoxProps> = ({
         } : null,
         environmental: environmentalData,
         user: userProfile || {
-          cropTypes: ["corn", "soybeans"], // Default for demo
+          cropTypes: ["corn", "soybeans"], 
           farmSize: 200,
           equipment: ["GPS-guided planter", "variable rate spreader"]
         },
