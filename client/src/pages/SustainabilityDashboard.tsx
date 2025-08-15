@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { LocationSearch } from "@/components/LocationSearch";
+import EnvironmentalAnalytics from "@/components/EnvironmentalAnalytics";
+import EnvironmentalAlerts from "@/components/EnvironmentalAlerts";
+import FarmProfileManager from "@/components/FarmProfileManager";
 import { 
   Loader2, 
   Navigation, 
@@ -18,7 +21,9 @@ import {
   Cloud,
   Sun,
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  Settings,
+  BarChart3
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import FloatingChatBox from "@/components/FloatingChatBox";
@@ -73,6 +78,9 @@ const SustainabilityDashboard = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [airQualityData, setAirQualityData] = useState<AirQualityData | null>(null);
   const [showChat, setShowChat] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  const [showProfileManager, setShowProfileManager] = useState(false);
+  const [farmProfile, setFarmProfile] = useState<any>(null);
   const [selectedScenario, setSelectedScenario] = useState<TestScenario | null>(null);
   const [isTestMode, setIsTestMode] = useState(false);
   const { toast } = useToast();
@@ -296,23 +304,69 @@ const SustainabilityDashboard = () => {
     return insights;
   };
 
-  // Load default location on component mount
+  // Load default location and farm profile on component mount
   useEffect(() => {
     // Default to Iowa Corn Belt if no location is set
     if (location.latitude === 0 && location.longitude === 0) {
       handlePresetLocation(presetLocations[0]);
     }
+    
+    // Load farm profile
+    const stored = localStorage.getItem('soma-farm-profile');
+    if (stored) {
+      try {
+        setFarmProfile(JSON.parse(stored));
+      } catch (error) {
+        console.error('Error loading farm profile:', error);
+      }
+    }
   }, []);
+
+  const handleProfileUpdate = (profile: any) => {
+    setFarmProfile(profile);
+    if (profile.location?.coordinates) {
+      setLocation({
+        latitude: profile.location.coordinates.lat,
+        longitude: profile.location.coordinates.lon,
+        locationName: profile.location.address
+      });
+      loadAllData(profile.location.coordinates.lat, profile.location.coordinates.lon);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 fade-in">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Sustainability Dashboard</h1>
-          <p className="text-gray-600 mt-2">
-            Real-time environmental insights for {location.locationName || 'your farm'}
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900">Sustainability Dashboard</h1>
+              <p className="text-gray-600 mt-2">
+                Real-time environmental insights for {location.locationName || 'your farm'}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowProfileManager(!showProfileManager)}
+                className="flex items-center gap-2"
+                data-testid="button-farm-profile"
+              >
+                <Settings className="w-4 h-4" />
+                Farm Profile
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowAnalytics(!showAnalytics)}
+                className="flex items-center gap-2"
+                data-testid="button-analytics"
+              >
+                <BarChart3 className="w-4 h-4" />
+                Analytics
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Test Scenarios Section */}
@@ -712,6 +766,33 @@ const SustainabilityDashboard = () => {
               )}
             </Card>
           </div>
+        </div>
+
+        {/* Enhanced Components */}
+        {showProfileManager && (
+          <div className="mb-8">
+            <FarmProfileManager onProfileUpdate={handleProfileUpdate} />
+          </div>
+        )}
+
+        {showAnalytics && (
+          <div className="mb-8">
+            <EnvironmentalAnalytics 
+              earthData={earthData}
+              weatherData={weatherData}
+              airQualityData={airQualityData}
+            />
+          </div>
+        )}
+
+        {/* Environmental Alerts */}
+        <div className="mb-8">
+          <EnvironmentalAlerts
+            earthData={earthData}
+            weatherData={weatherData}
+            airQualityData={airQualityData}
+            location={location}
+          />
         </div>
 
         {/* Data Sources Footer */}

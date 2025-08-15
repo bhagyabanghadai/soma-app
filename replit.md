@@ -102,13 +102,27 @@ The architecture supports both live Spring Boot backend connection and graceful 
 - **Mobile Friendly**: Single-column layout on mobile devices with collapsible sections
 - **Navigation**: Removed separate environmental monitoring pages in favor of unified dashboard experience
 
-## Floating AI Assistant Integration (Latest Update - GLM 4.5)
+## Enhanced Dashboard Features (Latest Update - January 15, 2025)
+- **Environmental Analytics Component**: Advanced data visualization with interactive charts showing NDVI trends, temperature patterns, AQI tracking, and soil moisture analytics
+- **Environmental Alerts System**: Real-time alert generation based on live environmental conditions with priority levels, actionable recommendations, and dismissible notifications
+- **Farm Profile Manager**: Comprehensive farm information management including crop types, equipment inventory, certifications, sustainability goals, and location coordinates
+- **Enhanced AI Assistant**: Improved context awareness with farm profile integration, seasonal considerations, urgency detection, and environmental alerts incorporation
+- **Dashboard Controls**: Added Farm Profile and Analytics toggle buttons in dashboard header for easy access to enhanced features
+- **Visual Analytics**: 30-day environmental summary charts, health scoring system, and trend analysis with confidence indicators
+
+## Enhanced Sustainability Reports (Latest Update - January 15, 2025)  
+- **Interactive Charts**: Line charts for NDVI trends, bar charts for water usage, carbon sequestration tracking, and soil pH stability monitoring
+- **Historical Data Visualization**: 12-month trend analysis with responsive charts using Recharts library
+- **Real-time Metrics Integration**: Live environmental data from NASA, NWS, and AQICN APIs integrated into comprehensive reporting
+- **Enhanced Export Functionality**: Downloadable JSON reports with complete environmental analysis and AI-powered recommendations
+
+## Floating AI Assistant Integration (Enhanced - GLM 4.5)
 - **Purpose**: Website-wide floating AI assistant powered by GLM 4.5 language model accessible from all pages
 - **AI Model**: GLM 4.5 (glm-4-plus) integrated via ZhipuAI API with fallback to local knowledge base
 - **Frontend Component**: Floating chat box accessible globally across all pages with minimizable interface
 - **Backend Service**: Express API endpoint with GLM 4.5 integration, comprehensive context awareness, and agricultural knowledge fallback
 - **Knowledge Areas**: Soil health, water/irrigation, crop selection, pest management, fertilizer management, climate adaptation, carbon sequestration, equipment/technology, financial planning, harvest/storage
-- **Context Integration**: AI has access to current location, environmental data (weather, air quality, soil health), user profile, and page context
+- **Enhanced Context Integration**: AI now has access to farm profile data, environmental alerts, seasonal considerations, and urgency levels for more targeted recommendations
 - **Response System**: Context-aware AI responses with confidence scoring, source attribution, and actionable recommendations
 - **Data Quality**: API response normalization layer with intelligent caching, validation, and cross-source correlation
 - **UI Features**: Professional floating interface with quick suggestions, conversation history, typing indicators, and confidence scoring

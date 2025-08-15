@@ -118,6 +118,18 @@ const FloatingChatBox: React.FC<FloatingChatBoxProps> = ({
     try {
       // Create comprehensive context for AI with page-specific information
       const pageContext = getContextFromPage();
+      
+      // Get farm profile if available
+      let farmProfile = null;
+      try {
+        const stored = localStorage.getItem('soma-farm-profile');
+        if (stored) {
+          farmProfile = JSON.parse(stored);
+        }
+      } catch (error) {
+        console.error('Error loading farm profile for AI context:', error);
+      }
+
       const contextData = {
         location: currentLocation ? {
           coordinates: { lat: currentLocation.latitude, lon: currentLocation.longitude },
@@ -129,8 +141,20 @@ const FloatingChatBox: React.FC<FloatingChatBoxProps> = ({
           farmSize: 200,
           equipment: ["GPS-guided planter", "variable rate spreader"]
         },
+        farmProfile: farmProfile || {
+          farmSize: 200,
+          cropTypes: ['corn', 'soybeans'],
+          soilType: 'loam',
+          climateZone: 'continental',
+          irrigationMethod: 'center-pivot',
+          sustainabilityGoals: ['Reduce carbon footprint', 'Improve soil health']
+        },
         timestamp: new Date().toISOString(),
-        pageContext
+        pageContext,
+        // Enhanced context for better recommendations
+        alerts: generateContextualAlerts(),
+        seasonality: getCurrentSeason(),
+        urgency: determineUrgency()
       };
 
       const response = await fetch('/api/ai/chat', {
@@ -187,18 +211,60 @@ const FloatingChatBox: React.FC<FloatingChatBoxProps> = ({
     }
   };
 
+  const generateContextualAlerts = () => {
+    const alerts = [];
+    
+    if (environmentalData?.earthData) {
+      if (environmentalData.earthData.ndvi < 0.3) alerts.push('Low vegetation health detected');
+      if (environmentalData.earthData.droughtRisk === 'High') alerts.push('High drought risk');
+      if (environmentalData.earthData.landSurfaceTemperature > 35) alerts.push('Extreme surface temperature');
+    }
+    
+    if (environmentalData?.airQualityData?.aqi > 100) {
+      alerts.push('Poor air quality affecting farm operations');
+    }
+    
+    if (environmentalData?.weatherData?.current?.temperature < 0) {
+      alerts.push('Freeze warning - protect sensitive crops');
+    }
+    
+    return alerts;
+  };
+
+  const getCurrentSeason = () => {
+    const month = new Date().getMonth() + 1;
+    if (month >= 3 && month <= 5) return 'spring';
+    if (month >= 6 && month <= 8) return 'summer';
+    if (month >= 9 && month <= 11) return 'fall';
+    return 'winter';
+  };
+
+  const determineUrgency = () => {
+    const urgentConditions = [];
+    
+    if (environmentalData?.earthData?.droughtRisk === 'High') urgentConditions.push('drought');
+    if (environmentalData?.weatherData?.current?.temperature < 0) urgentConditions.push('freeze');
+    if (environmentalData?.airQualityData?.aqi > 150) urgentConditions.push('air-quality');
+    
+    return urgentConditions.length > 0 ? 'high' : 'normal';
+  };
+
   const calculateConfidence = (context: any, response: any): number => {
     let score = 3;
     
-    // Data freshness
+    // Data freshness and completeness
     if (context.environmental?.weatherData) score += 1;
     if (context.environmental?.airQualityData) score += 1;
     if (context.location?.coordinates) score += 1;
+    if (context.farmProfile?.cropTypes?.length > 0) score += 0.5;
     
     // AI source quality
     if (response.source === 'GLM-4.5') score = Math.min(5, score + 1);
     
-    return Math.max(1, Math.min(5, score));
+    // Context richness
+    if (context.alerts?.length > 0) score += 0.5;
+    
+    return Math.max(1, Math.min(5, Math.round(score)));
   };
 
   const handleQuickSuggestion = (suggestion: string) => {
