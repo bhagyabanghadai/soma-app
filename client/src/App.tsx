@@ -7,7 +7,7 @@ import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Dashboard from "@/pages/Dashboard";
 import SustainabilityDashboard from "@/pages/SustainabilityDashboard";
-import FloatingChatBox from "@/components/FloatingChatBox";
+import SimpleFloatingChat from "@/components/SimpleFloatingChat";
 import SoilHealth from "@/pages/SoilHealth";
 import WaterUsage from "@/pages/WaterUsage";
 import RegenerativePractices from "@/pages/RegenerativePractices";
@@ -46,8 +46,8 @@ function Router() {
         <Route component={NotFound} />
       </Switch>
       
-      {/* Global Floating Chat Box - Available on all pages */}
-      <FloatingChatBox />
+      {/* Global Simple Floating Chat - Available on all pages */}
+      <SimpleFloatingChat />
     </Layout>
   );
 }
