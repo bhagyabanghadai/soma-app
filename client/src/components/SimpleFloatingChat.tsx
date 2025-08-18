@@ -16,7 +16,7 @@ const SimpleFloatingChat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 1,
-      message: "Hello! I'm your SOMA AI Assistant. I can help you with farming questions, analyze your environmental data, and provide agricultural insights. How can I help you today?",
+      message: "Hi there! 👋 I'm SOMA AI, your agricultural assistant. I can help you with farming questions, analyze environmental data, and provide personalized insights for your farm. What can I help you with today?",
       isUser: false,
       timestamp: new Date(),
     }
@@ -133,26 +133,30 @@ const SimpleFloatingChat: React.FC = () => {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-4 right-4 z-50">
-        <div className="relative">
-          {/* Chat Bubble */}
-          <Button
-            onClick={() => setIsOpen(true)}
-            className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl"
-            data-testid="button-open-chat"
-          >
-            <MessageCircle className="w-5 h-5 text-white" />
-          </Button>
+      <div className="fixed bottom-6 right-6 z-50">
+        {/* Chat Bubble with Avatar - Similar to USCIS style */}
+        <div 
+          onClick={() => setIsOpen(true)}
+          className="bg-blue-600 hover:bg-blue-700 rounded-2xl shadow-lg cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 flex items-center p-3 pr-4 space-x-3 max-w-xs"
+          data-testid="button-open-chat"
+        >
+          {/* Avatar */}
+          <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+            <Bot className="w-6 h-6 text-blue-600" />
+          </div>
           
-          {/* Pulse Animation */}
-          <div className="absolute inset-0 rounded-full bg-blue-600 animate-ping opacity-20"></div>
+          {/* Text */}
+          <div className="text-white">
+            <div className="font-semibold text-sm">Need Help?</div>
+            <div className="text-xs opacity-90">Chat with SOMA AI</div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-6 right-6 z-50">
       <div 
         className="bg-white rounded-2xl shadow-2xl w-80 sm:w-96 h-[500px] flex flex-col border border-gray-200 transition-all duration-300 ease-out transform scale-100"
         style={{
@@ -160,16 +164,16 @@ const SimpleFloatingChat: React.FC = () => {
         }}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-t-2xl flex items-center justify-between">
+        <div className="bg-blue-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-              <Bot className="w-4 h-4 text-blue-600" />
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+              <Bot className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <span className="font-semibold text-sm">SOMA AI Assistant</span>
+              <span className="font-semibold text-base">SOMA AI</span>
               <div className="flex items-center space-x-1 mt-0.5">
                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span className="text-xs opacity-90">Online</span>
+                <span className="text-xs opacity-90">Online now</span>
               </div>
             </div>
           </div>
