@@ -4,6 +4,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Ensure chat widget is always visible */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
 @keyframes slideUp {
   from {
     opacity: 0;
