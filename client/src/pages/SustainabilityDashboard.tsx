@@ -26,7 +26,7 @@ import {
   BarChart3
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import FloatingChatBox from "@/components/FloatingChatBox";
+
 
 
 interface LocationData {
@@ -77,7 +77,7 @@ const SustainabilityDashboard = () => {
   const [earthData, setEarthData] = useState<EarthData | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [airQualityData, setAirQualityData] = useState<AirQualityData | null>(null);
-  const [showChat, setShowChat] = useState(false);
+
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [showProfileManager, setShowProfileManager] = useState(false);
   const [farmProfile, setFarmProfile] = useState<any>(null);
@@ -636,84 +636,7 @@ const SustainabilityDashboard = () => {
               </CardContent>
             </Card>
 
-            {/* AI Assistant Chat */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <MessageCircle className="w-5 h-5 text-blue-600" />
-                    <span>AI Assistant</span>
-                  </div>
-                  <Button
-                    size="sm"
-                    onClick={() => setShowChat(!showChat)}
-                    variant="outline"
-                  >
-                    {showChat ? 'Close' : 'Open Chat'}
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              {showChat && (
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="text-sm text-center text-gray-600 mb-4">
-                      Ask me anything about sustainable farming practices!
-                    </div>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {["How to improve soil health cost-effectively?", "Best water conservation practices?", "Climate-adapted cover crops?", "Precision agriculture recommendations?"].map((suggestion, index) => (
-                        <Button
-                          key={index}
-                          variant="outline"
-                          size="sm"
-                          onClick={async () => {
-                            try {
-                              const response = await fetch('/api/ai/chat', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ 
-                                  question: suggestion,
-                                  context: location ? {
-                                    location: location.locationName,
-                                    coordinates: { lat: location.latitude, lon: location.longitude },
-                                    earthData: earthData,
-                                    weatherData: weatherData,
-                                    airQuality: airQualityData
-                                  } : null
-                                })
-                              });
-                              const data = await response.json();
-                              toast({
-                                title: `GLM 4.5 Recommendation ${data.source ? `(${data.source})` : ''}`,
-                                description: data.response.substring(0, 120) + "...",
-                                duration: 6000
-                              });
-                            } catch (error) {
-                              toast({
-                                title: "AI Assistant",
-                                description: "Visit the AI Assistant page for full chat functionality",
-                                variant: "default",
-                              });
-                            }
-                          }}
-                          className="text-xs"
-                        >
-                          {suggestion}
-                        </Button>
-                      ))}
-                    </div>
-                    <div className="text-center">
-                      <Button
-                        onClick={() => window.location.href = '/ai-assistant'}
-                        className="bg-blue-600 hover:bg-blue-700"
-                        size="sm"
-                      >
-                        Open Full AI Chat
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              )}
-            </Card>
+            {/* AI Assistant now available globally via floating chat widget */}
           </div>
         </div>
 
