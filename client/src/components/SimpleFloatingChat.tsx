@@ -133,32 +133,51 @@ const SimpleFloatingChat: React.FC = () => {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="w-14 h-14 rounded-full bg-green-600 hover:bg-green-700 shadow-lg transition-all duration-300 hover:scale-110"
-          data-testid="button-open-chat"
-        >
-          <MessageCircle className="w-6 h-6 text-white" />
-        </Button>
+      <div className="fixed bottom-4 right-4 z-50">
+        <div className="relative">
+          {/* Chat Bubble */}
+          <Button
+            onClick={() => setIsOpen(true)}
+            className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl"
+            data-testid="button-open-chat"
+          >
+            <MessageCircle className="w-5 h-5 text-white" />
+          </Button>
+          
+          {/* Pulse Animation */}
+          <div className="absolute inset-0 rounded-full bg-blue-600 animate-ping opacity-20"></div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
-      <div className="bg-white rounded-lg shadow-2xl w-80 h-96 flex flex-col border border-gray-200 animate-in slide-in-from-bottom-2 duration-300">
+    <div className="fixed bottom-4 right-4 z-50">
+      <div 
+        className="bg-white rounded-2xl shadow-2xl w-80 sm:w-96 h-[500px] flex flex-col border border-gray-200 transition-all duration-300 ease-out transform scale-100"
+        style={{
+          animation: 'slideUp 0.3s ease-out'
+        }}
+      >
         {/* Header */}
-        <div className="bg-green-600 text-white p-4 rounded-t-lg flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Bot className="w-5 h-5" />
-            <span className="font-semibold">AI Assistant</span>
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-t-2xl flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+              <Bot className="w-4 h-4 text-blue-600" />
+            </div>
+            <div>
+              <span className="font-semibold text-sm">SOMA AI Assistant</span>
+              <div className="flex items-center space-x-1 mt-0.5">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-xs opacity-90">Online</span>
+              </div>
+            </div>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsOpen(false)}
-            className="text-white hover:bg-green-700 h-8 w-8 p-0"
+            className="text-white hover:bg-white/20 h-8 w-8 p-0 rounded-full"
             data-testid="button-close-chat"
           >
             <X className="w-4 h-4" />
@@ -166,7 +185,7 @@ const SimpleFloatingChat: React.FC = () => {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-4">
+        <div className="flex-1 p-3 overflow-y-auto space-y-3 bg-gray-50">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -175,23 +194,23 @@ const SimpleFloatingChat: React.FC = () => {
               }`}
             >
               {!message.isUser && (
-                <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-3 h-3 text-gray-600" />
+                <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Bot className="w-4 h-4 text-white" />
                 </div>
               )}
               
               <div className="flex flex-col max-w-xs">
                 <div
-                  className={`rounded-lg p-3 text-sm ${
+                  className={`rounded-2xl px-4 py-2 text-sm ${
                     message.isUser
-                      ? "bg-green-600 text-white rounded-br-sm"
-                      : "bg-gray-100 text-gray-800 rounded-bl-sm"
+                      ? "bg-blue-600 text-white rounded-br-md shadow-sm"
+                      : "bg-white text-gray-800 rounded-bl-md shadow-sm border border-gray-100"
                   }`}
                 >
                   {message.message}
                 </div>
                 <span
-                  className={`text-xs text-gray-500 mt-1 ${
+                  className={`text-xs text-gray-400 mt-1 px-2 ${
                     message.isUser ? "text-right" : "text-left"
                   }`}
                 >
@@ -200,8 +219,8 @@ const SimpleFloatingChat: React.FC = () => {
               </div>
 
               {message.isUser && (
-                <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <User className="w-3 h-3 text-white" />
+                <div className="w-7 h-7 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
+                  <User className="w-4 h-4 text-white" />
                 </div>
               )}
             </div>
@@ -210,10 +229,10 @@ const SimpleFloatingChat: React.FC = () => {
           {/* Typing Indicator */}
           {isTyping && (
             <div className="flex items-start space-x-2">
-              <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                <Bot className="w-3 h-3 text-gray-600" />
+              <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <Bot className="w-4 h-4 text-white" />
               </div>
-              <div className="bg-gray-100 rounded-lg p-3 rounded-bl-sm">
+              <div className="bg-white rounded-2xl px-4 py-3 rounded-bl-md shadow-sm border border-gray-100">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
@@ -226,20 +245,20 @@ const SimpleFloatingChat: React.FC = () => {
         </div>
 
         {/* Input */}
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 bg-white border-t border-gray-200 rounded-b-2xl">
           <form onSubmit={handleSendMessage} className="flex space-x-2">
             <Input
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              placeholder="Ask about your farm..."
-              className="flex-1 text-sm"
+              placeholder="Type your message..."
+              className="flex-1 text-sm border-gray-300 rounded-full px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               disabled={isTyping}
               data-testid="input-chat-message"
             />
             <Button 
               type="submit" 
               disabled={!inputMessage.trim() || isTyping}
-              className="bg-green-600 hover:bg-green-700 px-3 py-2"
+              className="bg-blue-600 hover:bg-blue-700 rounded-full px-3 py-2 min-w-[40px]"
               data-testid="button-send-message"
             >
               <Send className="w-4 h-4" />
