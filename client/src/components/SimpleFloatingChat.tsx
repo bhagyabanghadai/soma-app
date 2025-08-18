@@ -133,24 +133,14 @@ const SimpleFloatingChat: React.FC = () => {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
-        {/* Chat Bubble with Avatar - Similar to USCIS style */}
-        <div 
+      <div className="fixed bottom-4 right-4 z-50">
+        <button
           onClick={() => setIsOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 rounded-2xl shadow-lg cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 flex items-center p-3 pr-4 space-x-3 max-w-xs"
+          className="w-14 h-14 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110"
           data-testid="button-open-chat"
         >
-          {/* Avatar */}
-          <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
-            <Bot className="w-6 h-6 text-blue-600" />
-          </div>
-          
-          {/* Text */}
-          <div className="text-white">
-            <div className="font-semibold text-sm">Need Help?</div>
-            <div className="text-xs opacity-90">Chat with SOMA AI</div>
-          </div>
-        </div>
+          <MessageCircle className="w-6 h-6 text-white" />
+        </button>
       </div>
     );
   }
