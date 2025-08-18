@@ -22,7 +22,9 @@ const ChatWidget: React.FC = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
+
+  // Debug: Add console log to verify component renders
+  console.log('ChatWidget rendering, isOpen:', isOpen);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -98,15 +100,21 @@ const ChatWidget: React.FC = () => {
   // Chat bubble when closed
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 right-6 z-[9999]">
+      <div className="fixed bottom-4 right-4 z-[9999]" style={{ position: 'fixed' }}>
         <div 
-          onClick={() => setIsOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 rounded-full p-3 shadow-lg cursor-pointer transition-all duration-300 hover:scale-110 flex items-center space-x-3 pr-4"
+          onClick={() => {
+            console.log('Chat button clicked!');
+            setIsOpen(true);
+          }}
+          className="bg-blue-500 hover:bg-blue-600 rounded-full p-4 shadow-xl cursor-pointer transition-all duration-300 hover:scale-110 flex items-center space-x-3"
+          style={{
+            backgroundColor: '#3B82F6',
+            boxShadow: '0 10px 25px rgba(59, 130, 246, 0.4)',
+            border: '2px solid white'
+          }}
         >
-          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-            <Bot className="w-5 h-5 text-blue-600" />
-          </div>
-          <div className="text-white text-sm font-medium">
+          <MessageCircle className="w-6 h-6 text-white" />
+          <div className="text-white text-sm font-semibold pr-2">
             Need Help?
           </div>
         </div>
