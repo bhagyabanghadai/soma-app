@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import FloatingChatBox from "@/components/FloatingChatBox";
-import { testScenarios, getRandomTestScenario, type TestScenario } from "@/data/testScenarios";
+
 
 interface LocationData {
   latitude: number;
@@ -81,8 +81,7 @@ const SustainabilityDashboard = () => {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [showProfileManager, setShowProfileManager] = useState(false);
   const [farmProfile, setFarmProfile] = useState<any>(null);
-  const [selectedScenario, setSelectedScenario] = useState<TestScenario | null>(null);
-  const [isTestMode, setIsTestMode] = useState(false);
+
   const { toast } = useToast();
 
   // Custom location setter that also saves to localStorage
@@ -90,11 +89,7 @@ const SustainabilityDashboard = () => {
     setLocationState(newLocation);
     localStorage.setItem('soma-dashboard-location', JSON.stringify(newLocation));
     
-    // Reset test mode when setting real location
-    if (isTestMode) {
-      setIsTestMode(false);
-      setSelectedScenario(null);
-    }
+
     
     // Clear existing data to force refresh
     setEarthData(null);
@@ -110,42 +105,7 @@ const SustainabilityDashboard = () => {
     { name: "Texas Panhandle", lat: 35.2211, lon: -101.8313 },
   ];
 
-  // Test scenario functions
-  const loadTestScenario = (scenario: TestScenario) => {
-    setSelectedScenario(scenario);
-    setIsTestMode(true);
-    setLocation(scenario.location);
-    setLocationInput({
-      lat: scenario.location.latitude.toString(),
-      lon: scenario.location.longitude.toString(),
-      name: scenario.location.locationName
-    });
-    
-    // Set mock data
-    setEarthData(scenario.mockData.earthData);
-    setWeatherData(scenario.mockData.weatherData);
-    setAirQualityData(scenario.mockData.airQualityData);
-    
-    toast({
-      title: `Test Scenario Loaded: ${scenario.name}`,
-      description: scenario.description,
-      duration: 4000,
-    });
-  };
 
-  // Removed random scenario functionality - not needed for production app
-
-  const exitTestMode = () => {
-    setIsTestMode(false);
-    setSelectedScenario(null);
-    setEarthData(null);
-    setWeatherData(null);
-    setAirQualityData(null);
-    toast({
-      title: "Test Mode Disabled",
-      description: "Switch to live data by selecting a location",
-    });
-  };
 
   const getCurrentLocation = () => {
     setGeoLoading(true);
@@ -222,7 +182,7 @@ const SustainabilityDashboard = () => {
   };
 
   const loadAllData = async (lat: number, lon: number) => {
-    if (isTestMode) return; // Don't load live data in test mode
+
     setLoading(true);
     
     try {
@@ -383,87 +343,7 @@ const SustainabilityDashboard = () => {
           </div>
         </div>
 
-        {/* Test Scenarios Section */}
-        {!isTestMode && (
-          <Card className="mb-6 border-l-4 border-l-blue-500">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-blue-700">
-                🧪 Test Scenarios
-              </CardTitle>
-              <p className="text-sm text-gray-600">
-                Explore different farming conditions with realistic test data to see how the dashboard and AI respond to various scenarios.
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                {testScenarios.slice(0, 3).map((scenario) => (
-                  <Button
-                    key={scenario.id}
-                    onClick={() => loadTestScenario(scenario)}
-                    variant="outline"
-                    className="p-4 h-auto text-left flex flex-col items-start space-y-2"
-                  >
-                    <span className="font-medium text-sm">{scenario.name}</span>
-                    <span className="text-xs text-gray-500">{scenario.description}</span>
-                    <Badge variant="secondary" className="text-xs">
-                      {scenario.farmProfile.cropTypes.join(", ")}
-                    </Badge>
-                  </Button>
-                ))}
-              </div>
-              <div className="flex gap-2">
-                <select 
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      const scenario = testScenarios.find(s => s.id === e.target.value);
-                      if (scenario) loadTestScenario(scenario);
-                      e.target.value = '';
-                    }
-                  }}
-                  className="px-3 py-2 border rounded-md text-sm bg-white"
-                  defaultValue=""
-                >
-                  <option value="">Choose test scenario...</option>
-                  {testScenarios.map((scenario) => (
-                    <option key={scenario.id} value={scenario.id}>
-                      {scenario.name} - {scenario.location.locationName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
-        {/* Test Mode Banner */}
-        {isTestMode && selectedScenario && (
-          <Card className="mb-6 bg-gradient-to-r from-blue-50 to-green-50 border-blue-200">
-            <CardContent className="pt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge className="bg-blue-100 text-blue-800">🧪 TEST MODE</Badge>
-                    <Badge variant="outline">{selectedScenario.name}</Badge>
-                  </div>
-                  <p className="text-sm text-gray-700 mb-1">
-                    <strong>Scenario:</strong> {selectedScenario.description}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-1">
-                    <strong>Farm:</strong> {selectedScenario.farmProfile.farmSize} acres • 
-                    {selectedScenario.farmProfile.cropTypes.join(", ")} • 
-                    {selectedScenario.farmProfile.equipment.length} equipment types
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <strong>Expected Insights:</strong> {selectedScenario.expectedInsights.join(" • ")}
-                  </p>
-                </div>
-                <Button onClick={exitTestMode} variant="outline" size="sm">
-                  Exit Test Mode
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {/* Critical Alert Banner */}
         {(() => {
@@ -526,8 +406,7 @@ const SustainabilityDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <MapPin className="w-5 h-5 text-green-600" />
-              <span>{isTestMode ? "Test Location" : "Farm Location Intelligence"}</span>
-              {isTestMode && <Badge className="ml-2 bg-blue-100 text-blue-800">TEST DATA</Badge>}
+              <span>Farm Location Intelligence</span>
             </CardTitle>
             <p className="text-sm text-gray-600 mt-1">
               Multi-modal location selection with field-specific insights
@@ -865,143 +744,91 @@ const SustainabilityDashboard = () => {
           />
         </div>
 
-        {/* AI Agricultural Command Center & Priority Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* AI Chat Module */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-blue-700">
-                🤖 Soma AI Assistant
-              </CardTitle>
-              <p className="text-sm text-gray-600 mt-1">Context-aware agricultural expert</p>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" size="sm" className="text-xs">
-                    Today's Top Priority
-                  </Button>
-                  <Button variant="outline" size="sm" className="text-xs">
-                    Irrigation Schedule  
-                  </Button>
-                  <Button variant="outline" size="sm" className="text-xs">
-                    Pest Alert Check
-                  </Button>
-                  <Button variant="outline" size="sm" className="text-xs">
-                    Crop Health Diagnosis
-                  </Button>
-                </div>
+        {/* Priority Action Board */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-green-700">
+              📋 Today's Critical Tasks
+            </CardTitle>
+            <p className="text-sm text-gray-600 mt-1">Auto-generated priority actions based on current conditions</p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {(() => {
+                const tasks = [];
                 
-                <div className="space-y-3">
-                  {getAIInsights().map((insight, index) => (
-                    <div key={index} className="p-3 bg-blue-50 rounded-lg border-l-4 border-l-blue-500">
-                      <div className="flex items-start justify-between mb-2">
-                        <p className="text-gray-800 text-sm font-medium">Smart Recommendation</p>
-                        <div className="flex text-yellow-400">
-                          {'⭐'.repeat(4)}☆
-                        </div>
-                      </div>
-                      <p className="text-gray-700 text-sm">{insight}</p>
-                      <div className="mt-2 text-xs text-gray-500">
-                        Based on NWS forecast + NASA NDVI • High Priority
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => setShowChat(true)}>
-                  Open Full AI Chat
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Priority Action Board */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-green-700">
-                📋 Today's Critical Tasks
-              </CardTitle>
-              <p className="text-sm text-gray-600 mt-1">Auto-generated priority actions</p>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {(() => {
-                  const tasks = [];
-                  
-                  // Weather-driven tasks
-                  if (weatherData?.current?.windSpeed?.includes('High')) {
-                    tasks.push({
-                      task: 'Delay fertilizer application',
-                      reason: 'Wind advisory',
-                      priority: 'High',
-                      status: 'scheduled',
-                      icon: '⚠️'
-                    });
-                  }
-                  
-                  if (earthData?.droughtRisk === 'High') {
-                    tasks.push({
-                      task: 'Irrigate Zone B: 2 hours before rain',
-                      reason: 'High drought risk',
-                      priority: 'High', 
-                      status: 'pending',
-                      icon: '💧'
-                    });
-                  }
-
-                  // AI-recommended tasks
-                  if (earthData?.ndvi && earthData.ndvi < 0.5) {
-                    tasks.push({
-                      task: 'Scout for pest damage',
-                      reason: 'Low vegetation index',
-                      priority: 'Medium',
-                      status: 'pending',
-                      icon: '🔍'
-                    });
-                  }
-
+                // Weather-driven tasks
+                if (weatherData?.current?.windSpeed?.includes('High')) {
                   tasks.push({
-                    task: 'Equipment maintenance check',
-                    reason: 'Tractor #3 due in 15 hours',
-                    priority: 'Medium',
-                    status: 'completed',
-                    icon: '🚜'
+                    task: 'Delay fertilizer application',
+                    reason: 'Wind advisory',
+                    priority: 'High',
+                    status: 'scheduled',
+                    icon: '⚠️'
                   });
+                }
+                
+                if (earthData?.droughtRisk === 'High') {
+                  tasks.push({
+                    task: 'Irrigate Zone B: 2 hours before rain',
+                    reason: 'High drought risk',
+                    priority: 'High', 
+                    status: 'pending',
+                    icon: '💧'
+                  });
+                }
 
-                  return tasks.map((task, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-start gap-3">
-                        <span className="text-lg">{task.icon}</span>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{task.task}</p>
-                          <p className="text-xs text-gray-600">{task.reason}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge className={
-                          task.priority === 'High' ? 'bg-red-100 text-red-800' :
-                          task.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-green-100 text-green-800'
-                        }>
-                          {task.priority}
-                        </Badge>
-                        <div className="text-lg">
-                          {task.status === 'completed' ? '✅' :
-                           task.status === 'pending' ? '⏳' : '⏰'}
-                        </div>
+                // AI-recommended tasks
+                if (earthData?.ndvi && earthData.ndvi < 0.5) {
+                  tasks.push({
+                    task: 'Scout for pest damage',
+                    reason: 'Low vegetation index',
+                    priority: 'Medium',
+                    status: 'pending',
+                    icon: '🔍'
+                  });
+                }
+
+                tasks.push({
+                  task: 'Equipment maintenance check',
+                  reason: 'Tractor #3 due in 15 hours',
+                  priority: 'Medium',
+                  status: 'completed',
+                  icon: '🚜'
+                });
+
+                return tasks.map((task, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <span className="text-lg">{task.icon}</span>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{task.task}</p>
+                        <p className="text-xs text-gray-600">{task.reason}</p>
                       </div>
                     </div>
-                  ));
-                })()}
-                
-                <Button variant="outline" className="w-full mt-4">
-                  View All Tasks
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                    <div className="flex items-center gap-2">
+                      <Badge className={
+                        task.priority === 'High' ? 'bg-red-100 text-red-800' :
+                        task.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-green-100 text-green-800'
+                      }>
+                        {task.priority}
+                      </Badge>
+                      <div className="text-lg">
+                        {task.status === 'completed' ? '✅' :
+                         task.status === 'pending' ? '⏳' : '⏰'}
+                      </div>
+                    </div>
+                  </div>
+                ));
+              })()}
+              
+              <Button variant="outline" className="w-full mt-4">
+                View All Tasks
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Data Sources Footer with Reliability Status */}
         <Card className="mb-4">
