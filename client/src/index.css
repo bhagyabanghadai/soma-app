@@ -109,6 +109,154 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  /* Modern 3D Effects and Animations */
+  .card-3d {
+    transform-style: preserve-3d;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      0 4px 16px rgba(0, 0, 0, 0.05),
+      inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  }
+
+  .card-3d:hover {
+    transform: translateY(-12px) rotateX(5deg) rotateY(5deg);
+    box-shadow: 
+      0 20px 60px rgba(0, 0, 0, 0.15),
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-morphism {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  }
+
+  .neon-glow {
+    box-shadow: 
+      0 0 5px hsl(122, 41%, 50%),
+      0 0 10px hsl(122, 41%, 50%),
+      0 0 15px hsl(122, 41%, 50%),
+      0 0 20px hsl(122, 41%, 50%);
+    animation: neonPulse 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes neonPulse {
+    from {
+      box-shadow: 
+        0 0 5px hsl(122, 41%, 50%),
+        0 0 10px hsl(122, 41%, 50%),
+        0 0 15px hsl(122, 41%, 50%),
+        0 0 20px hsl(122, 41%, 50%);
+    }
+    to {
+      box-shadow: 
+        0 0 2px hsl(122, 41%, 50%),
+        0 0 5px hsl(122, 41%, 50%),
+        0 0 8px hsl(122, 41%, 50%),
+        0 0 12px hsl(122, 41%, 50%);
+    }
+  }
+
+  .parallax-bg {
+    background: linear-gradient(-45deg, #667eea 0%, #764ba2 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .floating-card {
+    animation: floatingCard 6s ease-in-out infinite;
+  }
+
+  @keyframes floatingCard {
+    0%, 100% { 
+      transform: translateY(0px) rotate(0deg);
+    }
+    33% { 
+      transform: translateY(-10px) rotate(1deg);
+    }
+    66% { 
+      transform: translateY(-5px) rotate(-1deg);
+    }
+  }
+
+  .rotate-in {
+    animation: rotateIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  @keyframes rotateIn {
+    from {
+      transform: rotate(-200deg) scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: rotate(0deg) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .scale-on-hover {
+    transition: transform 0.3s ease;
+  }
+
+  .scale-on-hover:hover {
+    transform: scale(1.05);
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg, 
+      rgba(255, 255, 255, 0) 0%, 
+      rgba(255, 255, 255, 0.4) 50%, 
+      rgba(255, 255, 255, 0) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(122, 41%, 35%), hsl(45, 93%, 56%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradientText 3s ease infinite;
+  }
+
+  @keyframes gradientText {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .holographic {
+    background: linear-gradient(45deg, 
+      rgba(255, 0, 150, 0.3), 
+      rgba(0, 255, 255, 0.3), 
+      rgba(255, 255, 0, 0.3), 
+      rgba(255, 0, 150, 0.3));
+    background-size: 400% 400%;
+    animation: holographicShine 4s ease infinite;
+  }
+
+  @keyframes holographicShine {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
 }
 
 /* Custom classes for Soma branding */

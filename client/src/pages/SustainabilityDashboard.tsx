@@ -8,6 +8,7 @@ import { LocationSearch } from "@/components/LocationSearch";
 import EnvironmentalAnalytics from "@/components/EnvironmentalAnalytics";
 import EnvironmentalAlerts from "@/components/EnvironmentalAlerts";
 import FarmProfileManager from "@/components/FarmProfileManager";
+import StunningImageCard from "@/components/StunningImageCard";
 import { 
   Loader2, 
   Navigation, 
@@ -309,35 +310,43 @@ const SustainabilityDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 fade-in">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900">Sustainability Dashboard</h1>
-              <p className="text-gray-600 mt-2">
-                Real-time environmental insights for {location.locationName || 'your farm'}
-              </p>
-            </div>
-            <div className="flex gap-2">
+    <div className="min-h-screen parallax-bg py-8 fade-in relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-gradient-to-r from-green-400/20 to-blue-400/20 floating-card"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 rounded-full bg-gradient-to-r from-yellow-400/20 to-green-400/20 floating-card" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-32 left-20 w-20 h-20 rounded-full bg-gradient-to-r from-purple-400/20 to-pink-400/20 floating-card" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-1/2 right-1/3 w-16 h-16 rounded-full bg-gradient-to-r from-pink-400/20 to-purple-400/20 floating-card" style={{ animationDelay: '6s' }}></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Enhanced Header */}
+        <div className="mb-8 text-center">
+          <div className="glass-morphism rounded-2xl p-8 mb-6 scale-on-hover">
+            <h1 className="text-6xl font-bold gradient-text mb-4 rotate-in">🌱 SOMA Dashboard</h1>
+            <p className="text-xl text-white/90 mb-6">
+              ✨ Real-time environmental insights for {location.locationName || 'your farm'}
+            </p>
+            <div className="flex justify-center gap-4">
               <Button
                 variant="outline"
                 onClick={() => setShowProfileManager(!showProfileManager)}
-                className="flex items-center gap-2"
+                className="glass-morphism scale-on-hover neon-glow flex items-center gap-2 text-white border-white/30 hover:bg-white/10"
                 data-testid="button-farm-profile"
+                size="lg"
               >
-                <Settings className="w-4 h-4" />
-                Farm Profile
+                <Settings className="w-5 h-5" />
+                🏡 Farm Profile
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setShowAnalytics(!showAnalytics)}
-                className="flex items-center gap-2"
+                className="glass-morphism scale-on-hover neon-glow flex items-center gap-2 text-white border-white/30 hover:bg-white/10"
                 data-testid="button-analytics"
+                size="lg"
               >
-                <BarChart3 className="w-4 h-4" />
-                Analytics
+                <BarChart3 className="w-5 h-5" />
+                📊 Analytics
               </Button>
             </div>
           </div>
@@ -380,11 +389,11 @@ const SustainabilityDashboard = () => {
           return criticalAlerts.length > 0 && (
             <div className="mb-6 space-y-2">
               {criticalAlerts.map((alert, index) => (
-                <Card key={index} className={`border-l-4 ${
-                  alert.type === 'critical' ? 'border-l-red-500 bg-red-50' :
+                <Card key={index} className={`border-l-4 card-3d floating-card ${
+                  alert.type === 'critical' ? 'border-l-red-500 bg-red-50 neon-glow' :
                   alert.type === 'warning' ? 'border-l-yellow-500 bg-yellow-50' :
                   'border-l-blue-500 bg-blue-50'
-                }`}>
+                }`} style={{ animationDelay: `${index * 0.2}s` }}>
                   <CardContent className="pt-4 pb-4">
                     <div className="flex items-center justify-between">
                       <div>
@@ -402,7 +411,7 @@ const SustainabilityDashboard = () => {
         })()}
 
         {/* Location Intelligence Hub */}
-        <Card className="mb-8">
+        <Card className="mb-8 card-3d floating-card holographic">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <MapPin className="w-5 h-5 text-green-600" />
@@ -494,7 +503,7 @@ const SustainabilityDashboard = () => {
           {/* Left Column - Environmental Data */}
           <div className="lg:col-span-2 space-y-6">
             {/* Environmental Summary */}
-            <Card>
+            <Card className="card-3d floating-card">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Leaf className="w-5 h-5 text-green-600" />
@@ -509,20 +518,20 @@ const SustainabilityDashboard = () => {
                   </div>
                 ) : earthData ? (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-gray-900">{earthData.ndvi.toFixed(3)}</div>
-                      <div className="text-sm text-gray-600">Vegetation Index (NDVI)</div>
-                      <Badge className={getStatusColor(earthData.vegetationStatus)}>{earthData.vegetationStatus}</Badge>
+                    <div className="text-center glass-morphism p-6 rounded-xl scale-on-hover">
+                      <div className="text-4xl font-bold gradient-text mb-2">🌿 {earthData.ndvi.toFixed(3)}</div>
+                      <div className="text-sm text-gray-600 mb-3">Vegetation Index (NDVI)</div>
+                      <Badge className={`${getStatusColor(earthData.vegetationStatus)} scale-on-hover`}>{earthData.vegetationStatus}</Badge>
                     </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-gray-900">{earthData.landSurfaceTemperature}°C</div>
-                      <div className="text-sm text-gray-600">Surface Temperature</div>
-                      <Badge className={getStatusColor(earthData.temperatureStatus)}>{earthData.temperatureStatus}</Badge>
+                    <div className="text-center glass-morphism p-6 rounded-xl scale-on-hover">
+                      <div className="text-4xl font-bold gradient-text mb-2">🌡️ {earthData.landSurfaceTemperature}°C</div>
+                      <div className="text-sm text-gray-600 mb-3">Surface Temperature</div>
+                      <Badge className={`${getStatusColor(earthData.temperatureStatus)} scale-on-hover`}>{earthData.temperatureStatus}</Badge>
                     </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-gray-900">{earthData.evapotranspiration} mm/day</div>
-                      <div className="text-sm text-gray-600">Evapotranspiration</div>
-                      <Badge className={getStatusColor(earthData.droughtRisk)}>{earthData.droughtRisk} Drought Risk</Badge>
+                    <div className="text-center glass-morphism p-6 rounded-xl scale-on-hover">
+                      <div className="text-4xl font-bold gradient-text mb-2">💧 {earthData.evapotranspiration} mm/day</div>
+                      <div className="text-sm text-gray-600 mb-3">Evapotranspiration</div>
+                      <Badge className={`${getStatusColor(earthData.droughtRisk)} scale-on-hover`}>{earthData.droughtRisk} Drought Risk</Badge>
                     </div>
                   </div>
                 ) : (
@@ -534,7 +543,7 @@ const SustainabilityDashboard = () => {
             </Card>
 
             {/* Weather Forecast */}
-            <Card>
+            <Card className="card-3d floating-card" style={{ animationDelay: '0.5s' }}>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Cloud className="w-5 h-5 text-blue-600" />
@@ -545,15 +554,15 @@ const SustainabilityDashboard = () => {
                 {weatherData ? (
                   <div className="space-y-4">
                     {/* Current Weather */}
-                    <div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-lg">
-                      <Sun className="w-8 h-8 text-yellow-500" />
+                    <div className="flex items-center space-x-4 p-6 glass-morphism rounded-xl scale-on-hover holographic">
+                      <div className="text-6xl animate-pulse">☀️</div>
                       <div>
-                        <div className="text-xl font-bold">
+                        <div className="text-3xl font-bold gradient-text">
                           {weatherData.current.temperature}°{weatherData.current.temperatureUnit}
                         </div>
-                        <div className="text-sm text-gray-600">{weatherData.current.conditions}</div>
-                        <div className="text-xs text-gray-500">
-                          Wind: {weatherData.current.windSpeed} {weatherData.current.windDirection}
+                        <div className="text-lg text-gray-700 font-medium">{weatherData.current.conditions}</div>
+                        <div className="text-sm text-gray-600">
+                          💨 Wind: {weatherData.current.windSpeed} {weatherData.current.windDirection}
                         </div>
                       </div>
                     </div>
@@ -561,16 +570,15 @@ const SustainabilityDashboard = () => {
                     {/* 3-Day Forecast */}
                     <div className="grid grid-cols-3 gap-4">
                       {weatherData.forecast.slice(0, 3).map((period, index) => (
-                        <div key={index} className="text-center p-3 bg-gray-50 rounded-lg">
-                          <div className="text-sm font-medium text-gray-900">{period.name}</div>
-                          <div className="my-2">
-                            {period.isDaytime ? 
-                              <Sun className="w-6 h-6 text-yellow-500 mx-auto" /> : 
-                              <Cloud className="w-6 h-6 text-gray-600 mx-auto" />
-                            }
+                        <div key={index} className="text-center p-4 glass-morphism rounded-xl scale-on-hover floating-card" style={{ animationDelay: `${index * 0.3}s` }}>
+                          <div className="text-sm font-medium text-gray-900 mb-2">{period.name}</div>
+                          <div className="my-3">
+                            <div className="text-4xl">
+                              {period.isDaytime ? '☀️' : '🌙'}
+                            </div>
                           </div>
-                          <div className="text-lg font-bold">{period.temperature}°{period.temperatureUnit}</div>
-                          <div className="text-xs text-gray-600">{period.conditions}</div>
+                          <div className="text-xl font-bold gradient-text">{period.temperature}°{period.temperatureUnit}</div>
+                          <div className="text-xs text-gray-600 mt-1">{period.conditions}</div>
                         </div>
                       ))}
                     </div>
@@ -587,7 +595,7 @@ const SustainabilityDashboard = () => {
           {/* Right Column - Air Quality & AI */}
           <div className="space-y-6">
             {/* Air Quality Index */}
-            <Card>
+            <Card className="card-3d floating-card shimmer">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Wind className="w-5 h-5 text-purple-600" />
@@ -596,16 +604,17 @@ const SustainabilityDashboard = () => {
               </CardHeader>
               <CardContent>
                 {airQualityData ? (
-                  <div className="text-center space-y-4">
-                    <div className="text-3xl font-bold text-gray-900">{airQualityData.aqi}</div>
-                    <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getAQIColor(airQualityData.level)}`}>
+                  <div className="text-center space-y-4 glass-morphism p-6 rounded-xl">
+                    <div className="text-6xl mb-4">🌬️</div>
+                    <div className="text-5xl font-bold gradient-text">{airQualityData.aqi}</div>
+                    <div className={`inline-block px-4 py-2 rounded-full text-base font-medium border scale-on-hover ${getAQIColor(airQualityData.level)}`}>
                       {airQualityData.status}
                     </div>
                     <div className="text-sm text-gray-600">
-                      Main pollutant: {airQualityData.mainPollutant}
+                      🏭 Main pollutant: {airQualityData.mainPollutant}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {airQualityData.location}
+                      📍 {airQualityData.location}
                     </div>
                   </div>
                 ) : (
@@ -617,7 +626,7 @@ const SustainabilityDashboard = () => {
             </Card>
 
             {/* AI Suggestions */}
-            <Card>
+            <Card className="card-3d floating-card neon-glow" style={{ animationDelay: '1s' }}>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <MessageCircle className="w-5 h-5 text-green-600" />
@@ -753,17 +762,71 @@ const SustainabilityDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Data Sources Footer with Reliability Status */}
-        <Card className="mb-4">
+        {/* Stunning Agricultural Showcase */}
+        <div className="mb-8">
+          <h2 className="text-4xl font-bold gradient-text text-center mb-8 rotate-in">🌾 Agricultural Excellence Showcase</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <StunningImageCard
+              title="Smart Irrigation"
+              description="Advanced precision watering systems maximize efficiency while conserving resources"
+              emoji="💧"
+            >
+              <div className="text-sm text-gray-600">Water savings: <span className="font-bold text-green-600">30%</span></div>
+            </StunningImageCard>
+            
+            <StunningImageCard
+              title="Drone Monitoring"
+              description="Aerial surveillance provides real-time crop health analysis and pest detection"
+              emoji="🚁"
+            >
+              <div className="text-sm text-gray-600">Coverage: <span className="font-bold text-blue-600">500 acres/day</span></div>
+            </StunningImageCard>
+            
+            <StunningImageCard
+              title="Precision Farming"
+              description="GPS-guided equipment ensures optimal seed placement and fertilizer distribution"
+              emoji="🚜"
+            >
+              <div className="text-sm text-gray-600">Efficiency: <span className="font-bold text-purple-600">+25%</span></div>
+            </StunningImageCard>
+            
+            <StunningImageCard
+              title="Solar Power"
+              description="Renewable energy solutions reduce carbon footprint and operational costs"
+              emoji="☀️"
+            >
+              <div className="text-sm text-gray-600">Energy saved: <span className="font-bold text-yellow-600">40%</span></div>
+            </StunningImageCard>
+            
+            <StunningImageCard
+              title="Soil Analytics"
+              description="Advanced soil testing optimizes nutrients and maximizes crop yield potential"
+              emoji="🧪"
+            >
+              <div className="text-sm text-gray-600">Yield increase: <span className="font-bold text-green-600">+35%</span></div>
+            </StunningImageCard>
+            
+            <StunningImageCard
+              title="Weather Station"
+              description="Hyperlocal weather monitoring enables precise farming decisions and risk management"
+              emoji="🌡️"
+            >
+              <div className="text-sm text-gray-600">Accuracy: <span className="font-bold text-blue-600">95%</span></div>
+            </StunningImageCard>
+          </div>
+        </div>
+
+        {/* Enhanced Data Sources Footer */}
+        <Card className="mb-4 card-3d neon-glow">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-600">
-                Data Sources: NASA MODIS/VIIRS • National Weather Service • AQICN
+              <div className="text-sm text-white">
+                🛰️ Data Sources: NASA MODIS/VIIRS • 🌤️ National Weather Service • 🌬️ AQICN
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-sm text-gray-600">All systems operational</span>
-                <span className="text-xs text-gray-500">Updated: {new Date().toLocaleTimeString()}</span>
+                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-sm text-white">All systems operational</span>
+                <span className="text-xs text-green-300">Updated: {new Date().toLocaleTimeString()}</span>
               </div>
             </div>
           </CardContent>
