@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,9 +8,15 @@ import { Progress } from "@/components/ui/progress";
 import { calculateWaterUsage } from "@/lib/calculations";
 import { cropTypes, irrigationMethods } from "@/data/mockData";
 import WaterUsageCharts from "@/components/WaterUsageCharts";
+import { useToast } from "@/hooks/use-toast";
 import { Droplets, Calendar, BarChart3, Target, TrendingUp } from "lucide-react";
 
 const WaterUsage = () => {
+  const { toast } = useToast();
+  const [location, setLocation] = useState({ latitude: 42.0308, longitude: -93.6319 });
+  const [earthData, setEarthData] = useState<any>(null);
+  const [weatherData, setWeatherData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     cropType: "",
     irrigationMethod: "",
@@ -50,6 +56,34 @@ const WaterUsage = () => {
     if (efficiency >= 60) return "text-yellow-600";
     return "text-red-600";
   };
+
+  // Fetch environmental data
+  useEffect(() => {
+    const fetchEnvironmentalData = async () => {
+      setLoading(true);
+      try {
+        const [earthResponse, weatherResponse] = await Promise.allSettled([
+          fetch(`/api/nasa/earthdata?lat=${location.latitude}&lon=${location.longitude}`),
+          fetch(`/api/weather?lat=${location.latitude}&lon=${location.longitude}`)
+        ]);
+
+        if (earthResponse.status === 'fulfilled' && earthResponse.value.ok) {
+          const earthResult = await earthResponse.value.json();
+          setEarthData(earthResult);
+        }
+
+        if (weatherResponse.status === 'fulfilled' && weatherResponse.value.ok) {
+          const weatherResult = await weatherResponse.value.json();
+          setWeatherData(weatherResult);
+        }
+      } catch (error) {
+        console.error("Error fetching environmental data:", error);
+      }
+      setLoading(false);
+    };
+
+    fetchEnvironmentalData();
+  }, [location]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 py-8 fade-in">
@@ -222,9 +256,9 @@ const WaterUsage = () => {
         {/* Enhanced Water Usage Analytics */}
         <div className="mt-12">
           <WaterUsageCharts 
-            location={{ latitude: 42.0308, longitude: -93.6319 }}
-            earthData={null}
-            weatherData={null}
+            location={location}
+            earthData={earthData}
+            weatherData={weatherData}
           />
         </div>
       </div>

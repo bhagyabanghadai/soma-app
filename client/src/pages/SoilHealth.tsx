@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,9 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { calculateSoilHealth } from "@/lib/calculations";
 import SoilHealthCharts from "@/components/SoilHealthCharts";
+import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, BarChart3, Leaf, Target } from "lucide-react";
 
 const SoilHealth = () => {
+  const { toast } = useToast();
+  const [location, setLocation] = useState({ latitude: 42.0308, longitude: -93.6319 });
+  const [earthData, setEarthData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     pH: "",
     nitrogen: "",
@@ -42,6 +47,25 @@ const SoilHealth = () => {
     if (level >= thresholds.good) return { status: "Good", color: "text-yellow-600", progress: 75 };
     return { status: "Low", color: "text-red-600", progress: 40 };
   };
+
+  // Fetch environmental data
+  useEffect(() => {
+    const fetchEnvironmentalData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/nasa/earthdata?lat=${location.latitude}&lon=${location.longitude}`);
+        if (response.ok) {
+          const data = await response.json();
+          setEarthData(data);
+        }
+      } catch (error) {
+        console.error("Error fetching environmental data:", error);
+      }
+      setLoading(false);
+    };
+
+    fetchEnvironmentalData();
+  }, [location]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -221,8 +245,8 @@ const SoilHealth = () => {
         {/* Enhanced Charts and Analytics */}
         <div className="mt-12">
           <SoilHealthCharts 
-            location={{ latitude: 42.0308, longitude: -93.6319 }}
-            earthData={null}
+            location={location}
+            earthData={earthData}
           />
         </div>
       </div>

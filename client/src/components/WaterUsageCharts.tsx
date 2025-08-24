@@ -103,21 +103,30 @@ const WaterUsageCharts = ({ location, earthData, weatherData }: WaterUsageCharts
     { name: 'Other', value: 50, color: '#6b7280' }
   ];
 
-  // Monthly water costs
-  const monthlyWaterCosts = [
-    { month: 'Jan', cost: 420, budget: 450, savings: 30 },
-    { month: 'Feb', cost: 380, budget: 450, savings: 70 },
-    { month: 'Mar', cost: 520, budget: 500, savings: -20 },
-    { month: 'Apr', cost: 680, budget: 700, savings: 20 },
-    { month: 'May', cost: 840, budget: 900, savings: 60 },
-    { month: 'Jun', cost: 950, budget: 1000, savings: 50 },
-    { month: 'Jul', cost: 1200, budget: 1200, savings: 0 },
-    { month: 'Aug', cost: 1150, budget: 1200, savings: 50 },
-    { month: 'Sep', cost: 780, budget: 800, savings: 20 },
-    { month: 'Oct', cost: 580, budget: 600, savings: 20 },
-    { month: 'Nov', cost: 450, budget: 500, savings: 50 },
-    { month: 'Dec', cost: 390, budget: 450, savings: 60 }
-  ];
+  // Generate monthly water costs based on environmental data
+  const generateMonthlyCosts = () => {
+    const currentTemp = weatherData?.current?.temperature || 20;
+    const currentET = earthData?.evapotranspiration || 4;
+    const baseNdvi = earthData?.ndvi || 0.6;
+    
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    return months.map((month, index) => {
+      // Seasonal temperature variation
+      const seasonalTemp = currentTemp * (0.7 + 0.6 * Math.sin((index / 12) * 2 * Math.PI - Math.PI/2));
+      const seasonalET = currentET * (0.8 + 0.4 * Math.sin((index / 12) * 2 * Math.PI - Math.PI/2));
+      const vegetationFactor = Math.max(0.7, Math.min(1.3, baseNdvi / 0.6));
+      
+      const baseCost = seasonalET * seasonalTemp * vegetationFactor * 15;
+      const cost = Math.max(300, Math.round(baseCost));
+      const budget = Math.round(cost * 1.1); // 10% buffer
+      const savings = budget - cost;
+      
+      return { month, cost, budget, savings };
+    });
+  };
+
+  const monthlyWaterCosts = generateMonthlyCosts();
 
   // Efficiency recommendations
   const efficiencyTips = [
