@@ -762,59 +762,6 @@ const SustainabilityDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Stunning Agricultural Showcase */}
-        <div className="mb-8">
-          <h2 className="text-4xl font-bold gradient-text text-center mb-8 rotate-in">🌾 Agricultural Excellence Showcase</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <StunningImageCard
-              title="Smart Irrigation"
-              description="Advanced precision watering systems maximize efficiency while conserving resources"
-              emoji="💧"
-            >
-              <div className="text-sm text-gray-600">Water savings: <span className="font-bold text-green-600">30%</span></div>
-            </StunningImageCard>
-            
-            <StunningImageCard
-              title="Drone Monitoring"
-              description="Aerial surveillance provides real-time crop health analysis and pest detection"
-              emoji="🚁"
-            >
-              <div className="text-sm text-gray-600">Coverage: <span className="font-bold text-blue-600">500 acres/day</span></div>
-            </StunningImageCard>
-            
-            <StunningImageCard
-              title="Precision Farming"
-              description="GPS-guided equipment ensures optimal seed placement and fertilizer distribution"
-              emoji="🚜"
-            >
-              <div className="text-sm text-gray-600">Efficiency: <span className="font-bold text-purple-600">+25%</span></div>
-            </StunningImageCard>
-            
-            <StunningImageCard
-              title="Solar Power"
-              description="Renewable energy solutions reduce carbon footprint and operational costs"
-              emoji="☀️"
-            >
-              <div className="text-sm text-gray-600">Energy saved: <span className="font-bold text-yellow-600">40%</span></div>
-            </StunningImageCard>
-            
-            <StunningImageCard
-              title="Soil Analytics"
-              description="Advanced soil testing optimizes nutrients and maximizes crop yield potential"
-              emoji="🧪"
-            >
-              <div className="text-sm text-gray-600">Yield increase: <span className="font-bold text-green-600">+35%</span></div>
-            </StunningImageCard>
-            
-            <StunningImageCard
-              title="Weather Station"
-              description="Hyperlocal weather monitoring enables precise farming decisions and risk management"
-              emoji="🌡️"
-            >
-              <div className="text-sm text-gray-600">Accuracy: <span className="font-bold text-blue-600">95%</span></div>
-            </StunningImageCard>
-          </div>
-        </div>
 
         {/* Enhanced Data Sources Footer */}
         <Card className="mb-4 card-3d neon-glow">
