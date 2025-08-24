@@ -9,6 +9,7 @@ import EnvironmentalAnalytics from "@/components/EnvironmentalAnalytics";
 import EnvironmentalAlerts from "@/components/EnvironmentalAlerts";
 import FarmProfileManager from "@/components/FarmProfileManager";
 import StunningImageCard from "@/components/StunningImageCard";
+import DashboardCharts from "@/components/DashboardCharts";
 import { 
   Loader2, 
   Navigation, 
@@ -665,6 +666,9 @@ const SustainabilityDashboard = () => {
             />
           </div>
         )}
+
+        {/* Historical Charts and Analytics */}
+        <DashboardCharts location={location} />
 
         {/* Environmental Alerts */}
         <div className="mb-8">

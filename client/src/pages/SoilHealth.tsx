@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { calculateSoilHealth } from "@/lib/calculations";
-import { CheckCircle } from "lucide-react";
+import SoilHealthCharts from "@/components/SoilHealthCharts";
+import { CheckCircle, BarChart3, Leaf, Target } from "lucide-react";
 
 const SoilHealth = () => {
   const [formData, setFormData] = useState({
@@ -52,13 +53,30 @@ const SoilHealth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-soma-grey py-8 fade-in">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Soil Health Analysis</h1>
-          <p className="text-gray-600 mt-2">
-            Enter your soil test results to get personalized recommendations
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8 fade-in">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+            <Leaf className="w-10 h-10 text-green-600" />
+            Advanced Soil Health Analytics
+          </h1>
+          <p className="text-xl text-gray-700 mb-6">
+            Comprehensive soil analysis with AI-powered insights and actionable recommendations
           </p>
+          <div className="flex items-center justify-center gap-6 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <Target className="w-4 h-4 text-green-600" />
+              Real-time Analysis
+            </div>
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-blue-600" />
+              Historical Trends
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-purple-600" />
+              Smart Recommendations
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -198,6 +216,11 @@ const SoilHealth = () => {
               )}
             </CardContent>
           </Card>
+        </div>
+
+        {/* Enhanced Charts and Analytics */}
+        <div className="mt-12">
+          <SoilHealthCharts />
         </div>
       </div>
     </div>

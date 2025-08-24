@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { calculateWaterUsage } from "@/lib/calculations";
 import { cropTypes, irrigationMethods } from "@/data/mockData";
-import { Droplets, Calendar } from "lucide-react";
+import WaterUsageCharts from "@/components/WaterUsageCharts";
+import { Droplets, Calendar, BarChart3, Target, TrendingUp } from "lucide-react";
 
 const WaterUsage = () => {
   const [formData, setFormData] = useState({
@@ -51,13 +52,30 @@ const WaterUsage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-soma-grey py-8 fade-in">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Water Usage Optimization</h1>
-          <p className="text-gray-600 mt-2">
-            Optimize your irrigation strategy based on crop type and conditions
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 py-8 fade-in">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+            <Droplets className="w-10 h-10 text-blue-600" />
+            Smart Water Management System
+          </h1>
+          <p className="text-xl text-gray-700 mb-6">
+            Advanced irrigation optimization with real-time monitoring and AI-powered efficiency insights
           </p>
+          <div className="flex items-center justify-center gap-6 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <Target className="w-4 h-4 text-blue-600" />
+              Precision Irrigation
+            </div>
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-green-600" />
+              Usage Analytics
+            </div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-purple-600" />
+              Efficiency Optimization
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -199,6 +217,11 @@ const WaterUsage = () => {
               )}
             </CardContent>
           </Card>
+        </div>
+
+        {/* Enhanced Water Usage Analytics */}
+        <div className="mt-12">
+          <WaterUsageCharts />
         </div>
       </div>
     </div>

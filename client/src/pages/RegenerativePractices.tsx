@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import RegenerativePracticesCharts from "@/components/RegenerativePracticesCharts";
 import { 
   Leaf, 
   Target, 
@@ -21,7 +22,8 @@ import {
   Save,
   AlertCircle,
   BarChart3,
-  MapPin
+  MapPin,
+  Award
 } from "lucide-react";
 
 interface Practice {
@@ -351,13 +353,30 @@ const RegenerativePractices = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 py-8 fade-in">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Regenerative Practices Manager</h1>
-          <p className="text-gray-600 mt-2">
-            Plan, implement, and track sustainable farming practices for {farmProfile.location}
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+            <Leaf className="w-10 h-10 text-green-600" />
+            Regenerative Practices Intelligence Center
+          </h1>
+          <p className="text-xl text-gray-700 mb-6">
+            Advanced sustainability tracking and regenerative agriculture optimization for {farmProfile.location}
           </p>
+          <div className="flex items-center justify-center gap-6 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <Target className="w-4 h-4 text-green-600" />
+              Practice Management
+            </div>
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-blue-600" />
+              Impact Analytics
+            </div>
+            <div className="flex items-center gap-2">
+              <Award className="w-4 h-4 text-purple-600" />
+              Sustainability Goals
+            </div>
+          </div>
         </div>
 
         {/* Farm Overview & Score */}
@@ -742,6 +761,11 @@ const RegenerativePractices = () => {
             </Card>
           </div>
         )}
+
+        {/* Enhanced Analytics and Insights */}
+        <div className="mt-12">
+          <RegenerativePracticesCharts />
+        </div>
       </div>
     </div>
   );
