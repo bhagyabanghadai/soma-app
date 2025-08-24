@@ -42,29 +42,6 @@ const Homepage = () => {
     }
   ];
 
-  const testimonials = [
-    {
-      name: "Rajesh Patel",
-      location: "Maharashtra, India",
-      story: "SOMA reduced my water usage by 20% this season while increasing my crop yield by 15%. The AI recommendations are incredibly accurate!",
-      savings: "₹45,000 saved",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80"
-    },
-    {
-      name: "Maria Rodriguez", 
-      location: "California, USA",
-      story: "The soil health monitoring helped me identify nutrient deficiencies early. My organic certification process became much smoother.",
-      savings: "30% yield increase",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b742?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80"
-    },
-    {
-      name: "James Wilson",
-      location: "Iowa, USA", 
-      story: "Carbon credit tracking through SOMA earned me an additional $8,000 last year. It's like getting paid to farm sustainably!",
-      savings: "$8,000 earned",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80"
-    }
-  ];
 
   return (
     <div>
@@ -185,7 +162,7 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Testimonials with Crop Field Background */}
+      {/* Stats Section with Farm Background */}
       <section 
         className="py-20 relative"
         style={{
@@ -198,47 +175,13 @@ const Homepage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Farmers Love SOMA
+              Trusted by Farmers Worldwide
             </h2>
             <p className="text-xl text-white/90 max-w-3xl mx-auto">
-              Join thousands of farmers worldwide who are transforming their operations.
+              Join the agricultural revolution and see real results from day one.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            {testimonials.map((testimonial, index) => (
-              <Card 
-                key={index}
-                className="bg-white/95 backdrop-blur-sm border border-white/20 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
-              >
-                <CardContent className="p-8">
-                  <div className="flex items-center mb-6">
-                    <img 
-                      src={testimonial.avatar} 
-                      alt={testimonial.name}
-                      className="w-16 h-16 rounded-full object-cover border-4 border-green-500 mr-4"
-                    />
-                    <div>
-                      <div className="font-bold text-gray-900 text-lg">{testimonial.name}</div>
-                      <div className="text-green-600 font-medium">{testimonial.location}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center mb-4">
-                    <div className="flex text-yellow-500">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-5 h-5 fill-current" />
-                      ))}
-                    </div>
-                  </div>
-                  <p className="text-gray-700 mb-6 italic leading-relaxed">"{testimonial.story}"</p>
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <div className="text-green-700 font-bold text-lg">💰 {testimonial.savings}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
           {/* Stats Section */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div className="bg-white/20 backdrop-blur-md text-white p-8 rounded-lg shadow-2xl">

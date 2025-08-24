@@ -101,12 +101,12 @@ const ChatWidget: React.FC = () => {
       {!isOpen ? (
         <button 
           onClick={() => setIsOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 transition-all duration-200 text-white rounded-full p-4 shadow-lg hover:shadow-xl flex items-center justify-center group"
+          className="bg-green-600 hover:bg-green-700 transition-all duration-200 text-white rounded-full px-6 py-4 shadow-lg hover:shadow-xl flex items-center justify-center"
           data-testid="chat-open-button"
         >
           <MessageCircle className="w-6 h-6" />
-          <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-sm font-medium whitespace-nowrap">
-            🌾 Chat with SOMA
+          <span className="ml-2 text-sm font-medium whitespace-nowrap">
+            SOMA Assistant
           </span>
         </button>
       ) : (
