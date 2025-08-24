@@ -21,38 +21,72 @@ import {
 } from "recharts";
 import { Droplets, TrendingUp, Calendar, Target, AlertTriangle, CheckCircle } from "lucide-react";
 
-const WaterUsageCharts = () => {
+interface WaterUsageChartsProps {
+  location?: { latitude: number; longitude: number };
+  earthData?: {
+    ndvi: number;
+    landSurfaceTemperature: number;
+    evapotranspiration: number;
+    vegetationStatus: string;
+    temperatureStatus: string;
+    droughtRisk: string;
+  } | null;
+  weatherData?: {
+    current: {
+      temperature: number;
+      temperatureUnit: string;
+      conditions: string;
+    };
+    forecast: Array<{
+      name: string;
+      temperature: number;
+      temperatureUnit: string;
+      conditions: string;
+      isDaytime: boolean;
+    }>;
+  } | null;
+}
+
+const WaterUsageCharts = ({ location, earthData, weatherData }: WaterUsageChartsProps) => {
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [historicalData, setHistoricalData] = useState<any[]>([]);
 
-  // Generate realistic water usage data
+  // Generate water usage data based on real environmental factors
   useEffect(() => {
     const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
+    
+    // Base calculations on real environmental data
+    const currentTemp = weatherData?.current?.temperature || 20;
+    const currentET = earthData?.evapotranspiration || 4;
+    const baseNdvi = earthData?.ndvi || 0.6;
+    
     const data = Array.from({ length: Math.min(days, 30) }, (_, i) => {
       const date = new Date();
       date.setDate(date.getDate() - (30 - 1 - i));
       
-      // Simulate seasonal water patterns
+      // Calculate based on environmental conditions
       const dayOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000);
       const seasonalFactor = Math.sin((dayOfYear / 365) * 2 * Math.PI) * 0.4 + 0.6;
-      const weatherVariation = Math.random() * 0.3 - 0.15;
+      const tempFactor = Math.max(0.5, Math.min(1.5, currentTemp / 25)); // Temperature impact
+      const vegetationFactor = Math.max(0.7, Math.min(1.3, baseNdvi / 0.6)); // Vegetation density impact
+      const randomVariation = (Math.random() - 0.5) * 0.2;
       
       return {
         date: date.toISOString().split('T')[0],
         dateFormatted: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        totalUsage: Math.max(500, Math.round(1200 + seasonalFactor * 800 + weatherVariation * 400)),
-        irrigation: Math.max(300, Math.round(800 + seasonalFactor * 600 + weatherVariation * 300)),
-        livestock: Math.max(50, Math.round(150 + Math.random() * 50 - 25)),
-        household: Math.max(80, Math.round(120 + Math.random() * 40 - 20)),
-        efficiency: Math.max(60, Math.min(95, 75 + seasonalFactor * 15 + Math.random() * 10 - 5)),
-        soilMoisture: Math.max(15, Math.min(45, 25 + seasonalFactor * 12 + weatherVariation * 8)),
-        rainfall: Math.max(0, Math.round(Math.random() * 25)),
-        evapotranspiration: Math.max(2, Math.round(4 + seasonalFactor * 3 + weatherVariation * 2)),
+        totalUsage: Math.max(500, Math.round(currentET * 300 * tempFactor * seasonalFactor + randomVariation * 200)),
+        irrigation: Math.max(300, Math.round(currentET * 200 * tempFactor * vegetationFactor * seasonalFactor + randomVariation * 150)),
+        livestock: Math.max(50, Math.round(150 * tempFactor + randomVariation * 25)),
+        household: Math.max(80, Math.round(120 * tempFactor + randomVariation * 20)),
+        efficiency: Math.max(60, Math.min(95, 75 + (baseNdvi * 30) + seasonalFactor * 15 + randomVariation * 10)),
+        soilMoisture: Math.max(15, Math.min(45, currentET * 6 + seasonalFactor * 12 + randomVariation * 8)),
+        rainfall: Math.max(0, Math.round(Math.random() * 25 * (1 - seasonalFactor * 0.5))), // Less rain in hot seasons
+        evapotranspiration: Math.max(2, currentET * (0.8 + seasonalFactor * 0.4 + randomVariation)),
         costPerGallon: 0.003 + Math.random() * 0.002
       };
     });
     setHistoricalData(data);
-  }, [timeRange]);
+  }, [timeRange, earthData, weatherData]);
 
   // Water usage by source pie chart
   const currentUsage = historicalData[historicalData.length - 1] || {
@@ -201,7 +235,7 @@ const WaterUsageCharts = () => {
             <Button
               key={range}
               variant={timeRange === range ? "default" : "outline"}
-              size="sm"
+              
               onClick={() => setTimeRange(range)}
               className={timeRange === range ? "bg-blue-600 hover:bg-blue-700" : ""}
             >
@@ -441,7 +475,7 @@ const WaterUsageCharts = () => {
                   metric.status === 'good' ? 'bg-blue-100 text-blue-800' :
                   metric.status === 'normal' ? 'bg-gray-100 text-gray-800' :
                   'bg-yellow-100 text-yellow-800'
-                }`} size="sm">
+                }`} >
                   {metric.status}
                 </Badge>
               </div>

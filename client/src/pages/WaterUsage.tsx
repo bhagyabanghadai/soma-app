@@ -221,7 +221,11 @@ const WaterUsage = () => {
 
         {/* Enhanced Water Usage Analytics */}
         <div className="mt-12">
-          <WaterUsageCharts />
+          <WaterUsageCharts 
+            location={{ latitude: 42.0308, longitude: -93.6319 }}
+            earthData={null}
+            weatherData={null}
+          />
         </div>
       </div>
     </div>

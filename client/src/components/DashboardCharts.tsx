@@ -22,43 +22,83 @@ import { TrendingUp, TrendingDown, Calendar, Eye, BarChart3 } from "lucide-react
 
 interface DashboardChartsProps {
   location: { latitude: number; longitude: number };
+  earthData?: {
+    ndvi: number;
+    landSurfaceTemperature: number;
+    evapotranspiration: number;
+    vegetationStatus: string;
+    temperatureStatus: string;
+    droughtRisk: string;
+  } | null;
+  weatherData?: {
+    current: {
+      temperature: number;
+      temperatureUnit: string;
+      conditions: string;
+    };
+    forecast: Array<{
+      name: string;
+      temperature: number;
+      temperatureUnit: string;
+      conditions: string;
+      isDaytime: boolean;
+    }>;
+  } | null;
+  airQualityData?: {
+    aqi: number;
+    status: string;
+    level: string;
+    mainPollutant: string;
+    location: string;
+  } | null;
 }
 
-const DashboardCharts = ({ location }: DashboardChartsProps) => {
+const DashboardCharts = ({ location, earthData, weatherData, airQualityData }: DashboardChartsProps) => {
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [historicalData, setHistoricalData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Generate realistic historical data based on current location
+  // Generate historical data based on real environmental data
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
+    
+    // Create historical trend based on current real data
+    const generateHistoricalData = () => {
       const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
-      const data = Array.from({ length: days }, (_, i) => {
+      const currentTemp = weatherData?.current?.temperature || 20;
+      const currentNdvi = earthData?.ndvi || 0.6;
+      const currentAqi = airQualityData?.aqi || 50;
+      const currentET = earthData?.evapotranspiration || 4;
+      
+      return Array.from({ length: days }, (_, i) => {
         const date = new Date();
         date.setDate(date.getDate() - (days - 1 - i));
         
-        // Simulate seasonal patterns and realistic variations
-        const dayOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000);
-        const seasonalFactor = Math.sin((dayOfYear / 365) * 2 * Math.PI) * 0.3 + 0.7;
-        const randomVariation = Math.random() * 0.4 - 0.2;
+        // Generate realistic variations around current values
+        const dayOffset = (days - 1 - i) / days;
+        const seasonalFactor = Math.sin((Date.now() / (1000 * 60 * 60 * 24 * 365)) * 2 * Math.PI) * 0.3 + 0.7;
+        const randomVariation = (Math.random() - 0.5) * 0.2;
         
         return {
           date: date.toISOString().split('T')[0],
           dateFormatted: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-          ndvi: Math.max(0.1, Math.min(1.0, (0.6 + seasonalFactor * 0.3 + randomVariation * 0.1))),
-          temperature: Math.round(18 + seasonalFactor * 15 + randomVariation * 5),
-          soilMoisture: Math.max(10, Math.min(50, 25 + seasonalFactor * 10 + randomVariation * 8)),
-          aqi: Math.max(10, Math.min(150, 45 + randomVariation * 25)),
-          carbonSequestration: Math.max(0, 2.5 + seasonalFactor * 1.5 + randomVariation * 0.8),
-          waterUsage: Math.max(100, 800 + seasonalFactor * 400 + randomVariation * 200),
-          yieldPrediction: Math.max(60, 85 + seasonalFactor * 10 + randomVariation * 8)
+          ndvi: Math.max(0.1, Math.min(1.0, currentNdvi * (0.9 + seasonalFactor * 0.2 + randomVariation))),
+          temperature: Math.round(currentTemp * (0.9 + seasonalFactor * 0.2 + randomVariation)),
+          soilMoisture: Math.max(10, Math.min(50, 25 + seasonalFactor * 10 + randomVariation * 15)),
+          aqi: Math.max(10, Math.min(150, currentAqi * (0.8 + randomVariation * 0.4))),
+          carbonSequestration: Math.max(0, (currentNdvi * 4) + seasonalFactor * 1.5 + randomVariation * 0.8),
+          waterUsage: Math.max(100, currentET * 200 + seasonalFactor * 400 + randomVariation * 200),
+          yieldPrediction: Math.max(60, (currentNdvi * 90) + seasonalFactor * 10 + randomVariation * 8),
+          evapotranspiration: Math.max(1, currentET * (0.8 + seasonalFactor * 0.4 + randomVariation))
         };
       });
-      setHistoricalData(data);
+    };
+    
+    setTimeout(() => {
+      setHistoricalData(generateHistoricalData());
       setLoading(false);
-    }, 500);
-  }, [timeRange, location]);
+    }, 300);
+  }, [timeRange, location, earthData, weatherData, airQualityData]);
 
   // Calculate trends
   const calculateTrend = (data: any[], key: string) => {

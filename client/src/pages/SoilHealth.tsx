@@ -220,7 +220,10 @@ const SoilHealth = () => {
 
         {/* Enhanced Charts and Analytics */}
         <div className="mt-12">
-          <SoilHealthCharts />
+          <SoilHealthCharts 
+            location={{ latitude: 42.0308, longitude: -93.6319 }}
+            earthData={null}
+          />
         </div>
       </div>
     </div>

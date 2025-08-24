@@ -681,7 +681,12 @@ const SustainabilityDashboard = () => {
         )}
 
         {/* Historical Charts and Analytics */}
-        <DashboardCharts location={location} />
+        <DashboardCharts 
+          location={location}
+          earthData={earthData}
+          weatherData={weatherData}
+          airQualityData={airQualityData}
+        />
 
         {/* Collaborative Overlay */}
         <CollaborativeOverlay 
