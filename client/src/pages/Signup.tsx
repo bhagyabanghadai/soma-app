@@ -7,12 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const Signup = () => {
   return (
     <div 
-      className="min-h-screen flex items-center justify-center"
-      style={{
-        background: 'linear-gradient(135deg, #d9f0c4 0%, #a67c52 100%)',
-      }}
+      className="min-h-screen flex items-center justify-center bg-gray-50"
     >
-      <Card className="w-full max-w-md card-3d">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full overflow-hidden border-2 border-[#57A639]">
             <img 
@@ -21,8 +18,8 @@ const Signup = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <CardTitle className="text-2xl font-bold text-[#4B3F2F]">Join SOMA</CardTitle>
-          <p className="text-[#4D4D4D]">Start your smart farming journey today</p>
+          <CardTitle className="text-2xl font-bold text-gray-900">Join SOMA</CardTitle>
+          <p className="text-gray-700">Start your smart farming journey today</p>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -37,12 +34,12 @@ const Signup = () => {
             <Label htmlFor="password">Password</Label>
             <Input id="password" type="password" placeholder="Create a password" />
           </div>
-          <Button className="w-full bg-[#F4D35E] hover:bg-yellow-500 text-gray-900 font-bold">
+          <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold">
             Create Account
           </Button>
           <div className="text-center">
-            <span className="text-[#4D4D4D]">Already have an account? </span>
-            <Link href="/login" className="text-[#57A639] hover:underline font-medium">
+            <span className="text-gray-700">Already have an account? </span>
+            <Link href="/login" className="text-green-600 hover:underline font-medium">
               Sign in →
             </Link>
           </div>

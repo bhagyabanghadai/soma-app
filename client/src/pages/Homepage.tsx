@@ -31,7 +31,7 @@ const Homepage = () => {
       icon: <Zap className="w-8 h-8" />,
       title: "Real-time Environmental Alerts",
       description: "Instant notifications about weather changes, pest threats, and optimal farming conditions.",
-      image: "https://images.unsplash.com/photo-1592982634004-b3fc6188b6d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+      image: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
     },
     {
       icon: <Globe className="w-8 h-8" />,
@@ -68,28 +68,9 @@ const Homepage = () => {
       <section 
         className="relative min-h-screen flex items-center justify-center overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #d9f0c4 0%, #a67c52 100%)',
+          background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
         }}
       >
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-gradient-to-r from-green-400/30 to-yellow-400/30 floating-card"></div>
-          <div className="absolute top-40 right-20 w-24 h-24 rounded-full bg-gradient-to-r from-orange-400/30 to-green-400/30 floating-card" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute bottom-32 left-20 w-20 h-20 rounded-full bg-gradient-to-r from-yellow-400/30 to-brown-400/30 floating-card" style={{ animationDelay: '4s' }}></div>
-          
-          {/* Farm field pattern overlay */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="h-full w-full" style={{
-              backgroundImage: `repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 50px,
-                rgba(107, 142, 35, 0.1) 50px,
-                rgba(107, 142, 35, 0.1) 52px
-              )`
-            }}></div>
-          </div>
-        </div>
 
         <div className="text-center px-4 relative z-10 max-w-6xl mx-auto">
           <div className="mb-8">
@@ -100,13 +81,13 @@ const Homepage = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-800 leading-tight">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-900 leading-tight">
               Smarter Farming,<br />
-              <span className="gradient-text">Sustainable Future.</span>
+              <span className="text-green-700">Sustainable Future.</span>
             </h1>
           </div>
           
-          <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto text-gray-700 leading-relaxed">
+          <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto text-gray-800 leading-relaxed">
             Transform your farm with AI-powered insights, real-time monitoring, and sustainable practices 
             that increase yields while protecting our planet for future generations.
           </p>
@@ -115,7 +96,7 @@ const Homepage = () => {
             <Link href="/signup">
               <Button 
                 size="lg" 
-                className="bg-[#F4D35E] hover:bg-yellow-500 text-gray-900 font-bold py-4 px-8 text-lg transform hover:scale-105 transition-all duration-300 shadow-xl rounded-full"
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 text-lg transition-all duration-300 shadow-lg rounded-lg"
               >
                 Get Started (Sign Up)
               </Button>
@@ -125,7 +106,7 @@ const Homepage = () => {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="bg-[#57A639] hover:bg-green-700 text-white border-[#57A639] font-bold py-4 px-8 text-lg transform hover:scale-105 transition-all duration-300 shadow-xl rounded-full"
+                className="bg-white hover:bg-gray-50 text-green-600 border-green-600 font-bold py-4 px-8 text-lg transition-all duration-300 shadow-lg rounded-lg"
               >
                 Demo Dashboard
               </Button>
@@ -135,13 +116,13 @@ const Homepage = () => {
       </section>
 
       {/* Key Features Section */}
-      <section className="py-20 bg-[#FFF8E6]">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#4B3F2F] mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Powerful Features for Modern Farmers
             </h2>
-            <p className="text-xl text-[#4D4D4D] max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
               Our comprehensive platform provides cutting-edge tools to optimize your farming operations 
               and maximize both profitability and sustainability.
             </p>
@@ -151,22 +132,21 @@ const Homepage = () => {
             {features.map((feature, index) => (
               <Card 
                 key={index}
-                className="card-3d floating-card hover:shadow-2xl transition-all duration-500 bg-white border-2 border-[#57A639]/20"
-                style={{ animationDelay: `${index * 0.2}s` }}
+                className="hover:shadow-lg transition-all duration-300 bg-white border border-gray-200"
               >
                 <CardContent className="p-8 text-center">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-xl overflow-hidden shadow-lg">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-lg overflow-hidden shadow-md">
                     <img 
                       src={feature.image} 
                       alt={feature.title}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="w-12 h-12 bg-[#57A639] rounded-full flex items-center justify-center mb-6 mx-auto text-white">
+                  <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mb-6 mx-auto text-white">
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-[#4B3F2F] mb-4">{feature.title}</h3>
-                  <p className="text-[#4D4D4D] leading-relaxed">{feature.description}</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+                  <p className="text-gray-700 leading-relaxed">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -175,13 +155,13 @@ const Homepage = () => {
       </section>
 
       {/* Testimonials/Impact Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#4B3F2F] mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Real Farmers, Real Results
             </h2>
-            <p className="text-xl text-[#4D4D4D] max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
               Join thousands of farmers worldwide who are already transforming their operations with SOMA.
             </p>
           </div>
@@ -190,12 +170,11 @@ const Homepage = () => {
             {testimonials.map((testimonial, index) => (
               <Card 
                 key={index}
-                className="card-3d floating-card bg-gradient-to-br from-[#FFF8E6] to-white border-2 border-[#F4D35E]/30"
-                style={{ animationDelay: `${index * 0.3}s` }}
+                className="bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-300"
               >
                 <CardContent className="p-8">
                   <div className="flex items-center mb-4">
-                    <div className="flex text-[#F4D35E] text-2xl">
+                    <div className="flex text-yellow-500 text-2xl">
                       <Star className="w-6 h-6 fill-current" />
                       <Star className="w-6 h-6 fill-current" />
                       <Star className="w-6 h-6 fill-current" />
@@ -203,11 +182,11 @@ const Homepage = () => {
                       <Star className="w-6 h-6 fill-current" />
                     </div>
                   </div>
-                  <p className="text-[#4D4D4D] mb-6 italic leading-relaxed">"{testimonial.story}"</p>
-                  <div className="border-t border-[#57A639]/20 pt-4">
-                    <div className="font-bold text-[#4B3F2F] text-lg">{testimonial.name}</div>
-                    <div className="text-[#57A639] font-medium">{testimonial.location}</div>
-                    <div className="text-[#F4D35E] font-bold mt-2">Savings: {testimonial.savings}</div>
+                  <p className="text-gray-700 mb-6 italic leading-relaxed">"{testimonial.story}"</p>
+                  <div className="border-t border-gray-200 pt-4">
+                    <div className="font-bold text-gray-900 text-lg">{testimonial.name}</div>
+                    <div className="text-green-600 font-medium">{testimonial.location}</div>
+                    <div className="text-green-700 font-bold mt-2">Savings: {testimonial.savings}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -216,19 +195,19 @@ const Homepage = () => {
 
           {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div className="card-3d bg-[#57A639] text-white p-8 rounded-2xl">
+            <div className="bg-green-600 text-white p-8 rounded-lg shadow-md">
               <div className="text-4xl font-bold mb-2">10,000+</div>
               <div className="text-lg">Active Farmers</div>
             </div>
-            <div className="card-3d bg-[#F4D35E] text-gray-900 p-8 rounded-2xl">
+            <div className="bg-white border border-gray-200 text-gray-900 p-8 rounded-lg shadow-md">
               <div className="text-4xl font-bold mb-2">25%</div>
               <div className="text-lg">Avg. Yield Increase</div>
             </div>
-            <div className="card-3d bg-[#57A639] text-white p-8 rounded-2xl">
+            <div className="bg-green-600 text-white p-8 rounded-lg shadow-md">
               <div className="text-4xl font-bold mb-2">30%</div>
               <div className="text-lg">Water Savings</div>
             </div>
-            <div className="card-3d bg-[#F4D35E] text-gray-900 p-8 rounded-2xl">
+            <div className="bg-white border border-gray-200 text-gray-900 p-8 rounded-lg shadow-md">
               <div className="text-4xl font-bold mb-2">₹2.5M+</div>
               <div className="text-lg">Carbon Credits Earned</div>
             </div>
@@ -237,48 +216,48 @@ const Homepage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#2E5C2B] text-white py-16">
+      <footer className="bg-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <h3 className="text-2xl font-bold mb-4">SOMA</h3>
-              <p className="text-green-200 mb-4">
+              <p className="text-gray-300 mb-4">
                 Empowering farmers with AI-driven insights for a sustainable future.
               </p>
               <div className="flex space-x-4">
-                <a href="#" className="text-[#F4D35E] hover:text-white transition-colors">Facebook</a>
-                <a href="#" className="text-[#F4D35E] hover:text-white transition-colors">Twitter</a>
-                <a href="#" className="text-[#F4D35E] hover:text-white transition-colors">Instagram</a>
-                <a href="#" className="text-[#F4D35E] hover:text-white transition-colors">LinkedIn</a>
+                <a href="#" className="text-green-400 hover:text-white transition-colors">Facebook</a>
+                <a href="#" className="text-green-400 hover:text-white transition-colors">Twitter</a>
+                <a href="#" className="text-green-400 hover:text-white transition-colors">Instagram</a>
+                <a href="#" className="text-green-400 hover:text-white transition-colors">LinkedIn</a>
               </div>
             </div>
             <div>
               <h4 className="text-lg font-semibold mb-4">Company</h4>
               <ul className="space-y-2">
-                <li><Link href="/about" className="text-green-200 hover:text-white transition-colors">About</Link></li>
-                <li><a href="#" className="text-green-200 hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="text-green-200 hover:text-white transition-colors">Blog</a></li>
+                <li><Link href="/about" className="text-gray-300 hover:text-white transition-colors">About</Link></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Careers</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Blog</a></li>
               </ul>
             </div>
             <div>
               <h4 className="text-lg font-semibold mb-4">Support</h4>
               <ul className="space-y-2">
-                <li><Link href="/contact" className="text-green-200 hover:text-white transition-colors">Contact</Link></li>
-                <li><a href="#" className="text-green-200 hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="text-green-200 hover:text-white transition-colors">Documentation</a></li>
+                <li><Link href="/contact" className="text-gray-300 hover:text-white transition-colors">Contact</Link></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Documentation</a></li>
               </ul>
             </div>
             <div>
               <h4 className="text-lg font-semibold mb-4">Legal</h4>
               <ul className="space-y-2">
-                <li><Link href="/privacy" className="text-green-200 hover:text-white transition-colors">Privacy</Link></li>
-                <li><Link href="/terms" className="text-green-200 hover:text-white transition-colors">Terms</Link></li>
-                <li><a href="#" className="text-green-200 hover:text-white transition-colors">Security</a></li>
+                <li><Link href="/privacy" className="text-gray-300 hover:text-white transition-colors">Privacy</Link></li>
+                <li><Link href="/terms" className="text-gray-300 hover:text-white transition-colors">Terms</Link></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Security</a></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-green-700 mt-12 pt-8 text-center">
-            <p className="text-green-200">© 2024 SOMA. All rights reserved. Made with care for farmers worldwide.</p>
+            <p className="text-gray-300">© 2024 SOMA. All rights reserved. Made with care for farmers worldwide.</p>
           </div>
         </div>
       </footer>
