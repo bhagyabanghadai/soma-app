@@ -19,25 +19,25 @@ const Homepage = () => {
       icon: <Leaf className="w-8 h-8" />,
       title: "Soil Health Monitoring",
       description: "Real-time analysis of soil nutrients, pH levels, and organic matter to optimize crop growth and yields.",
-      emoji: "🌱"
+      image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
     },
     {
       icon: <Droplets className="w-8 h-8" />,
       title: "Water Usage & Efficiency", 
       description: "Smart irrigation systems and water management tools to reduce waste and improve sustainability.",
-      emoji: "💧"
+      image: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
     },
     {
       icon: <Zap className="w-8 h-8" />,
       title: "Real-time Environmental Alerts",
       description: "Instant notifications about weather changes, pest threats, and optimal farming conditions.",
-      emoji: "⚡"
+      image: "https://images.unsplash.com/photo-1592982634004-b3fc6188b6d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
     },
     {
       icon: <Globe className="w-8 h-8" />,
       title: "Carbon Credit Tracking",
       description: "Monitor and calculate your farm's carbon sequestration to earn valuable carbon credits.",
-      emoji: "🌍"
+      image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
     }
   ];
 
@@ -93,7 +93,13 @@ const Homepage = () => {
 
         <div className="text-center px-4 relative z-10 max-w-6xl mx-auto">
           <div className="mb-8">
-            <span className="text-6xl mb-4 block">🌾</span>
+            <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-white shadow-2xl">
+              <img 
+                src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                alt="Modern farming technology" 
+                className="w-full h-full object-cover"
+              />
+            </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-800 leading-tight">
               Smarter Farming,<br />
               <span className="gradient-text">Sustainable Future.</span>
@@ -111,7 +117,7 @@ const Homepage = () => {
                 size="lg" 
                 className="bg-[#F4D35E] hover:bg-yellow-500 text-gray-900 font-bold py-4 px-8 text-lg transform hover:scale-105 transition-all duration-300 shadow-xl rounded-full"
               >
-                🚀 Get Started (Sign Up)
+                Get Started (Sign Up)
               </Button>
             </Link>
             
@@ -121,7 +127,7 @@ const Homepage = () => {
                 variant="outline"
                 className="bg-[#57A639] hover:bg-green-700 text-white border-[#57A639] font-bold py-4 px-8 text-lg transform hover:scale-105 transition-all duration-300 shadow-xl rounded-full"
               >
-                📊 Demo Dashboard
+                Demo Dashboard
               </Button>
             </Link>
           </div>
@@ -133,7 +139,7 @@ const Homepage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-[#4B3F2F] mb-6">
-              🌟 Powerful Features for Modern Farmers
+              Powerful Features for Modern Farmers
             </h2>
             <p className="text-xl text-[#4D4D4D] max-w-3xl mx-auto">
               Our comprehensive platform provides cutting-edge tools to optimize your farming operations 
@@ -149,7 +155,13 @@ const Homepage = () => {
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
                 <CardContent className="p-8 text-center">
-                  <div className="text-5xl mb-6">{feature.emoji}</div>
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-xl overflow-hidden shadow-lg">
+                    <img 
+                      src={feature.image} 
+                      alt={feature.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div className="w-12 h-12 bg-[#57A639] rounded-full flex items-center justify-center mb-6 mx-auto text-white">
                     {feature.icon}
                   </div>
@@ -167,7 +179,7 @@ const Homepage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-[#4B3F2F] mb-6">
-              🏆 Real Farmers, Real Results
+              Real Farmers, Real Results
             </h2>
             <p className="text-xl text-[#4D4D4D] max-w-3xl mx-auto">
               Join thousands of farmers worldwide who are already transforming their operations with SOMA.
@@ -195,7 +207,7 @@ const Homepage = () => {
                   <div className="border-t border-[#57A639]/20 pt-4">
                     <div className="font-bold text-[#4B3F2F] text-lg">{testimonial.name}</div>
                     <div className="text-[#57A639] font-medium">{testimonial.location}</div>
-                    <div className="text-[#F4D35E] font-bold mt-2">💰 {testimonial.savings}</div>
+                    <div className="text-[#F4D35E] font-bold mt-2">Savings: {testimonial.savings}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -229,14 +241,15 @@ const Homepage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4">🌱 SOMA</h3>
+              <h3 className="text-2xl font-bold mb-4">SOMA</h3>
               <p className="text-green-200 mb-4">
                 Empowering farmers with AI-driven insights for a sustainable future.
               </p>
               <div className="flex space-x-4">
-                <a href="#" className="text-[#F4D35E] hover:text-white transition-colors">📘 Facebook</a>
-                <a href="#" className="text-[#F4D35E] hover:text-white transition-colors">🐦 Twitter</a>
-                <a href="#" className="text-[#F4D35E] hover:text-white transition-colors">📷 Instagram</a>
+                <a href="#" className="text-[#F4D35E] hover:text-white transition-colors">Facebook</a>
+                <a href="#" className="text-[#F4D35E] hover:text-white transition-colors">Twitter</a>
+                <a href="#" className="text-[#F4D35E] hover:text-white transition-colors">Instagram</a>
+                <a href="#" className="text-[#F4D35E] hover:text-white transition-colors">LinkedIn</a>
               </div>
             </div>
             <div>
@@ -265,7 +278,7 @@ const Homepage = () => {
             </div>
           </div>
           <div className="border-t border-green-700 mt-12 pt-8 text-center">
-            <p className="text-green-200">© 2024 SOMA. All rights reserved. Made with 💚 for farmers worldwide.</p>
+            <p className="text-green-200">© 2024 SOMA. All rights reserved. Made with care for farmers worldwide.</p>
           </div>
         </div>
       </footer>
