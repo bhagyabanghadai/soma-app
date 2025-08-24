@@ -183,10 +183,8 @@ export const LocationSearch = ({
               setShowSuggestions(true);
             }}
             onFocus={() => {
-              if (searchTerm.length === 0) {
-                setSuggestions(popularLocations);
-                setShowSuggestions(true);
-              } else if (suggestions.length > 0) {
+              // Only show suggestions if user has already typed something
+              if (searchTerm.length > 0 && suggestions.length > 0) {
                 setShowSuggestions(true);
               }
             }}

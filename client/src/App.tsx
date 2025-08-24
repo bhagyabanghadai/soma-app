@@ -14,6 +14,7 @@ import WaterUsage from "@/pages/WaterUsage";
 import RegenerativePractices from "@/pages/RegenerativePractices";
 import CarbonCredit from "@/pages/CarbonCredit";
 import SustainabilityReport from "@/pages/SustainabilityReport";
+import LoginRequired from "@/components/LoginRequired";
 
 import EarthData from "@/pages/EarthData";
 import Weather from "@/pages/Weather";
@@ -23,6 +24,7 @@ import Contact from "@/pages/Contact";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import Signup from "@/pages/Signup";
+import Login from "@/pages/Login";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -33,11 +35,11 @@ function Router() {
         <Route path="/dashboard" component={SustainabilityDashboard} />
         <Route path="/old-dashboard" component={Dashboard} />
         <Route path="/home" component={Home} />
-        <Route path="/soil-health" component={SoilHealth} />
-        <Route path="/water-usage" component={WaterUsage} />
-        <Route path="/practices" component={RegenerativePractices} />
-        <Route path="/carbon-credits" component={CarbonCredit} />
-        <Route path="/reports" component={SustainabilityReport} />
+        <Route path="/soil-health" component={() => <LoginRequired feature="Soil Health Monitoring" />} />
+        <Route path="/water-usage" component={() => <LoginRequired feature="Water Usage Analytics" />} />
+        <Route path="/practices" component={() => <LoginRequired feature="Regenerative Practices" />} />
+        <Route path="/carbon-credits" component={() => <LoginRequired feature="Carbon Credit Tracking" />} />
+        <Route path="/reports" component={() => <LoginRequired feature="Sustainability Reports" />} />
 
         <Route path="/earth-data" component={EarthData} />
         <Route path="/weather" component={Weather} />
@@ -47,6 +49,7 @@ function Router() {
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />
         <Route path="/signup" component={Signup} />
+        <Route path="/login" component={Login} />
         <Route component={NotFound} />
       </Switch>
       
