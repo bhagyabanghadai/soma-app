@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
+import Homepage from "@/pages/Homepage";
 import Dashboard from "@/pages/Dashboard";
 import SustainabilityDashboard from "@/pages/SustainabilityDashboard";
 import ChatWidget from "@/components/ChatWidget";
@@ -21,15 +22,17 @@ import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
+import Signup from "@/pages/Signup";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={SustainabilityDashboard} />
+        <Route path="/" component={Homepage} />
         <Route path="/dashboard" component={SustainabilityDashboard} />
         <Route path="/old-dashboard" component={Dashboard} />
+        <Route path="/home" component={Home} />
         <Route path="/soil-health" component={SoilHealth} />
         <Route path="/water-usage" component={WaterUsage} />
         <Route path="/practices" component={RegenerativePractices} />
@@ -43,6 +46,7 @@ function Router() {
         <Route path="/contact" component={Contact} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />
+        <Route path="/signup" component={Signup} />
         <Route component={NotFound} />
       </Switch>
       
