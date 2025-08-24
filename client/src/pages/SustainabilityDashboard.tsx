@@ -313,10 +313,10 @@ const SustainabilityDashboard = () => {
     <div className="min-h-screen parallax-bg py-8 fade-in relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-gradient-to-r from-green-400/20 to-blue-400/20 floating-card"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 rounded-full bg-gradient-to-r from-yellow-400/20 to-green-400/20 floating-card" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-32 left-20 w-20 h-20 rounded-full bg-gradient-to-r from-purple-400/20 to-pink-400/20 floating-card" style={{ animationDelay: '4s' }}></div>
-        <div className="absolute top-1/2 right-1/3 w-16 h-16 rounded-full bg-gradient-to-r from-pink-400/20 to-purple-400/20 floating-card" style={{ animationDelay: '6s' }}></div>
+        <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-gradient-to-r from-yellow-500/20 to-green-500/20 floating-card"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 rounded-full bg-gradient-to-r from-orange-400/20 to-yellow-400/20 floating-card" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-32 left-20 w-20 h-20 rounded-full bg-gradient-to-r from-green-400/20 to-emerald-400/20 floating-card" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-1/2 right-1/3 w-16 h-16 rounded-full bg-gradient-to-r from-amber-400/20 to-orange-400/20 floating-card" style={{ animationDelay: '6s' }}></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -324,14 +324,14 @@ const SustainabilityDashboard = () => {
         <div className="mb-8 text-center">
           <div className="glass-morphism rounded-2xl p-8 mb-6 scale-on-hover">
             <h1 className="text-6xl font-bold gradient-text mb-4 rotate-in">🌱 SOMA Dashboard</h1>
-            <p className="text-xl text-white/90 mb-6">
+            <p className="text-xl text-gray-800 mb-6 font-semibold">
               ✨ Real-time environmental insights for {location.locationName || 'your farm'}
             </p>
             <div className="flex justify-center gap-4">
               <Button
                 variant="outline"
                 onClick={() => setShowProfileManager(!showProfileManager)}
-                className="glass-morphism scale-on-hover neon-glow flex items-center gap-2 text-white border-white/30 hover:bg-white/10"
+                className="glass-morphism scale-on-hover neon-glow flex items-center gap-2 text-gray-800 border-green-600/50 hover:bg-yellow-100/20 font-semibold"
                 data-testid="button-farm-profile"
                 size="lg"
               >
@@ -341,7 +341,7 @@ const SustainabilityDashboard = () => {
               <Button
                 variant="outline"
                 onClick={() => setShowAnalytics(!showAnalytics)}
-                className="glass-morphism scale-on-hover neon-glow flex items-center gap-2 text-white border-white/30 hover:bg-white/10"
+                className="glass-morphism scale-on-hover neon-glow flex items-center gap-2 text-gray-800 border-green-600/50 hover:bg-yellow-100/20 font-semibold"
                 data-testid="button-analytics"
                 size="lg"
               >
@@ -767,13 +767,13 @@ const SustainabilityDashboard = () => {
         <Card className="mb-4 card-3d neon-glow">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-white">
+              <div className="text-sm text-gray-800 font-medium">
                 🛰️ Data Sources: NASA MODIS/VIIRS • 🌤️ National Weather Service • 🌬️ AQICN
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-sm text-white">All systems operational</span>
-                <span className="text-xs text-green-300">Updated: {new Date().toLocaleTimeString()}</span>
+                <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                <span className="text-sm text-gray-800 font-medium">All systems operational</span>
+                <span className="text-xs text-green-700">Updated: {new Date().toLocaleTimeString()}</span>
               </div>
             </div>
           </CardContent>
