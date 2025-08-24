@@ -22,12 +22,6 @@ const ChatWidget: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  console.log('ChatWidget rendering, isOpen:', isOpen);
-  console.log('About to render chat widget');
-  
-  React.useEffect(() => {
-    console.log('ChatWidget mounted!');
-  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -100,63 +94,22 @@ const ChatWidget: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
-      {/* Debug marker in top-left */}
-      <div style={{
-        position: 'fixed',
-        top: '10px',
-        left: '10px',
-        background: 'red',
-        color: 'white',
-        padding: '10px',
-        zIndex: 99999,
-        fontSize: '12px'
-      }}>
-        ChatWidget Debug: {Date.now()}
-      </div>
-      
-      {/* Main chat widget */}
-      <div 
-        style={{ 
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          zIndex: 999999,
-          pointerEvents: 'auto',
-          display: 'block',
-          visibility: 'visible',
-          opacity: 1
-        }}
-      >
-        {!isOpen ? (
-          <div 
-            onClick={() => {
-              console.log('Chat button clicked!');
-              alert('Chat button clicked!');
-              setIsOpen(true);
-            }}
-            style={{
-              position: 'relative',
-              backgroundColor: '#FF0000',
-              border: '5px solid #FFFF00',
-              borderRadius: '50px',
-              padding: '20px',
-              minWidth: '200px',
-              minHeight: '80px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 20px 40px rgba(255, 0, 0, 0.8)',
-              animation: 'pulse 2s infinite'
-            }}
-          >
-            <MessageCircle style={{ width: '32px', height: '32px', color: 'white', marginRight: '10px' }} />
-            <div style={{ color: 'white', fontSize: '20px', fontWeight: 'bold' }}>
-              CLICK ME TO CHAT!
-            </div>
-          </div>
-        ) : (
+    <div 
+      className="fixed bottom-6 right-6 z-50"
+      style={{ fontFamily: 'system-ui, sans-serif' }}
+    >
+      {!isOpen ? (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="bg-blue-600 hover:bg-blue-700 transition-all duration-200 text-white rounded-full p-4 shadow-lg hover:shadow-xl flex items-center justify-center group"
+          data-testid="chat-open-button"
+        >
+          <MessageCircle className="w-6 h-6" />
+          <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-sm font-medium whitespace-nowrap">
+            Chat with AI
+          </span>
+        </button>
+      ) : (
           <div className="bg-white rounded-lg shadow-2xl w-80 h-96 flex flex-col border">
             <div className="bg-blue-600 text-white p-3 rounded-t-lg flex items-center justify-between">
               <div className="flex items-center space-x-2">
@@ -225,8 +178,7 @@ const ChatWidget: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
-    </React.Fragment>
+    </div>
   );
 };
 
