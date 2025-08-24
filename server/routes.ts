@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -118,6 +119,171 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+
+  // WebSocket Server for real-time collaboration
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // Store connected clients
+  const clients = new Map<WebSocket, { userId?: string; farmId?: string }>();
+
+  wss.on('connection', (ws: WebSocket) => {
+    console.log('New WebSocket connection established');
+    clients.set(ws, {});
+
+    ws.on('message', (data: Buffer) => {
+      try {
+        const message = JSON.parse(data.toString());
+        handleWebSocketMessage(ws, message);
+      } catch (error) {
+        console.error('Failed to parse WebSocket message:', error);
+      }
+    });
+
+    ws.on('close', () => {
+      console.log('WebSocket connection closed');
+      clients.delete(ws);
+    });
+
+    ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
+      clients.delete(ws);
+    });
+  });
+
+  function handleWebSocketMessage(sender: WebSocket, message: any) {
+    const { type, data } = message;
+
+    switch (type) {
+      case 'join_collaboration':
+        // Register user for this farm
+        const clientInfo = clients.get(sender);
+        if (clientInfo) {
+          clientInfo.userId = data.userId;
+          clientInfo.farmId = data.farmId;
+        }
+        
+        // Broadcast user joined
+        broadcastToFarm(data.farmId, {
+          type: 'user_presence',
+          data: { userId: data.userId, isOnline: true }
+        }, sender);
+        break;
+
+      case 'chat_message':
+        // Broadcast chat message to all farm members
+        const senderInfo = clients.get(sender);
+        if (senderInfo?.farmId) {
+          broadcastToFarm(senderInfo.farmId, {
+            type: 'new_chat_message',
+            data: data
+          }, sender);
+        }
+        break;
+
+      case 'new_task':
+        // Broadcast new task to all farm members
+        const taskSenderInfo = clients.get(sender);
+        if (taskSenderInfo?.farmId) {
+          broadcastToFarm(taskSenderInfo.farmId, {
+            type: 'task_update',
+            data: data
+          }, sender);
+          
+          // Also broadcast as activity
+          broadcastToFarm(taskSenderInfo.farmId, {
+            type: 'new_activity',
+            data: {
+              id: `a${Date.now()}`,
+              type: 'task_created',
+              message: `New task created: "${data.title}"`,
+              author: data.createdBy,
+              timestamp: new Date().toISOString(),
+              location: data.location
+            }
+          });
+        }
+        break;
+
+      case 'task_status_update':
+        // Broadcast task status update
+        const statusSenderInfo = clients.get(sender);
+        if (statusSenderInfo?.farmId) {
+          broadcastToFarm(statusSenderInfo.farmId, {
+            type: 'task_status_update',
+            data: data
+          }, sender);
+        }
+        break;
+
+      case 'field_update':
+        // Broadcast field update activity
+        const fieldSenderInfo = clients.get(sender);
+        if (fieldSenderInfo?.farmId) {
+          broadcastToFarm(fieldSenderInfo.farmId, {
+            type: 'new_activity',
+            data: data
+          });
+        }
+        break;
+
+      case 'user_location_update':
+        // Broadcast user location update
+        const locationSenderInfo = clients.get(sender);
+        if (locationSenderInfo?.farmId) {
+          broadcastToFarm(locationSenderInfo.farmId, {
+            type: 'user_presence',
+            data: { 
+              userId: data.userId, 
+              isOnline: true, 
+              location: data.location 
+            }
+          }, sender);
+        }
+        break;
+    }
+  }
+
+  function broadcastToFarm(farmId: string, message: any, excludeSender?: WebSocket) {
+    clients.forEach((clientInfo, ws) => {
+      if (clientInfo.farmId === farmId && ws !== excludeSender && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(message));
+      }
+    });
+  }
+
+  // Simulate some real-time farm activities (for demo purposes)
+  setInterval(() => {
+    const activities = [
+      {
+        id: `a${Date.now()}`,
+        type: 'field_update',
+        message: 'Automated irrigation cycle completed in Zone 2',
+        author: 'System',
+        timestamp: new Date().toISOString(),
+        location: 'Zone 2'
+      },
+      {
+        id: `a${Date.now() + 1}`,
+        type: 'alert',
+        message: 'Soil moisture levels optimal across all monitored fields',
+        author: 'System',
+        timestamp: new Date().toISOString(),
+        priority: 'low'
+      }
+    ];
+
+    // Broadcast random activity to all connected farms
+    const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+    clients.forEach((clientInfo, ws) => {
+      if (clientInfo.farmId && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+          type: 'new_activity',
+          data: randomActivity
+        }));
+      }
+    });
+  }, 30000); // Every 30 seconds
+
   return httpServer;
 }
 

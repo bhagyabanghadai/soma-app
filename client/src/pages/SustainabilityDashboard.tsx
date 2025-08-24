@@ -10,6 +10,7 @@ import EnvironmentalAlerts from "@/components/EnvironmentalAlerts";
 import FarmProfileManager from "@/components/FarmProfileManager";
 import StunningImageCard from "@/components/StunningImageCard";
 import DashboardCharts from "@/components/DashboardCharts";
+import CollaborativeOverlay from "@/components/CollaborativeOverlay";
 import { 
   Loader2, 
   Navigation, 
@@ -25,7 +26,8 @@ import {
   AlertTriangle,
   CheckCircle,
   Settings,
-  BarChart3
+  BarChart3,
+  Users
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -82,6 +84,7 @@ const SustainabilityDashboard = () => {
 
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [showProfileManager, setShowProfileManager] = useState(false);
+  const [showCollaboration, setShowCollaboration] = useState(false);
   const [farmProfile, setFarmProfile] = useState<any>(null);
 
   const { toast } = useToast();
@@ -348,6 +351,16 @@ const SustainabilityDashboard = () => {
               >
                 <BarChart3 className="w-5 h-5" />
                 📊 Analytics
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowCollaboration(true)}
+                className="glass-morphism scale-on-hover neon-glow flex items-center gap-2 text-gray-800 border-blue-600/50 hover:bg-blue-100/20 font-semibold"
+                data-testid="button-collaborate"
+                size="lg"
+              >
+                <Users className="w-5 h-5" />
+                👥 Collaborate
               </Button>
             </div>
           </div>
@@ -669,6 +682,12 @@ const SustainabilityDashboard = () => {
 
         {/* Historical Charts and Analytics */}
         <DashboardCharts location={location} />
+
+        {/* Collaborative Overlay */}
+        <CollaborativeOverlay 
+          isOpen={showCollaboration} 
+          onClose={() => setShowCollaboration(false)} 
+        />
 
         {/* Environmental Alerts */}
         <div className="mb-8">
