@@ -13,7 +13,7 @@ const ChatWidget: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 1,
-      message: "Hi! I'm your SOMA AI assistant. How can I help you today?",
+      message: "🌱 Welcome! I'm SOMA, your smart farming assistant. I can help you with soil health, irrigation, weather insights, and sustainable farming practices. What would you like to know?",
       isUser: false,
       timestamp: new Date(),
     }
@@ -106,21 +106,24 @@ const ChatWidget: React.FC = () => {
         >
           <MessageCircle className="w-6 h-6" />
           <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-sm font-medium whitespace-nowrap">
-            Chat with AI
+            🌾 Chat with SOMA
           </span>
         </button>
       ) : (
           <div className="bg-white rounded-lg shadow-2xl w-80 h-96 flex flex-col border">
-            <div className="bg-blue-600 text-white p-3 rounded-t-lg flex items-center justify-between">
+            <div className="bg-green-600 text-white p-3 rounded-t-lg flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                  <Bot className="w-4 h-4 text-blue-600" />
+                  <span className="text-lg">🌱</span>
                 </div>
-                <span className="font-semibold">SOMA AI</span>
+                <div>
+                  <span className="font-bold text-lg">SOMA</span>
+                  <div className="text-xs opacity-90">Smart Farming Assistant</div>
+                </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-white hover:bg-blue-700 rounded p-1"
+                className="text-white hover:bg-green-700 rounded p-1"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -135,8 +138,8 @@ const ChatWidget: React.FC = () => {
                   <div
                     className={`max-w-xs p-3 rounded-lg text-sm ${
                       message.isUser
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-gray-800 shadow-sm"
+                        ? "bg-green-600 text-white"
+                        : "bg-white text-gray-800 shadow-sm border-l-4 border-l-green-500"
                     }`}
                   >
                     {message.message}
@@ -163,14 +166,14 @@ const ChatWidget: React.FC = () => {
                 <input
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  placeholder="Type a message..."
-                  className="flex-1 border rounded-full px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Ask about farming, soil, weather..."
+                  className="flex-1 border rounded-full px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   disabled={isTyping}
                 />
                 <button 
                   type="submit" 
                   disabled={!inputMessage.trim() || isTyping}
-                  className="bg-blue-600 hover:bg-blue-700 rounded-full p-2 disabled:opacity-50"
+                  className="bg-green-600 hover:bg-green-700 rounded-full p-2 disabled:opacity-50"
                 >
                   <Send className="w-4 h-4 text-white" />
                 </button>

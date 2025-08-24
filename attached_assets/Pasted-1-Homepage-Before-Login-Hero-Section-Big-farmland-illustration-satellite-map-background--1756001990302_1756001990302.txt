@@ -1,0 +1,192 @@
+1. 🌍 Homepage (Before Login)
+
+Hero Section
+
+Big farmland illustration/satellite map background 🌾.
+
+Tagline: “Smarter Farming, Sustainable Future.”
+
+Call-to-action (CTA) buttons:
+
+Get Started (Sign Up)
+
+Demo Dashboard
+
+Key Features Section
+
+Cards with icons:
+
+Soil Health Monitoring 🌱
+
+Water Usage & Efficiency 💧
+
+Real-time Environmental Alerts ⚡
+
+Carbon Credit Tracking 🌍
+
+Testimonials/Impact Section
+
+Add 2–3 mock farmer stories: “SOMA reduced my water usage by 20% this season.”
+
+Footer
+
+About, Contact, Privacy, Terms, Social links.
+
+2. 🔑 Authentication Flow
+
+Login Page
+
+Simple background (farm sunrise 🌅).
+
+Input: Email + Password.
+
+Options: Continue with Google / Microsoft.
+
+Link: Don’t have an account? Sign up →
+
+Signup Page
+
+Collect: Name, Email, Password.
+
+Step 2 (Onboarding wizard):
+
+Farm name
+
+Farm location (GPS / manual entry)
+
+Crop type selection 🌽 🌾 🍅
+
+Farm size (dropdown acres/hectares)
+
+Irrigation method (drip, sprinkler, rain-fed).
+
+Forgot Password
+
+Reset link sent via email.
+
+3. 👤 Personalized Dashboard (After Login)
+
+Welcome Banner
+
+“Good Morning, Rajesh! Here’s today’s update for your farm 🌱”
+
+Farm Profile Card
+
+Farm name, crop type, acreage, GPS location.
+
+Option: Edit Farm Profile.
+
+Environmental Insights
+
+Vegetation Index (NDVI) 🌾
+
+Soil Temperature 🌡️
+
+Evapotranspiration 💧
+
+Drought Risk 🚨
+
+Weather Forecast
+
+3-day forecast with icons (sun, cloud, rain).
+
+Wind, humidity, rainfall chance.
+
+Smart Alerts
+
+Personalized alerts → “Low soil moisture detected in your wheat field.”
+
+Priority color codes: Green = Normal, Orange = Warning, Red = Critical.
+
+Tasks & Recommendations
+
+Auto-generated tasks → “Check irrigation pumps today.”
+
+Smart suggestions → “Conditions look favorable for planting soybeans this week.”
+
+Reports & History
+
+Monthly trend charts.
+
+Export as PDF/Excel.
+
+4. 🎨 Design & Color Palette
+
+Background
+
+Gradient: Light Green (#d9f0c4) → Earth Brown (#a67c52).
+
+Optional pattern overlay: faint crop rows or soil texture.
+
+Navbar/Header
+
+Deep Forest Green (#2E5C2B).
+
+White text/icons.
+
+Cards
+
+Light Cream (#FFF8E6).
+
+Rounded corners, soft shadow.
+
+Icons: flat farm-style illustrations.
+
+Buttons
+
+Primary: Farm Yellow (#F4D35E).
+
+Secondary: Crop Green (#57A639).
+
+Text
+
+Headings: Dark Brown (#4B3F2F).
+
+Body: Neutral Gray (#4D4D4D).
+
+5. ⚙️ Technical Features to Add
+
+Frontend
+
+React with protected routes.
+
+AuthContext for user sessions.
+
+Backend
+
+Spring Boot with JWT-based authentication.
+
+PostgreSQL tables:
+
+users (id, name, email, password hash).
+
+farms (farm_id, user_id, location, crop, size, irrigation).
+
+alerts, tasks, reports.
+
+Integrations
+
+Weather API (OpenWeather / NWS).
+
+NASA MODIS/VIIRS for NDVI.
+
+AQICN for air quality.
+
+Twilio/SendGrid for notifications.
+
+6. 🌟 Optional Engagement Features
+
+Gamification
+
+Badges: “Water Saver 💧”, “Carbon Hero 🌍”.
+
+Community
+
+Farmers can compare insights with neighbors (future feature).
+
+AI Insights
+
+Use ML to predict best planting/harvest time.
+
+⚡ End Result:
+SOMA should feel like a personalized sustainability assistant for farmers — not just a dashboard. Farmers log in, see their own fields, get actionable alerts, and track long-term progress.
