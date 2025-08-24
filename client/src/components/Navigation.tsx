@@ -1,20 +1,30 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Leaf, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navigation = () => {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isLoggedIn, user, logout } = useAuth();
 
-  const navItems = [
-    { path: "/", label: "Dashboard" },
+  const publicNavItems = [
+    { path: "/", label: "Home" },
+    { path: "/about", label: "About" },
+    { path: "/contact", label: "Contact" },
+  ];
+
+  const privateNavItems = [
+    { path: "/dashboard", label: "Dashboard" },
     { path: "/soil-health", label: "Soil Health" },
     { path: "/water-usage", label: "Water Usage" },
     { path: "/practices", label: "Practices" },
     { path: "/carbon-credits", label: "Carbon Credits" },
     { path: "/reports", label: "Reports" },
   ];
+
+  const navItems = isLoggedIn ? privateNavItems : publicNavItems;
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -26,7 +36,10 @@ const Navigation = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <h1 className="text-2xl font-bold text-soma-green">🌱 Soma</h1>
+              <div className="flex items-center space-x-2">
+                <Leaf className="w-8 h-8 text-green-600" />
+                <h1 className="text-2xl font-bold text-gray-900">SOMA</h1>
+              </div>
             </Link>
           </div>
 
@@ -38,13 +51,44 @@ const Navigation = () => {
                 href={item.path}
                 className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
                   location === item.path
-                    ? "text-soma-green"
-                    : "text-gray-700 hover:text-soma-green"
+                    ? "text-green-600"
+                    : "text-gray-700 hover:text-green-600"
                 }`}
               >
                 {item.label}
               </Link>
             ))}
+            
+            {isLoggedIn ? (
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <User className="w-4 h-4 text-gray-600" />
+                  <span className="text-sm text-gray-700">{user?.name}</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={logout}
+                  className="text-gray-700 hover:text-red-600"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="text-gray-700 hover:text-green-600">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -53,7 +97,7 @@ const Navigation = () => {
               variant="ghost"
               size="sm"
               onClick={toggleMobileMenu}
-              className="text-gray-700 hover:text-soma-green"
+              className="text-gray-700 hover:text-green-600"
             >
               {isMobileMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -75,14 +119,48 @@ const Navigation = () => {
                 href={item.path}
                 className={`block px-3 py-2 text-base font-medium w-full text-left transition-colors duration-200 ${
                   location === item.path
-                    ? "text-soma-green"
-                    : "text-gray-700 hover:text-soma-green"
+                    ? "text-green-600"
+                    : "text-gray-700 hover:text-green-600"
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
+            
+            {/* Mobile Auth Section */}
+            <div className="border-t pt-3 mt-3">
+              {isLoggedIn ? (
+                <div className="space-y-2">
+                  <div className="flex items-center px-3 py-2">
+                    <User className="w-4 h-4 text-gray-600 mr-2" />
+                    <span className="text-sm text-gray-700">{user?.name}</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={logout}
+                    className="w-full text-left justify-start text-gray-700 hover:text-red-600"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button variant="ghost" size="sm" className="w-full text-left justify-start text-gray-700 hover:text-green-600">
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button size="sm" className="w-full bg-green-600 hover:bg-green-700 text-white">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

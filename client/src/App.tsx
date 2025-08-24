@@ -3,6 +3,8 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Homepage from "@/pages/Homepage";
@@ -32,14 +34,38 @@ function Router() {
     <Layout>
       <Switch>
         <Route path="/" component={Homepage} />
-        <Route path="/dashboard" component={SustainabilityDashboard} />
+        <Route path="/dashboard" component={() => (
+          <ProtectedRoute feature="Dashboard">
+            <SustainabilityDashboard />
+          </ProtectedRoute>
+        )} />
         <Route path="/old-dashboard" component={Dashboard} />
         <Route path="/home" component={Home} />
-        <Route path="/soil-health" component={() => <LoginRequired feature="Soil Health Monitoring" />} />
-        <Route path="/water-usage" component={() => <LoginRequired feature="Water Usage Analytics" />} />
-        <Route path="/practices" component={() => <LoginRequired feature="Regenerative Practices" />} />
-        <Route path="/carbon-credits" component={() => <LoginRequired feature="Carbon Credit Tracking" />} />
-        <Route path="/reports" component={() => <LoginRequired feature="Sustainability Reports" />} />
+        <Route path="/soil-health" component={() => (
+          <ProtectedRoute feature="Soil Health Monitoring">
+            <SoilHealth />
+          </ProtectedRoute>
+        )} />
+        <Route path="/water-usage" component={() => (
+          <ProtectedRoute feature="Water Usage Analytics">
+            <WaterUsage />
+          </ProtectedRoute>
+        )} />
+        <Route path="/practices" component={() => (
+          <ProtectedRoute feature="Regenerative Practices">
+            <RegenerativePractices />
+          </ProtectedRoute>
+        )} />
+        <Route path="/carbon-credits" component={() => (
+          <ProtectedRoute feature="Carbon Credit Tracking">
+            <CarbonCredit />
+          </ProtectedRoute>
+        )} />
+        <Route path="/reports" component={() => (
+          <ProtectedRoute feature="Sustainability Reports">
+            <SustainabilityReport />
+          </ProtectedRoute>
+        )} />
 
         <Route path="/earth-data" component={EarthData} />
         <Route path="/weather" component={Weather} />
@@ -62,10 +88,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

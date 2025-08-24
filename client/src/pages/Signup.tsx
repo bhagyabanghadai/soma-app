@@ -1,11 +1,45 @@
-import { Link } from "wouter";
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, Users, Shield } from "lucide-react";
+import { Leaf, Users, Shield, Loader2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Signup = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { signup } = useAuth();
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const success = await signup(name, email, password);
+      if (success) {
+        toast({
+          title: "Welcome to SOMA!",
+          description: "Your account has been created successfully.",
+        });
+        setLocation("/dashboard");
+      }
+    } catch (error) {
+      toast({
+        title: "Signup failed",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div 
       className="min-h-screen flex items-center justify-center relative"
@@ -35,43 +69,65 @@ const Signup = () => {
           <p className="text-gray-700">Start your smart farming revolution today</p>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-gray-800 font-medium">Full Name</Label>
-            <Input 
-              id="name" 
-              placeholder="Enter your full name" 
-              className="border-gray-300 focus:border-green-500 focus:ring-green-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-gray-800 font-medium">Email Address</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="Enter your email" 
-              className="border-gray-300 focus:border-green-500 focus:ring-green-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-gray-800 font-medium">Password</Label>
-            <Input 
-              id="password" 
-              type="password" 
-              placeholder="Create a strong password" 
-              className="border-gray-300 focus:border-green-500 focus:ring-green-500"
-            />
-          </div>
-          
-          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-            <div className="flex items-center">
-              <Shield className="w-5 h-5 text-green-600 mr-2" />
-              <span className="text-sm text-green-800 font-medium">Your data is secure and protected</span>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-gray-800 font-medium">Full Name</Label>
+              <Input 
+                id="name" 
+                placeholder="Enter your full name" 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="border-gray-300 focus:border-green-500 focus:ring-green-500"
+                required
+              />
             </div>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-gray-800 font-medium">Email Address</Label>
+              <Input 
+                id="email" 
+                type="email" 
+                placeholder="Enter your email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="border-gray-300 focus:border-green-500 focus:ring-green-500"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-gray-800 font-medium">Password</Label>
+              <Input 
+                id="password" 
+                type="password" 
+                placeholder="Create a strong password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="border-gray-300 focus:border-green-500 focus:ring-green-500"
+                required
+              />
+            </div>
+            
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <div className="flex items-center">
+                <Shield className="w-5 h-5 text-green-600 mr-2" />
+                <span className="text-sm text-green-800 font-medium">Your data is secure and protected</span>
+              </div>
+            </div>
 
-          <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 text-lg shadow-lg">
-            Create Your Account
-          </Button>
+            <Button 
+              type="submit"
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 text-lg shadow-lg"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Creating Account...
+                </>
+              ) : (
+                'Create Your Account'
+              )}
+            </Button>
+          </form>
           
           <div className="text-center">
             <span className="text-gray-700">Already transforming your farm? </span>
