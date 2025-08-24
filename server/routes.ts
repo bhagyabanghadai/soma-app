@@ -91,18 +91,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Question parameter is required" });
       }
       
-      // Try GLM 4.5 API first, fallback to local knowledge base
+          // Check for simple greetings first
+      const questionLower = question.toLowerCase().trim();
+      const simpleGreetings = ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening'];
+      const isSimpleGreeting = simpleGreetings.some(greeting => 
+        questionLower === greeting || questionLower.startsWith(greeting + ' ') || questionLower.startsWith(greeting + ',')
+      );
+      
       let aiResponse;
       
-      try {
-        aiResponse = await getGLMAIResponse(question, context);
-        // Remove ** formatting from GLM responses
-        aiResponse = aiResponse.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1');
-      } catch (glmError: any) {
-        console.warn("GLM API unavailable, using agricultural knowledge base:", glmError.message);
-        aiResponse = generateAgriculturalAIResponse(question.toLowerCase(), context);
-        // Clean up fallback response too
-        aiResponse = aiResponse.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1');
+      if (isSimpleGreeting) {
+        aiResponse = "Hello! I'm SOMA, your agricultural assistant. I'm here to help with farming questions about soil health, water management, crops, weather, and sustainable practices. What would you like to know about your farm?";
+      } else {
+        // Try GLM 4.5 API first, fallback to local knowledge base
+        try {
+          aiResponse = await getGLMAIResponse(question, context);
+          // Remove ** formatting from GLM responses
+          aiResponse = aiResponse.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1');
+        } catch (glmError: any) {
+          console.warn("GLM API unavailable, using agricultural knowledge base:", glmError.message);
+          aiResponse = generateAgriculturalAIResponse(question.toLowerCase(), context);
+          // Clean up fallback response too
+          aiResponse = aiResponse.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1');
+        }
       }
       
       res.json({
@@ -534,37 +545,58 @@ function generateNASAEarthData(lat: number, lon: number) {
 }
 
 function generateAgriculturalAIResponse(question: string, context?: any): string {
+  // Handle simple greetings
+  const greetings = ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening'];
+  if (greetings.some(greeting => question.includes(greeting))) {
+    return "Hello! I'm SOMA, your agricultural assistant. I'm here to help with farming questions about soil health, water management, crops, weather, and sustainable practices. What would you like to know about your farm?";
+  }
+  
+  // Handle thank you messages
+  if (question.includes('thank') || question.includes('thanks')) {
+    return "You're welcome! I'm always here to help with your farming questions. Feel free to ask about anything related to your farm operations.";
+  }
+  
   // Soil Health Related Questions
   if (question.includes('soil') && (question.includes('health') || question.includes('improve'))) {
-    return "To improve soil health: 1) Add organic compost (2-4 inches annually), 2) Plant diverse cover crops like crimson clover and winter rye, 3) Reduce tillage to preserve soil structure, 4) Test soil pH and adjust if needed (ideal range 6.0-7.0), 5) Rotate crops to break pest cycles. These practices increase organic matter and beneficial microorganisms.";
+    return "For better soil health, focus on: adding organic compost, planting cover crops, and reducing tillage. Test your soil pH annually - aim for 6.0-7.0. Would you like specific advice for any of these areas?";
   }
   
   if (question.includes('soil') && question.includes('ph')) {
-    return "For soil pH management: Test annually in fall. If pH < 6.0 (acidic), add agricultural lime at 1-2 tons per acre. If pH > 8.0 (alkaline), add sulfur or organic matter. Ideal pH for most crops is 6.0-7.0. Apply lime in fall for spring availability. Organic matter naturally buffers pH extremes.";
+    return "For soil pH: test annually and aim for 6.0-7.0. If it's too acidic (below 6), add lime. If too alkaline (above 8), add sulfur or compost. Apply in fall for best results. Need help with a specific pH issue?";
   }
   
   // Water Management
   if (question.includes('water') || question.includes('irrigation') || question.includes('drought')) {
-    return "For efficient water management: 1) Install drip irrigation to reduce water use by 30-50%, 2) Use soil moisture sensors to optimize timing, 3) Apply mulch to reduce evaporation, 4) Plant drought-resistant varieties, 5) Implement conservation tillage, 6) Schedule irrigation for early morning (4-8 AM) to minimize losses.";
+    return "For water efficiency: try drip irrigation, use soil moisture sensors, and irrigate early morning (4-8 AM). Mulch helps reduce evaporation too. What's your current watering challenge?";
   }
   
   // Crop Selection and Planting
   if (question.includes('crop') && (question.includes('plant') || question.includes('grow') || question.includes('season'))) {
-    return "For crop selection: Consider your hardiness zone, soil type, and market demand. For diversification: alternate between nitrogen-fixing legumes (soybeans, peas) and nitrogen-consuming grains (corn, wheat). Plant cover crops in off-seasons. Choose varieties adapted to your climate and resistant to local pests.";
+    return "Choose crops based on your climate zone, soil type, and local market. Rotate between legumes (beans, peas) and grains for soil health. What crops are you considering for next season?";
   }
   
   // Pest and Disease Management
   if (question.includes('pest') || question.includes('disease') || question.includes('insect')) {
-    return "Integrated Pest Management (IPM): 1) Scout fields weekly for early detection, 2) Use beneficial insects like ladybugs and parasitic wasps, 3) Rotate crops to break pest cycles, 4) Plant trap crops to divert pests, 5) Apply targeted treatments only when economic thresholds are reached, 6) Maintain field borders with native plants for beneficial habitat.";
+    return "For pest control: scout fields weekly, encourage beneficial insects, rotate crops, and use targeted treatments only when needed. What pest issues are you seeing?";
   }
   
   // Fertilizer and Nutrients
   if (question.includes('fertilizer') || question.includes('nutrient') || question.includes('nitrogen')) {
-    return "For sustainable nutrient management: 1) Conduct annual soil tests to determine actual needs, 2) Use precision application based on soil zones, 3) Apply nitrogen in split applications to reduce losses, 4) Include legume cover crops for natural nitrogen fixation, 5) Use organic sources like compost and manure when available, 6) Follow 4R principles: Right source, Right rate, Right time, Right place.";
+    return "For nutrients: start with a soil test to know what you need, split nitrogen applications, and consider cover crops for natural nitrogen. Compost is always great too! What nutrients are you thinking about?";
   }
   
   // Climate and Weather
   if (question.includes('climate') || question.includes('weather') || question.includes('temperature')) {
+    return "For weather challenges: choose climate-adapted varieties, use row covers for protection, and adjust planting dates based on forecast. Monitor soil temperature for planting timing. What weather concerns do you have?";
+  }
+  
+  // Handle simple questions about farming
+  if (question.includes('how') && question.split(' ').length <= 5) {
+    return "I'd be happy to help! Could you tell me more details about what you're trying to do? The more specific you are, the better advice I can give.";
+  }
+  
+  // Equipment questions
+  if (question.includes('equipment') || question.includes('tractor') || question.includes('tool')) {
     return "Climate adaptation strategies: 1) Plant climate-appropriate varieties, 2) Adjust planting dates for changing seasons, 3) Use season extenders like row covers, 4) Implement diverse crop rotations for resilience, 5) Build soil organic matter for better water retention, 6) Monitor weather forecasts for optimal field operation timing.";
   }
   
@@ -575,26 +607,26 @@ function generateAgriculturalAIResponse(question: string, context?: any): string
   
   // Equipment and Technology
   if (question.includes('equipment') || question.includes('technology') || question.includes('precision')) {
-    return "Precision agriculture recommendations: 1) GPS-guided equipment for accurate applications, 2) Variable rate applicators for site-specific management, 3) Soil sampling grids for precision fertilization, 4) Drones for crop monitoring and early problem detection, 5) Yield mapping to identify productive zones, 6) Data management systems to track and analyze performance.";
+    return "For equipment: GPS guidance helps with accuracy, soil moisture sensors prevent over-watering, and drones can spot problems early. What equipment are you considering?";
   }
   
   // Financial and Marketing
   if (question.includes('profit') || question.includes('cost') || question.includes('market')) {
-    return "For farm profitability: 1) Track costs per acre for each enterprise, 2) Diversify crops and markets to spread risk, 3) Consider value-added products (direct sales, processing), 4) Optimize input timing for best prices, 5) Use forward contracting for price risk management, 6) Implement practices that reduce input costs while maintaining yields.";
+    return "For better profits: track costs per acre, diversify your crops and markets, and consider direct sales or value-added products. What's your main profitability concern?";
   }
   
   // General farming questions
   if (question.includes('farm') || question.includes('agriculture') || question.includes('grow')) {
-    return "General farming best practices: 1) Plan crop rotations 3-5 years ahead, 2) Keep detailed records of all inputs and yields, 3) Build relationships with extension agents and other farmers, 4) Stay informed about new research and technologies, 5) Focus on soil health as the foundation, 6) Consider both short-term profitability and long-term sustainability.";
+    return "Good farming starts with healthy soil, smart crop rotations, and keeping good records. Build relationships with other farmers and extension agents too. What aspect of farming interests you most?";
   }
   
   // Harvest and Storage
   if (question.includes('harvest') || question.includes('storage') || question.includes('post-harvest')) {
-    return "Harvest and storage optimization: 1) Monitor crops for optimal harvest timing (moisture content, maturity), 2) Maintain equipment for efficient harvesting, 3) Dry grain to proper moisture levels (corn: 15.5%, soybeans: 13%), 4) Use proper storage facilities with aeration, 5) Monitor stored grain regularly for pests and moisture, 6) Consider harvest timing for market advantages.";
+    return "For harvest: monitor moisture levels and maturity, keep equipment maintained, and dry grain properly (corn 15.5%, beans 13%). Good aeration in storage prevents problems. What are you harvesting?";
   }
   
   // Default response for unmatched questions
-  return "Based on sustainable farming principles, I recommend: 1) Focus on soil health through organic matter and cover crops, 2) Use precision agriculture for efficient resource use, 3) Implement integrated pest management, 4) Practice crop rotation for long-term productivity, 5) Monitor and adapt based on local conditions. Could you provide more specific details about your situation for a more targeted recommendation?";
+  return "I'm here to help with your farming questions! I can advise on soil health, water management, crop selection, pest control, and sustainable practices. What specific farming challenge are you facing?";
 }
 
 async function getGLMAIResponse(question: string, context?: any): Promise<string> {
@@ -605,18 +637,17 @@ async function getGLMAIResponse(question: string, context?: any): Promise<string
   }
 
   // Create agricultural context-aware prompt
-  const systemPrompt = `You are an expert agricultural advisor with decades of experience in sustainable farming practices. You provide practical, science-based advice to farmers about:
+  const systemPrompt = `You are SOMA, a friendly agricultural advisor assistant. Provide helpful farming advice in a conversational manner:
 
-- Soil health improvement and nutrient management
-- Water conservation and irrigation optimization  
-- Crop selection and rotation strategies
-- Integrated pest management (IPM)
-- Climate adaptation and resilience
-- Carbon sequestration and sustainability
-- Equipment and precision agriculture
-- Financial planning and market strategies
+- Keep responses concise and easy to understand
+- For simple questions, give brief, friendly answers
+- For complex topics, provide 2-3 key actionable points
+- Use clear, everyday language that farmers can easily understand
+- Be encouraging and supportive in your tone
 
-Always provide specific, actionable recommendations with concrete steps farmers can implement. Use clear, professional language and include relevant measurements, timing, and cost considerations when appropriate.`;
+Focus on practical advice about: soil health, water management, crops, pest control, weather, equipment, and sustainable practices.
+
+If someone asks a detailed question, provide specific steps. For general questions, keep it conversational and ask what they'd like to know more about.`;
 
   // Enhanced context-aware prompt with website data
   let contextualPrompt = `Farmer Question: ${question}`;
@@ -669,7 +700,7 @@ Please provide specific, actionable recommendations considering all the above co
           }
         ],
         temperature: 0.7,
-        max_tokens: 800,
+        max_tokens: 300,
         top_p: 0.9,
         stream: false
       })
