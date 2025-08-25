@@ -1,8 +1,28 @@
 {
-  "name": "rest-express",
+  "name": "soma-app",
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
+  "description": "SOMA - AI-powered sustainability assistant for farmers and agricultural experts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bhagyabanghadai/soma-app.git"
+  },
+  "homepage": "https://github.com/bhagyabanghadai/soma-app",
+  "bugs": {
+    "url": "https://github.com/bhagyabanghadai/soma-app/issues"
+  },
+  "keywords": [
+    "sustainability",
+    "agriculture",
+    "farming",
+    "ai-assistant",
+    "environmental-monitoring",
+    "react",
+    "typescript",
+    "spring-boot"
+  ],
+  "author": "bhagyabanghadai",
   "scripts": {
     "dev": "NODE_ENV=development tsx server/index.ts",
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
