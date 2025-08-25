@@ -1,50 +1,52 @@
 import { cropTypes, irrigationMethods } from "@/data/mockData";
 
+// Smooth scoring function for nutrient ranges
+const triangularScore = (value: number, low: number, optLow: number, optHigh: number, high: number): number => {
+  if (value <= low || value >= high) return 0;
+  if (value >= optLow && value <= optHigh) return 1;
+  return (value < optLow) ? (value - low) / (optLow - low) : (high - value) / (high - optHigh);
+};
+
 export const calculateSoilHealth = (
   pH: number,
-  nitrogen: number,
-  phosphorus: number,
-  potassium: number
+  nitrogenPPM: number,
+  phosphorusPPM: number,
+  potassiumPPM: number,
+  organicMatterPct: number = 3
 ): { score: number; status: string; recommendations: string[] } => {
-  let score = 50;
   const recommendations: string[] = [];
 
-  // pH scoring
-  if (pH >= 6.0 && pH <= 7.5) {
-    score += 20;
-  } else if (pH < 6.0) {
-    recommendations.push("Add lime to increase soil pH");
-  } else {
-    recommendations.push("Add sulfur to decrease soil pH");
-  }
+  // Smooth pH scoring (penalty curve away from 6.5-7.0)
+  const pHScore = 1 - (Math.min(Math.abs(pH - 6.8), 2.0) / 2.0);
+  if (pH < 6.0) recommendations.push("Add lime to increase soil pH");
+  if (pH > 8.0) recommendations.push("Add sulfur to decrease soil pH");
 
-  // Nitrogen scoring
-  if (nitrogen >= 20) {
-    score += 15;
-  } else {
-    recommendations.push("Consider cover cropping to increase nitrogen");
-  }
+  // Smooth nutrient scoring with optimal ranges
+  const nitrogenScore = triangularScore(nitrogenPPM, 5, 15, 30, 60);
+  if (nitrogenPPM < 15) recommendations.push("Consider cover cropping to increase nitrogen");
+  
+  const phosphorusScore = triangularScore(phosphorusPPM, 5, 15, 30, 60);
+  if (phosphorusPPM < 15) recommendations.push("Add phosphorus fertilizer or bone meal");
+  
+  const potassiumScore = triangularScore(potassiumPPM, 60, 120, 200, 320);
+  if (potassiumPPM < 120) recommendations.push("Add potassium fertilizer or compost");
+  
+  const organicMatterScore = triangularScore(organicMatterPct, 1, 3, 6, 10);
+  if (organicMatterPct < 3) recommendations.push("Add organic compost to improve soil structure");
 
-  // Phosphorus scoring
-  if (phosphorus >= 10) {
-    score += 10;
-  } else {
-    recommendations.push("Add phosphorus fertilizer or bone meal");
-  }
+  // Weighted scoring
+  const weights = { pH: 0.25, nitrogen: 0.2, phosphorus: 0.15, potassium: 0.2, organicMatter: 0.2 };
+  const score01 = pHScore * weights.pH + nitrogenScore * weights.nitrogen + 
+                  phosphorusScore * weights.phosphorus + potassiumScore * weights.potassium + 
+                  organicMatterScore * weights.organicMatter;
+  const score = Math.round(score01 * 100);
 
-  // Potassium scoring
-  if (potassium >= 100) {
-    score += 15;
-  } else {
-    recommendations.push("Add potassium fertilizer or compost");
-  }
-
-  // Default recommendations
+  // Default recommendations when soil is healthy
   if (recommendations.length === 0) {
     recommendations.push(
-      "Add organic compost to improve soil structure",
-      "Reduce tillage to preserve soil microorganisms",
-      "Consider cover cropping for continuous soil improvement"
+      "Maintain current good practices",
+      "Continue regular soil testing",
+      "Monitor organic matter levels annually"
     );
   }
 
@@ -56,13 +58,15 @@ export const calculateSoilHealth = (
 export const calculateWaterUsage = (
   cropType: string,
   irrigationMethod: string,
-  rainfall: number,
-  fieldSize: number
+  rainfallInchesPerWeek: number,
+  fieldSizeAcres: number,
+  waterPricePer1000gal: number = 3.5
 ): {
   totalUsage: number;
   efficiency: number;
   tips: string[];
   weeklySchedule: { day: string; amount: number }[];
+  costUSD: number;
 } => {
   const crop = cropTypes.find((c) => c.value === cropType);
   const method = irrigationMethods.find((m) => m.value === irrigationMethod);
@@ -73,18 +77,25 @@ export const calculateWaterUsage = (
       efficiency: 0,
       tips: [],
       weeklySchedule: [],
+      costUSD: 0,
     };
   }
 
-  let baseUsage = crop.waterNeed; // gallons per acre per week
-  const adjustedUsage = baseUsage * method.efficiency;
-  const totalUsage = Math.round(adjustedUsage * fieldSize);
+  const INCH_ACRE_TO_GAL = 27154;
+  const effectiveRainCoeff = 0.8; // Account for runoff/soil limits
+  
+  // Calculate net water need after accounting for effective rainfall
+  const netInchesNeeded = Math.max(0, crop.waterNeed - rainfallInchesPerWeek * effectiveRainCoeff);
+  
+  // Apply irrigation efficiency (need more water due to system losses)
+  const inchesApplied = netInchesNeeded / Math.max(0.1, method.efficiency);
+  const gallons = inchesApplied * INCH_ACRE_TO_GAL * fieldSizeAcres;
 
-  // Adjust for rainfall
-  const rainfallAdjustment = rainfall > 20 ? 0.8 : 1.0;
-  const finalUsage = Math.round(totalUsage * rainfallAdjustment);
+  const finalUsage = Math.round(gallons);
+  const costUSD = Math.round((gallons / 1000) * waterPricePer1000gal);
 
-  const efficiency = Math.round(100 - (method.efficiency - 0.6) * 100);
+  // Efficiency score: map efficiency 0.4–0.95 to 0–100
+  const efficiency = Math.round((Math.min(0.95, Math.max(0.4, method.efficiency)) - 0.4) / (0.95 - 0.4) * 100);
 
   const tips = [
     "Consider drip irrigation to reduce usage by 40%",
@@ -105,6 +116,7 @@ export const calculateWaterUsage = (
     efficiency,
     tips,
     weeklySchedule,
+    costUSD,
   };
 };
 
@@ -120,7 +132,7 @@ export const calculateCarbonCredits = (
   breakdown: { practice: string; carbon: number; earnings: number }[];
 } => {
   const practiceValues: { [key: string]: number } = {
-    "cover-crops": 0.5,
+    "cover-crop": 0.5,
     "no-till": 0.8,
     "crop-rotation": 0.3,
     "composting": 0.4,
@@ -155,7 +167,7 @@ export const calculateCarbonCredits = (
 
 export const calculatePracticeImpact = (selectedPractices: string[]) => {
   const practiceImpacts: { [key: string]: { soil: number; carbon: number; water: number; biodiversity: number } } = {
-    "cover-crop": { soil: 15, carbon: 10, water: 0, biodiversity: 20 },
+    "cover-crop": { soil: 15, carbon: 10, water: 5, biodiversity: 20 },
     "crop-rotation": { soil: 20, carbon: 5, water: 0, biodiversity: 15 },
     "no-till": { soil: 10, carbon: 25, water: 0, biodiversity: 10 },
     "composting": { soil: 30, carbon: 15, water: 0, biodiversity: 20 },

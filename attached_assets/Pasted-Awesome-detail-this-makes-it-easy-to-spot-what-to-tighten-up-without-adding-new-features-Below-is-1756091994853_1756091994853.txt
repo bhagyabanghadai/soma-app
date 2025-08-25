@@ -1,0 +1,307 @@
+Awesome detail—this makes it easy to spot what to tighten up without adding “new” features. Below is a straight‑shooting QA pass: **bugs/risks first**, then **better formulas & guardrails**, and finally **tiny code fixes** you can apply right now.
+
+---
+
+# 🔥 High‑impact issues (fix first)
+
+## 1) NASA/Earth data generator
+
+**Bugs & logic gaps**
+
+* Uses undeclared variables: `currentMonth`, `seasonal_adjustment`, `random_variation`, `landSurfaceTemperature`, `ndvi`.
+* Inconsistent var names: you compute `baseNDVI`/`baseTemp` but later reference `ndvi`/`landSurfaceTemperature`.
+* No return object.
+* Hemisphere season handling is lopsided (extra logic for NH only).
+* **ET vs drought risk is inverted**. Low ET usually means *lower* demand; drought risk rises with **higher** ET (all else equal).
+
+**Tightened version (drop‑in style)**
+
+```js
+function generateNASAEarthData(lat, lon, now = new Date()) {
+  const month = now.getUTCMonth() + 1; // 1-12
+  const rand = (min, max) => min + Math.random() * (max - min);
+
+  // NDVI bands by latitude zone
+  let ndvi = (Math.abs(lat) < 23.5) ? rand(0.65, 0.90)
+           : (Math.abs(lat) < 50)   ? rand(0.45, 0.80)
+           :                          rand(0.15, 0.40);
+
+  // Seasonal factor by hemisphere (simple growing vs dormant)
+  const isNH = lat >= 0;
+  const growing = isNH ? (month >= 4 && month <= 9) : (month <= 3 || month >= 10);
+  ndvi *= growing ? 1.15 : 0.65;
+  ndvi = Math.max(0, Math.min(0.92, ndvi)); // clamp
+
+  // Land surface temp (°C) crude gradient + season wiggle
+  let landSurfaceTemperature = 28 - (Math.abs(lat) * 0.55) + (growing ? 4 : -4) + rand(-1, 1);
+
+  // Evapotranspiration (mm/day) heuristic; ensure bounds
+  const et = Math.max(0.5, Math.min(8.0, (landSurfaceTemperature * 0.10) + (ndvi * 3.0) + rand(-0.4, 0.4)));
+
+  const vegetationStatus = (ndvi > 0.70) ? "Excellent" :
+                           (ndvi > 0.50) ? "Good"      :
+                           (ndvi > 0.35) ? "Moderate"  : "Poor";
+
+  // Drought risk rises with **higher** ET (proxy for demand)
+  const droughtRisk = (et > 5.5) ? "High" : (et > 3.0) ? "Moderate" : "Low";
+
+  return { ndvi: +ndvi.toFixed(3), landSurfaceTemperature: +landSurfaceTemperature.toFixed(1), evapotranspiration: +et.toFixed(2), vegetationStatus, droughtRisk };
+}
+```
+
+## 2) Water usage calculator
+
+**Problems**
+
+* Multiplying by `method.efficiency` likely **overstates** usage if `efficiency ∈ (0,1]`. Usually effective water **required** = `baseNeed / efficiency`.
+* Rainfall adjustment is a hard threshold with no units—should be **continuous** and **unit‑aware**.
+* Efficiency score formula `100 - (method.efficiency - 0.6) * 100` is opaque and can exceed bounds.
+
+**Concrete fixes**
+
+* Pick units and **stick to them** (e.g., crop need in **inches/acre/week**). Convert with the constant: **1 inch rain on 1 acre ≈ 27,154 gallons**.
+* Compute **effective rainfall** (rain × effectiveCoeff) and subtract it from crop need before scaling by efficiency.
+
+```js
+// Inputs: crop.waterNeedInchesPerWeek, rainfallInchesPerWeek, fieldSizeAcres
+// method.efficiency in (0,1], e.g., drip 0.9, sprinkler 0.7, flood 0.5
+export function calculateWaterUsage(cropType, irrigationMethod, rainfallInchesPerWeek, fieldSizeAcres, waterPricePer1000gal = 0) {
+  const crop = cropTypes.find(c => c.value === cropType);
+  const method = irrigationMethods.find(m => m.value === irrigationMethod);
+  if (!crop || !method) throw new Error("Invalid crop or method");
+
+  const INCH_ACRE_TO_GAL = 27154;
+  const effectiveRainCoeff = 0.8; // runoff/soil limits
+  const netInchesNeeded = Math.max(0, crop.waterNeedInchesPerWeek - rainfallInchesPerWeek * effectiveRainCoeff);
+
+  const inchesApplied = netInchesNeeded / Math.max(0.1, method.efficiency);         // account for losses
+  const gallons = inchesApplied * INCH_ACRE_TO_GAL * fieldSizeAcres;
+
+  // Simple efficiency score: map efficiency 0.4–0.95 to 0–100
+  const efficiencyScore = Math.round( (Math.min(0.95, Math.max(0.4, method.efficiency)) - 0.4) / (0.95 - 0.4) * 100 );
+
+  const costUSD = waterPricePer1000gal ? (gallons / 1000) * waterPricePer1000gal : 0;
+
+  return { totalUsageGallons: Math.round(gallons), efficiencyScore, costUSD: Math.round(costUSD) };
+}
+```
+
+## 3) “Historical water” & “monthly cost” series
+
+**Problems**
+
+* `date`, `dayOfYear`, `today`, `threeDayForecast` are referenced but not guaranteed.
+* Series use the **same** `currentTemp/currentET` each day → flat/unnatural curves.
+* Some signals have wrong directionality (e.g., higher ET should usually **lower** soil moisture if irrigation is constant).
+
+**Fixes**
+
+* Derive **daily ET**/temperature from forecast when available; otherwise vary with a small seasonal + noise term.
+* Make soil‑moisture respond **negatively** to ET unless irrigation increases.
+
+```js
+const seasonFactor = (d) => 0.6 + 0.4 * Math.sin((d/365) * 2*Math.PI);
+const noise = () => (Math.random() - 0.5) * 0.1;
+
+for (let i = 0; i < days; i++) {
+  const doy = ((baseDOY + i - 1) % 365) + 1;
+  const etDaily = (forecastET[i] ?? currentET) * (0.9 + 0.2 * seasonFactor(doy)) + noise();
+  const tempDaily = (forecastTemp[i] ?? currentTemp) * (0.9 + 0.2 * seasonFactor(doy)) + noise();
+
+  const irrigation = Math.max(0, targetInchesPerWeek/7) * INCH_ACRE_TO_GAL * fieldSizeAcres;
+  const demand = etDaily * demandScale;
+  const deltaSoil = irrigation - demand; // simple bucket
+
+  // soilMoisture% drifts toward a bound [10, 45]
+  soilMoisture = Math.max(10, Math.min(45, soilMoisture + deltaSoil * 0.002));
+
+  // ...
+}
+```
+
+For **monthly costs**, multiply **volumes** by a **unit price**, not `Temp * ET * 15`. Keep it dimensional.
+
+---
+
+# 🧪 Soil health logic
+
+## 4) Scoring function
+
+**Problems**
+
+* Thresholds lack units; different labs report N/P/K as ppm, mg/kg, or lb/acre.
+* Score jumps are stepwise; pH influence is all‑or‑nothing.
+* “Current nutrients from NDVI” is **not agronomically sound** (NDVI can’t estimate pH or P/K directly).
+
+**Keep same UI, better math**
+
+* Normalize each nutrient against a target band with a smooth score (e.g., triangular or sigmoid).
+* Keep pH as a **penalty curve** away from 6.5–7.0.
+* Include organic matter if you already compute it; otherwise don’t infer it from NDVI.
+
+```js
+const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
+const tri = (v, low, optLow, optHigh, high) => {
+  if (v <= low || v >= high) return 0;
+  if (v >= optLow && v <= optHigh) return 1;
+  return (v < optLow) ? (v - low) / (optLow - low) : (high - v) / (high - optHigh);
+};
+
+export function calculateSoilHealth({pH, Nppm, Pppm, Kppm, organicMatterPct=3}) {
+  // Example target bands (document your lab’s units!)
+  const pHScore = 1 - (Math.min(Math.abs(pH - 6.8), 2.0) / 2.0); // 1 near 6.8, 0 at ±2
+  const Nscore  = tri(Nppm,  5, 15, 30, 60);
+  const Pscore  = tri(Pppm,  5, 15, 30, 60);
+  const Kscore  = tri(Kppm, 60,120,200,320);
+  const OMscore = tri(organicMatterPct, 1, 3, 6, 10);
+
+  const weights = {pH:0.25, N:0.2, P:0.15, K:0.2, OM:0.2};
+  const score01 = pHScore*weights.pH + Nscore*weights.N + Pscore*weights.P + Kscore*weights.K + OMscore*weights.OM;
+  const score = Math.round(score01 * 100);
+
+  const status = score>=80 ? "Excellent" : score>=60 ? "Good" : score>=40 ? "Moderate" : "Poor";
+  return { score, status };
+}
+```
+
+**Charts integration**
+
+* Remove: `pH`, `nitrogen`, `phosphorus`, `potassium` derived from NDVI.
+* Keep: microbial activity may **correlate** with temperature & moisture, but scale it gently and clamp.
+* Water retention should **decrease** with higher ET unless irrigation offsets it.
+
+---
+
+# 🧮 Carbon credit logic
+
+## 5) Calculator & impacts
+
+**Issues**
+
+* Practice keys inconsistent: `"cover-crops"` vs `"cover-crop"`.
+* Fixed \$20/ton and fixed sequestration rates → fine for a placeholder, but expose as **config**.
+* Linear sum overestimates when stacking practices (diminishing returns).
+
+**Small, safe upgrades**
+
+```js
+const PRACTICE_RATES = { "cover-crops":0.5, "no-till":0.8, "crop-rotation":0.3, "composting":0.4, "agroforestry":0.2 };
+export function calculateCarbonCredits(landSize, selectedPractices, years, {pricePerTon=20, diminishing=0.9} = {}) {
+  let annual = 0;
+  selectedPractices.forEach((p, idx) => {
+    const rate = PRACTICE_RATES[p] || 0;
+    annual += rate * Math.pow(diminishing, idx); // small overlap penalty
+  });
+  const totalCarbon = annual * landSize * years;
+  const earnings = totalCarbon * pricePerTon;
+  return { totalCarbon, earnings, annualCarbon: annual*landSize, annualEarnings: annual*landSize*pricePerTon };
+}
+```
+
+For `calculatePracticeImpact`, fix keys and keep impact additive but **clamp** totals to avoid absurd values:
+
+```js
+const IMPACTS = {
+  "cover-crops":      { soil:15, carbon:10, water:5,  biodiversity:20 },
+  "crop-rotation":    { soil:20, carbon:5,  water:5,  biodiversity:15 },
+  "no-till":          { soil:10, carbon:25, water:5,  biodiversity:10 },
+  "composting":       { soil:25, carbon:15, water:5,  biodiversity:15 },
+  "precision-irrigation": { soil:0, carbon:5, water:40, biodiversity:5 }
+};
+```
+
+---
+
+# 🤖 AI integration
+
+## 6) Prompt & API hygiene
+
+* **Sanitize** user inputs (avoid leaking keys; strip very long texts).
+* Add **timeout/retry** and a short **cache** keyed by `(location, dayPart, questionHash)` to cut latency & cost.
+* Cap tokens to protect latency; you already use `max_tokens: 300` (good).
+* Keep greeting shortcut (nice touch), but also handle *empty* or *non‑ASCII only* input.
+
+---
+
+# 🌤️ NWS integration
+
+## 7) API correctness
+
+* NWS requires a **User‑Agent** header with contact info.
+* Fix missing vars: `today`, `threeDayForecast`.
+* Validate that `pointsData.properties.forecast` exists; fallback to `forecastHourly` if desired.
+
+```js
+async function fetchNWSWeatherData(lat, lon) {
+  const commonHeaders = { "User-Agent": "SOMA/1.0 (contact@example.com)" };
+  const pointsResp = await fetch(`https://api.weather.gov/points/${lat},${lon}`, { headers: commonHeaders });
+  const points = await pointsResp.json();
+  const forecastUrl = points?.properties?.forecast;
+  if (!forecastUrl) throw new Error("NWS forecast URL unavailable");
+
+  const fcResp = await fetch(forecastUrl, { headers: commonHeaders });
+  const fc = await fcResp.json();
+  const periods = fc?.properties?.periods ?? [];
+  const today = periods[0] || {};
+  const forecast = periods.slice(0, 6).map(p => ({
+    name: p.name, temperature: p.temperature, temperatureUnit: p.temperatureUnit,
+    conditions: p.shortForecast, isDaytime: p.isDaytime
+  }));
+
+  return {
+    location: {
+      latitude: lat, longitude: lon,
+      city: points?.properties?.relativeLocation?.properties?.city ?? "Unknown",
+      state: points?.properties?.relativeLocation?.properties?.state ?? "Unknown"
+    },
+    current: {
+      temperature: today.temperature, temperatureUnit: today.temperatureUnit,
+      conditions: today.shortForecast, windSpeed: today.windSpeed, windDirection: today.windDirection
+    },
+    forecast, timestamp: new Date().toISOString(), dataSource: "National Weather Service"
+  };
+}
+```
+
+---
+
+# 🧱 Cross‑cutting guardrails
+
+## 8) Units & naming
+
+* **Document units** on every numeric field (°C, mm/day, inches/week, ppm, gallons).
+* Make variable names carry units: `etMmPerDay`, `tempC`, `rainInches`.
+* Avoid mixing synthetic + real values silently. If you must simulate, mark fields as `*_sim`.
+
+## 9) Determinism & testing
+
+* Seed random with `(lat, lon, month)` for **repeatable** demo values.
+* Add unit tests for:
+
+  * ET range clamp \[0.5, 8]
+  * Drought risk mapping (et=6 → High; et=2 → Low)
+  * Water usage decreases with rainfall & increases with lower efficiency
+  * Soil score drops when pH deviates from 6.8
+  * Carbon totals scale with land size & years
+
+## 10) Resilience
+
+* Graceful fallbacks when any API fails: keep last good reading + “data stale” flag.
+* Rate‑limit, cache (e.g., per location for 10–15 min), and exponential backoff.
+
+---
+
+# ✅ Quick checklist you can implement now
+
+* [ ] Fix undefined vars and **return** object in `generateNASAEarthData`.
+* [ ] Flip drought‑risk logic to track **high ET = higher risk**.
+* [ ] Switch water usage to **need/efficiency** and subtract **effective rainfall** (unit aware).
+* [ ] Replace stepwise rainfall cut (20%) with continuous inches‑based adjustment.
+* [ ] Remove NDVI‑derived pH/N/P/K; score soil on **measured** values with smooth curves.
+* [ ] Make soil moisture react **negatively** to ET unless irrigation increases.
+* [ ] Normalize practice keys (`cover-crops` etc.) and expose `pricePerTon` in settings.
+* [ ] Add NWS **User‑Agent** header; fix undefined `today`/`threeDayForecast`.
+* [ ] Clamp all displayed metrics; label units everywhere.
+* [ ] Add seedable randomness + 5–10 unit tests for core formulas.
+
+If you want, I can turn any section above into exact patches against your current files (same function names/exports).

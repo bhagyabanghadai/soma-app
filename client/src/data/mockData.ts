@@ -134,14 +134,14 @@ export const aiChatHistory = [
 ];
 
 export const cropTypes = [
-  { value: "corn", label: "Corn", waterNeed: 125 },
-  { value: "wheat", label: "Wheat", waterNeed: 90 },
-  { value: "rice", label: "Rice", waterNeed: 200 },
-  { value: "soy", label: "Soybean", waterNeed: 110 },
+  { value: "corn", label: "Corn", waterNeed: 1.25 },      // inches per week
+  { value: "wheat", label: "Wheat", waterNeed: 0.9 },     // inches per week
+  { value: "rice", label: "Rice", waterNeed: 2.0 },       // inches per week
+  { value: "soy", label: "Soybean", waterNeed: 1.1 },     // inches per week
 ];
 
 export const irrigationMethods = [
-  { value: "drip", label: "Drip Irrigation", efficiency: 0.6 },
-  { value: "sprinkler", label: "Sprinkler System", efficiency: 0.8 },
-  { value: "flood", label: "Flood Irrigation", efficiency: 1.4 },
+  { value: "drip", label: "Drip Irrigation", efficiency: 0.9 },      // High efficiency, low water loss
+  { value: "sprinkler", label: "Sprinkler System", efficiency: 0.7 }, // Medium efficiency
+  { value: "flood", label: "Flood Irrigation", efficiency: 0.5 },     // Low efficiency, high water loss
 ];

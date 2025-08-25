@@ -61,11 +61,11 @@ const SoilHealthCharts = ({ location, earthData }: SoilHealthChartsProps) => {
       return {
         date: date.toISOString().split('T')[0],
         dateFormatted: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        pH: Math.max(5.5, Math.min(8.0, 6.5 + (baseNdvi - 0.5) * 2 + randomVariation)),
-        nitrogen: Math.max(10, Math.min(50, baseNdvi * 40 + seasonalFactor * 10 + randomVariation * 5)),
-        phosphorus: Math.max(5, Math.min(30, baseNdvi * 25 + seasonalFactor * 5 + randomVariation * 3)),
-        potassium: Math.max(80, Math.min(200, 120 + baseNdvi * 60 + seasonalFactor * 20 + randomVariation * 10)),
-        organicMatter: Math.max(1.0, Math.min(6.0, baseNdvi * 6 + seasonalFactor * 1.0 + randomVariation * 0.5)),
+        pH: Math.max(6.0, Math.min(7.5, 6.8 + randomVariation * 0.3)),
+        nitrogen: Math.max(15, Math.min(35, 25 + seasonalFactor * 5 + randomVariation * 3)),
+        phosphorus: Math.max(12, Math.min(25, 18 + seasonalFactor * 3 + randomVariation * 2)),
+        potassium: Math.max(120, Math.min(180, 150 + seasonalFactor * 15 + randomVariation * 8)),
+        organicMatter: Math.max(2.5, Math.min(4.5, 3.5 + seasonalFactor * 0.5 + randomVariation * 0.3)),
         soilHealth: Math.max(40, Math.min(95, baseNdvi * 90 + seasonalFactor * 10 + randomVariation * 5)),
         microbialActivity: Math.max(30, Math.min(90, baseNdvi * 80 + (30 - Math.abs(baseLST - 25)) + randomVariation * 10)),
         waterRetention: Math.max(15, Math.min(45, baseET * 8 + seasonalFactor * 8 + randomVariation * 4))
@@ -74,14 +74,14 @@ const SoilHealthCharts = ({ location, earthData }: SoilHealthChartsProps) => {
     setHistoricalData(data);
   }, [timeRange, earthData]);
 
-  // Soil nutrient analysis based on environmental data
+  // Realistic soil nutrient levels (would come from soil tests in production)
   const currentNutrients = {
-    pH: 6.5 + (earthData?.ndvi || 0.6 - 0.5) * 2,
-    nitrogen: (earthData?.ndvi || 0.6) * 40,
-    phosphorus: (earthData?.ndvi || 0.6) * 25,
-    potassium: 120 + (earthData?.ndvi || 0.6) * 60,
-    organicMatter: (earthData?.ndvi || 0.6) * 6,
-    microbialActivity: (earthData?.ndvi || 0.6) * 80 + (30 - Math.abs((earthData?.landSurfaceTemperature || 25) - 25))
+    pH: 6.8,                    // Target optimal pH
+    nitrogen: 25,               // ppm
+    phosphorus: 18,             // ppm
+    potassium: 150,             // ppm
+    organicMatter: 3.5,         // percentage
+    microbialActivity: Math.max(40, Math.min(90, 75 + (30 - Math.abs((earthData?.landSurfaceTemperature || 25) - 25)) * 0.5))
   };
 
   const radarData = [

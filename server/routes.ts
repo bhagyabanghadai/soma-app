@@ -525,8 +525,8 @@ function generateNASAEarthData(lat: number, lon: number) {
   };
   
   const getDroughtRisk = (et: number) => {
-    if (et < 2.0) return "High";
-    if (et < 3.8) return "Moderate";
+    if (et > 5.5) return "High";    // High ET = High demand = High drought risk
+    if (et > 3.0) return "Moderate";
     return "Low";
   };
   

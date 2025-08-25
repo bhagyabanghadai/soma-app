@@ -28,6 +28,7 @@ const WaterUsage = () => {
     efficiency: number;
     tips: string[];
     weeklySchedule: { day: string; amount: number }[];
+    costUSD: number;
   } | null>(null);
 
   const handleInputChange = (field: string, value: string) => {
@@ -46,7 +47,8 @@ const WaterUsage = () => {
       formData.cropType,
       formData.irrigationMethod,
       rainfall,
-      fieldSize
+      fieldSize,
+      3.5  // Default water price per 1000 gallons
     );
     setResults(analysis);
   };

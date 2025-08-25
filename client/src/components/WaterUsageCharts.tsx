@@ -51,7 +51,7 @@ const WaterUsageCharts = ({ location, earthData, weatherData }: WaterUsageCharts
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [historicalData, setHistoricalData] = useState<any[]>([]);
 
-  // Generate water usage data based on real environmental factors
+  // Generate water usage data based on real environmental factors with daily variation
   useEffect(() => {
     const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
     
@@ -60,28 +60,48 @@ const WaterUsageCharts = ({ location, earthData, weatherData }: WaterUsageCharts
     const currentET = earthData?.evapotranspiration || 4;
     const baseNdvi = earthData?.ndvi || 0.6;
     
+    // Initialize soil moisture tracker
+    let soilMoisture = 30; // Starting moisture level
+    const INCH_ACRE_TO_GAL = 27154;
+    const fieldSizeAcres = 10; // Default field size for calculations
+    
     const data = Array.from({ length: Math.min(days, 30) }, (_, i) => {
       const date = new Date();
       date.setDate(date.getDate() - (30 - 1 - i));
       
-      // Calculate based on environmental conditions
+      // Calculate seasonal and daily variations
       const dayOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000);
-      const seasonalFactor = Math.sin((dayOfYear / 365) * 2 * Math.PI) * 0.4 + 0.6;
-      const tempFactor = Math.max(0.5, Math.min(1.5, currentTemp / 25)); // Temperature impact
-      const vegetationFactor = Math.max(0.7, Math.min(1.3, baseNdvi / 0.6)); // Vegetation density impact
-      const randomVariation = (Math.random() - 0.5) * 0.2;
+      const seasonalFactor = 0.6 + 0.4 * Math.sin((dayOfYear / 365) * 2 * Math.PI);
+      const noise = (Math.random() - 0.5) * 0.1;
+      
+      // Vary ET and temperature daily instead of using static values
+      const dailyET = currentET * (0.9 + 0.2 * seasonalFactor) + noise;
+      const dailyTemp = currentTemp * (0.9 + 0.2 * seasonalFactor) + noise;
+      
+      const tempFactor = Math.max(0.5, Math.min(1.5, dailyTemp / 25));
+      const vegetationFactor = Math.max(0.7, Math.min(1.3, baseNdvi / 0.6));
+      
+      // Calculate irrigation needs and soil moisture dynamics
+      const targetInchesPerWeek = 1.5; // Target irrigation
+      const dailyIrrigationGallons = (targetInchesPerWeek / 7) * INCH_ACRE_TO_GAL * fieldSizeAcres;
+      const demandScale = 50000; // Calibration factor
+      const demand = dailyET * demandScale;
+      const deltaSoil = dailyIrrigationGallons - demand;
+      
+      // Update soil moisture with bounds
+      soilMoisture = Math.max(10, Math.min(45, soilMoisture + deltaSoil * 0.002));
       
       return {
         date: date.toISOString().split('T')[0],
         dateFormatted: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        totalUsage: Math.max(500, Math.round(currentET * 300 * tempFactor * seasonalFactor + randomVariation * 200)),
-        irrigation: Math.max(300, Math.round(currentET * 200 * tempFactor * vegetationFactor * seasonalFactor + randomVariation * 150)),
-        livestock: Math.max(50, Math.round(150 * tempFactor + randomVariation * 25)),
-        household: Math.max(80, Math.round(120 * tempFactor + randomVariation * 20)),
-        efficiency: Math.max(60, Math.min(95, 75 + (baseNdvi * 30) + seasonalFactor * 15 + randomVariation * 10)),
-        soilMoisture: Math.max(15, Math.min(45, currentET * 6 + seasonalFactor * 12 + randomVariation * 8)),
-        rainfall: Math.max(0, Math.round(Math.random() * 25 * (1 - seasonalFactor * 0.5))), // Less rain in hot seasons
-        evapotranspiration: Math.max(2, currentET * (0.8 + seasonalFactor * 0.4 + randomVariation)),
+        totalUsage: Math.max(500, Math.round(dailyET * 300 * tempFactor * seasonalFactor)),
+        irrigation: Math.max(300, Math.round(dailyET * 200 * tempFactor * vegetationFactor * seasonalFactor)),
+        livestock: Math.max(50, Math.round(150 * tempFactor)),
+        household: Math.max(80, Math.round(120 * tempFactor)),
+        efficiency: Math.max(60, Math.min(95, 75 + (baseNdvi * 30) + seasonalFactor * 15)),
+        soilMoisture: Math.round(soilMoisture * 10) / 10,
+        rainfall: Math.max(0, Math.round(Math.random() * 25 * (1 - seasonalFactor * 0.5))),
+        evapotranspiration: Math.max(2, Math.round(dailyET * 10) / 10),
         costPerGallon: 0.003 + Math.random() * 0.002
       };
     });
